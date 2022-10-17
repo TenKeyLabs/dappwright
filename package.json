@@ -1,0 +1,70 @@
+{
+  "name": "@chainsafe/dappeteer",
+  "version": "3.0.0",
+  "description": "E2E testing for dApps using Puppeteer + MetaMask",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "jest-preset.js",
+    "metamask",
+    "dist"
+  ],
+  "engines": {
+    "node": "16"
+  },
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint --color --ext .ts src/ test/",
+    "lint:fix": "yarn run lint --fix",
+    "test": "mocha",
+    "test:dev": "mocha --timeout 36000000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chainsafe/dappeteer.git"
+  },
+  "keywords": [
+    "e2e",
+    "testing",
+    "metamask",
+    "puppeteer",
+    "dapp",
+    "ethereum"
+  ],
+  "contributors": [
+    "Juan Cazala <juan@decentraland.org>",
+    "ChainSafe <info@chainsafe.io>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@types/chai-as-promised": "^7.1.5",
+    "chai-as-promised": "^7.1.1",
+    "node-stream-zip": "^1.13.0"
+  },
+  "devDependencies": {
+    "@jest/types": "^27.1.1",
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.15.0",
+    "@typescript-eslint/parser": "^4.15.0",
+    "chai": "^4.3.4",
+    "eslint": "^7.20.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "ganache": "^7.4.3",
+    "jest-environment-node": "^27.1.1",
+    "mocha": "7.2.0",
+    "prettier": "^2.2.1",
+    "puppeteer": "14.0.0",
+    "serve-handler": "5.0.8",
+    "solc": "0.5.2",
+    "ts-node": "10.8.1",
+    "typescript": "^4.7",
+    "web3": "1.3.4"
+  },
+  "peerDependencies": {
+    "puppeteer": ">13"
+  }
+}
