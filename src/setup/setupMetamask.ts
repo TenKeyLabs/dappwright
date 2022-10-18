@@ -1,7 +1,7 @@
-import { BrowserContext, Page } from 'playwright';
+import { BrowserContext, Page } from 'playwright-core';
 
 import { getMetamask } from '../metamask';
-import { Dappeteer, MetamaskOptions } from '../types';
+import { Dappwright, MetamaskOptions } from '../types';
 
 import { closePopup, confirmWelcomeScreen, importAccount, noThanksTelemetry, showTestNets } from './setupActions';
 
@@ -21,7 +21,7 @@ export async function setupMetamask<Options = MetamaskOptions>(
   browserContext: BrowserContext,
   options?: Options,
   steps: Step<Options>[] = defaultMetamaskSteps,
-): Promise<Dappeteer> {
+): Promise<Dappwright> {
   const page = await getWelcomScreen(browserContext);
 
   await page.reload();

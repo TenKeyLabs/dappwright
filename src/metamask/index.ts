@@ -1,6 +1,6 @@
-import { Browser, Page } from 'playwright';
+import { Browser, Page } from 'playwright-core';
 
-import { Dappeteer } from '..';
+import { Dappwright } from '..';
 
 import { addNetwork } from './addNetwork';
 import { addToken } from './addToken';
@@ -15,7 +15,7 @@ import { switchAccount } from './switchAccount';
 import { switchNetwork } from './switchNetwork';
 import { unlock } from './unlock';
 
-export const getMetamask = async (page: Page, version?: string): Promise<Dappeteer> => {
+export const getMetamask = async (page: Page, version?: string): Promise<Dappwright> => {
   return {
     addNetwork: addNetwork(page, version),
     approve: approve(page, version),
@@ -40,7 +40,7 @@ export const getMetamask = async (page: Page, version?: string): Promise<Dappete
 /**
  * Return MetaMask instance
  * */
-export async function getMetamaskWindow(browser: Browser, version?: string): Promise<Dappeteer> {
+export async function getMetamaskWindow(browser: Browser, version?: string): Promise<Dappwright> {
   const metamaskPage = await new Promise<Page>((resolve) => {
     browser.contexts[0].pages().then((pages) => {
       for (const page of pages) {

@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page } from 'playwright-core';
 
 import { clickOnButton, clickOnElement, getErrorMessage, openProfileDropdown, typeOnInputField } from '../helpers';
 

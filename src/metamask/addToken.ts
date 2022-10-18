@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page } from 'playwright-core';
 
 import { clickOnButton, clickOnElement, getInputByLabel, getInputByLabelSelector, typeOnInputField } from '../helpers';
 import { AddToken } from '../index';

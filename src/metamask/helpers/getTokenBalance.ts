@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page } from 'playwright-core';
 
 export const getTokenBalance = (page: Page) => async (tokenSymbol: string): Promise<number> => {
   await page.bringToFront();

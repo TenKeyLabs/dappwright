@@ -1,11 +1,11 @@
 import { launch, setupMetamask } from '../index';
 
-import { getDappeteerConfig } from './config';
+import { getDappwrightConfig } from './config';
 
 export default async function (browserName: string): Promise<void> {
-  const { dappeteer, metamask } = await getDappeteerConfig();
+  const { dappwright, metamask } = await getDappwrightConfig();
 
-  const browserContext = await launch(browserName, dappeteer);
+  const browserContext = await launch(browserName, dappwright);
   try {
     await setupMetamask(browserContext, metamask);
     global.browser = browserContext.browser();
@@ -14,5 +14,4 @@ export default async function (browserName: string): Promise<void> {
     console.log(error);
     throw error;
   }
-  // process.env.PUPPETEER_WS_ENDPOINT = (browser.contexts[0] as BrowserContext).
 }

@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page } from 'playwright-core';
 
 import { clickOnButton, getErrorMessage, openNetworkDropdown, typeOnInputField } from '../helpers';
 import { AddNetwork } from '../index';
