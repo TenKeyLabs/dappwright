@@ -16,7 +16,7 @@ $ yarn add @tenkeylabs/dappwright
 ```typescript
 # global-setup.ts
 
-import dappwright from "dappwright";
+import dappwright from "@tenkeylabs/dappwright";
 import playwright  from 'playwright';
 
 async function globalSetup(config: FullConfig) {
@@ -39,7 +39,7 @@ async function globalSetup(config: FullConfig) {
   await context.close();
 }
 
-main();
+export default globalSetup;
 ```
 
 ```typescript
