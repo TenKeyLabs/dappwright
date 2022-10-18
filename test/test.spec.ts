@@ -3,10 +3,10 @@ import path from 'path';
 
 import { expect, use as chaiUse } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import playwright as puppeteer  from 'playwright';
+import playwright from 'playwright';
 
-import { Dappeteer, RECOMMENDED_METAMASK_VERSION } from '../src';
-import * as dappeteer from '../src/index';
+import { Dappwright, RECOMMENDED_METAMASK_VERSION } from '../src';
+import * as dappwright from '../src/index';
 
 import deploy from './deploy';
 import { pause } from './utils';
@@ -31,15 +31,15 @@ async function clickElement(page, selector): Promise<void> {
   await element.click();
 }
 
-export let testContract, browser, metamask: Dappeteer, testPage;
+export let testContract, browser, metamask: Dappwright, testPage;
 
-describe('dappeteer', () => {
+describe('dappwright', () => {
   before(async () => {
     testContract = await deploy();
-    browser = await dappeteer.launch(puppeteer, {
+    browser = await dappwright.launch(playwright, {
       metamaskVersion: process.env.METAMASK_VERSION || RECOMMENDED_METAMASK_VERSION,
     });
-    metamask = await dappeteer.setupMetamask(browser, {
+    metamask = await dappwright.setupMetamask(browser, {
       // optional, else it will use a default seed
       seed: 'pioneer casual canoe gorilla embrace width fiction bounce spy exhibit another dog',
       password: 'password1234',

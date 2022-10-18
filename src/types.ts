@@ -1,18 +1,18 @@
-import { Page } from 'playwright';
+import { Page } from 'playwright-core';
 import { RECOMMENDED_METAMASK_VERSION } from './setup/constants';
 
 import { Path } from './setup/metamaskDownloader';
 
 export type LaunchOptions = OfficialOptions | CustomOptions;
 
-type DappaterBrowserLaunchArgumentOptions = Omit<any, 'headed'>;
+type DappwrightBrowserLaunchArgumentOptions = Omit<any, 'headed'>;
 
-export type OfficialOptions = DappaterBrowserLaunchArgumentOptions & {
+export type OfficialOptions = DappwrightBrowserLaunchArgumentOptions & {
   metamaskVersion: typeof RECOMMENDED_METAMASK_VERSION | 'latest' | string;
   metamaskLocation?: Path;
 };
 
-export type CustomOptions = DappaterBrowserLaunchArgumentOptions & {
+export type CustomOptions = DappwrightBrowserLaunchArgumentOptions & {
   metamaskVersion?: string;
   metamaskPath: string;
 };
@@ -42,7 +42,7 @@ export type TransactionOptions = {
   priority?: number;
 };
 
-export type Dappeteer = {
+export type Dappwright = {
   lock: () => Promise<void>;
   unlock: (password?: string) => Promise<void>;
   addNetwork: (options: AddNetwork) => Promise<void>;

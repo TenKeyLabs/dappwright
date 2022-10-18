@@ -1,4 +1,4 @@
-import { ElementHandle, Page } from 'playwright';
+import { ElementHandle, Page } from 'playwright-core';
 
 // TODO: change text() with '.';
 export const getElementByContent = (page: Page, text: string, type = '*'): Promise<ElementHandle | null> =>

@@ -3,20 +3,20 @@ import path from 'path';
 import { existsSync } from 'node:fs';
 import { cwd } from 'node:process';
 
-import { RECOMMENDED_METAMASK_VERSION } from '../index';
 import { LaunchOptions } from '../types';
 
-import { DappateerJestConfig } from './global';
+import { RECOMMENDED_METAMASK_VERSION } from '../setup/constants';
+import { DappwrightJestConfig } from './global';
 
-export const DAPPETEER_DEFAULT_CONFIG: LaunchOptions = { metamaskVersion: RECOMMENDED_METAMASK_VERSION };
+export const DAPPWRIGHT_DEFAULT_CONFIG: LaunchOptions = { metamaskVersion: RECOMMENDED_METAMASK_VERSION };
 
-export async function getDappeteerConfig(): Promise<DappateerJestConfig> {
-  const configPath = 'dappeteer.config.js';
+export async function getDappwrightConfig(): Promise<DappwrightJestConfig> {
+  const configPath = 'dappwright.config.js';
   const filePath = path.resolve(cwd(), configPath);
 
   if (!existsSync(filePath))
     return {
-      dappeteer: DAPPETEER_DEFAULT_CONFIG,
+      dappwright: DAPPWRIGHT_DEFAULT_CONFIG,
       metamask: {},
     };
 
@@ -24,9 +24,9 @@ export async function getDappeteerConfig(): Promise<DappateerJestConfig> {
   const config = await require(filePath);
 
   return {
-    dappeteer: {
-      ...DAPPETEER_DEFAULT_CONFIG,
-      ...config.dappeteer,
+    dappwright: {
+      ...DAPPWRIGHT_DEFAULT_CONFIG,
+      ...config.dappwright,
     },
     metamask: {
       ...config.metamask,

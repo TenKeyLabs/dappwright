@@ -1,44 +1,79 @@
-# dAppeteer
+# dAppwright
 
-E2E testing for dApps using Puppeteer + MetaMask
+E2E testing for dApps using Playwright + MetaMask
+
+This is a fork of [dAppeteer](github.com/chainsafe/dappeteer)
 
 ## Installation
 
 ```
-$ npm install -s @chainsafe/dappeteer
-$ yarn add @chainsafe/dappeteer
+$ npm install -s @tenkeylabs/dappwright
+$ yarn add @tenkeylabs/dappwright
 ```
 
 ## Usage
 
-```js
-import playwright as puppeteer  from 'playwright';
-import dappeteer from '@chainsafe/dappeteer';
+```typescript
+# global-setup.ts
 
-async function main() {
-  const [metamask, page] = await dappeteer.bootstrap(puppeteer, { metamaskVersion: 'v10.15.0' });
+import dappwright from "dappwright";
+import playwright  from 'playwright';
 
-  // you can change the network if you want
-  await metamask.switchNetwork('ropsten');
-
-  // you can import a token
-  await metamask.addToken({
-    tokenAddress: '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa',
-    symbol: 'KAKI',
+async function globalSetup(config: FullConfig) {
+  const [metamask, page, context] = await dappwright.bootstrap("", {
+    metamaskVersion: "v10.20.0",
   });
 
-  // go to a dapp and do something that prompts MetaMask to confirm a transaction
-  await page.goto('http://my-dapp.com');
-  const payButton = await page.$('#pay-with-eth');
-  await payButton.click();
+  // Add a custom network
+  await metamask.addNetwork({
+    networkName: "Hardhat",
+    rpc: "http://127.0.0.1:8545/",
+    chainId: 31337,
+    symbol: "ETH",
+  });
 
-  // 🏌
-  await metamask.confirmTransaction();
+  // Add an extra account
+  await metamask.createAccount();
+  await page.waitForTimeout(3000); // Metamask needs some time to commit changes to disk
+
+  await context.close();
 }
 
 main();
 ```
 
-- All methods can be found on [API page](docs/API.md)
-- Instructions to setup [dAppeteer with Jest](docs/JEST.md)
-- Mocha example can be found [inside test folder](./test)
+```typescript
+# example.spec.ts
+
+export const test = base.extend<{
+  context: BrowserContext;
+  metamask: Dappwright;
+}>({
+  context: async ({}, use) => {
+    // Launch context with the same session from global-setup
+    const context: BrowserContext = await dappwright.launch("", {
+      metamaskVersion: "v10.20.0",
+    });
+
+    // Unlock the wallet
+    const metamaskPage = await context.waitForEvent("page");
+    const metamask = await dappwright.getMetamask(metamaskPage);
+    await metamask.unlock();
+
+    await use(context);
+    await context.close();
+  },
+  metamask: async ({ context }, use) => {
+    const metamaskPage = context.pages()[1];
+    const metamask = await dappwright.getMetamask(metamaskPage);
+
+    await use(metamask);
+  },
+});
+
+test("can connect to an application", async ({ page, metamask }) => {
+  await page.locator("text=MetaMask").click();
+  await metamask.approve();
+  await page.waitForUrl("http://localhost:3000/dashboard");
+})
+```

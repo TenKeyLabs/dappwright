@@ -1,6 +1,6 @@
-import { Browser, Page } from 'playwright';
+import { Browser, Page } from 'playwright-core';
 
-import { Dappeteer, LaunchOptions, MetamaskOptions } from '..';
+import { Dappwright, LaunchOptions, MetamaskOptions } from '..';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -8,12 +8,12 @@ declare global {
     interface Global {
       page: Page;
       browser: Browser;
-      metamask: Dappeteer;
+      metamask: Dappwright;
     }
   }
 }
 
-export type DappateerJestConfig = Partial<{
-  dappeteer: LaunchOptions;
+export type DappwrightJestConfig = Partial<{
+  dappwright: LaunchOptions;
   metamask: MetamaskOptions;
 }>;

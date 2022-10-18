@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page } from 'playwright-core';
 
 import { getAccountMenuButton, getElementByContent, getInputByLabel, getSettingsSwitch } from './selectors';
 

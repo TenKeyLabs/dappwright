@@ -1,9 +1,9 @@
 import NodeEnvironment from 'jest-environment-node';
-import { chromium } from 'playwright';
+import { chromium } from 'playwright-core';
 
 import { getMetamaskWindow } from '../index';
 
-class DappeteerEnvironment extends NodeEnvironment {
+class DappwrightEnvironment extends NodeEnvironment {
   constructor(config) {
     super(config);
   }
@@ -27,4 +27,4 @@ class DappeteerEnvironment extends NodeEnvironment {
   }
 }
 
-module.exports = DappeteerEnvironment;
+module.exports = DappwrightEnvironment;

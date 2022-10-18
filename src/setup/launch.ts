@@ -1,4 +1,4 @@
-import playwright from 'playwright';
+import playwright from 'playwright-core';
 
 import { CustomOptions, LaunchOptions, OfficialOptions } from '../types';
 import { RECOMMENDED_METAMASK_VERSION } from './constants';
@@ -31,13 +31,13 @@ export async function launch(browserName: string, options: LaunchOptions): Promi
     else if (isNewerVersion(RECOMMENDED_METAMASK_VERSION, metamaskVersion))
       console.warn(
         '\x1b[33m%s\x1b[0m',
-        `Seems you are running newer version of MetaMask that recommended by dappeteer team.
+        `Seems you are running newer version of MetaMask that recommended by dappwright team.
       Use it at your own risk or set to the recommended version "${RECOMMENDED_METAMASK_VERSION}".`,
       );
     else if (isNewerVersion(metamaskVersion, RECOMMENDED_METAMASK_VERSION))
       console.warn(
         '\x1b[33m%s\x1b[0m',
-        `Seems you are running older version of MetaMask that recommended by dappeteer team.
+        `Seems you are running older version of MetaMask that recommended by dappwright team.
       Use it at your own risk or set the recommended version "${RECOMMENDED_METAMASK_VERSION}".`,
       );
     else console.log(`Running tests on MetaMask version ${metamaskVersion}`);
