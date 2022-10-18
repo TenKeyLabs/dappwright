@@ -7,7 +7,7 @@ import { isNewerVersion } from './isNewerVersion';
 import downloader from './metamaskDownloader';
 
 /**
- * Launch Puppeteer chromium instance with MetaMask plugin installed
+ * Launch Playwright chromium instance with MetaMask plugin installed
  * */
 export async function launch(browserName: string, options: LaunchOptions): Promise<playwright.BrowserContext> {
   if (!options || (!options.metamaskVersion && !(options as CustomOptions).metamaskPath))
