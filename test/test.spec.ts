@@ -60,7 +60,7 @@ describe('dappwright', () => {
     expect(testContract.options.address).to.be.ok;
   });
 
-  it('should running, puppeteer', async () => {
+  it('should running, playwright', async () => {
     expect(browser).to.be.ok;
   });
 

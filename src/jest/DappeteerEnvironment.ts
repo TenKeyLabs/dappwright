@@ -12,12 +12,12 @@ class DappwrightEnvironment extends NodeEnvironment {
     await super.setup();
 
     // get the wsEndpoint
-    const wsEndpoint = process.env.PUPPETEER_WS_ENDPOINT;
+    const wsEndpoint = process.env.PLAYWRIGHT_WS_ENDPOINT;
     if (!wsEndpoint) {
       throw new Error('wsEndpoint not found');
     }
 
-    // connect to puppeteer
+    // connect to playwright
     const browser = await chromium.connect({
       wsEndpoint: wsEndpoint,
     });

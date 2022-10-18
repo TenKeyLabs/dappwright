@@ -28,7 +28,7 @@ For additional information read root [readme](../README.md)
 
 <a name="launch"></a>
 
-## `dappwright.launch(puppeteerLib: typeof puppeteer, options: OfficialOptions | CustomOptions): Promise<Browser>`
+## `dappwright.launch(browserName: string, options: OfficialOptions | CustomOptions): Promise<Browser>`
 
 ```typescript
 interface OfficialOptions {
