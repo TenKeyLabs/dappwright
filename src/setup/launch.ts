@@ -1,7 +1,7 @@
-import puppeteer from 'puppeteer';
+import playwright from 'playwright';
 
-import { CustomOptions, OfficialOptions, RECOMMENDED_METAMASK_VERSION } from '../index';
-import { LaunchOptions } from '../types';
+import { CustomOptions, LaunchOptions, OfficialOptions } from '../types';
+import { RECOMMENDED_METAMASK_VERSION } from './constants';
 
 import { isNewerVersion } from './isNewerVersion';
 import downloader from './metamaskDownloader';
@@ -9,10 +9,10 @@ import downloader from './metamaskDownloader';
 /**
  * Launch Puppeteer chromium instance with MetaMask plugin installed
  * */
-export async function launch(puppeteerLib: typeof puppeteer, options: LaunchOptions): Promise<puppeteer.Browser> {
+export async function launch(browserName: string, options: LaunchOptions): Promise<playwright.BrowserContext> {
   if (!options || (!options.metamaskVersion && !(options as CustomOptions).metamaskPath))
     throw new Error(
-      `Pleas provide "metamaskVersion" (recommended "${RECOMMENDED_METAMASK_VERSION}" or "latest" to always get latest release of MetaMask)`,
+      `Please provide "metamaskVersion" (recommended "${RECOMMENDED_METAMASK_VERSION}" or "latest" to always get latest release of MetaMask)`,
     );
 
   const { args, ...rest } = options;
@@ -52,7 +52,7 @@ export async function launch(puppeteerLib: typeof puppeteer, options: LaunchOpti
     /* eslint-enable no-console */
   }
 
-  return puppeteerLib.launch({
+  return playwright.chromium.launchPersistentContext('./metamaskSession', {
     headless: false,
     args: [`--disable-extensions-except=${METAMASK_PATH}`, `--load-extension=${METAMASK_PATH}`, ...(args || [])],
     ...rest,

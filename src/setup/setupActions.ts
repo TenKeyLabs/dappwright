@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 
 import {
   clickOnButton,
@@ -19,7 +19,11 @@ export async function showTestNets(metamaskPage: Page): Promise<void> {
 }
 
 export async function confirmWelcomeScreen(metamaskPage: Page): Promise<void> {
-  await clickOnButton(metamaskPage, 'Get Started');
+  await clickOnButton(metamaskPage, 'Get started');
+}
+
+export async function noThanksTelemetry(metamaskPage: Page): Promise<void> {
+  await clickOnButton(metamaskPage, 'No thanks');
 }
 
 export async function importAccount(
@@ -30,7 +34,6 @@ export async function importAccount(
   }: MetamaskOptions,
 ): Promise<void> {
   await clickOnButton(metamaskPage, 'Import wallet');
-  await clickOnButton(metamaskPage, 'I Agree');
 
   for (const [index, seedPart] of seed.split(' ').entries())
     await typeOnInputField(metamaskPage, `${index + 1}.`, seedPart);
@@ -43,12 +46,14 @@ export async function importAccount(
   await acceptTerms.click();
 
   await clickOnButton(metamaskPage, 'Import');
-  await clickOnButton(metamaskPage, 'All Done');
+  await clickOnButton(metamaskPage, 'All done');
 }
 
 export const closePopup = async (page: Page): Promise<void> => {
   /* For some reason popup deletes close button and then create new one (react stuff)
    * hacky solution can be found here => https://github.com/puppeteer/puppeteer/issues/3496 */
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  await page.$eval('.popover-header__button', (node: HTMLElement) => node.click());
+  if (await page.locator('.popover-header__button').isVisible()) {
+    await page.$eval('.popover-header__button', (node: HTMLElement) => node.click());
+  }
 };

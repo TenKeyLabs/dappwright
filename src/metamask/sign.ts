@@ -1,16 +1,15 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 
 import { clickOnButton } from '../helpers';
 
-import { GetSingedIn } from '.';
+import { performPopupAction } from './util';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const sign = (page: Page, getSingedIn: GetSingedIn, version?: string) => async (): Promise<void> => {
-  await page.bringToFront();
-  if (!(await getSingedIn())) {
-    throw new Error("You haven't signed in yet");
-  }
-  await page.reload();
+export const sign = (page: Page, version?: string) => async (): Promise<void> => {
+  await performPopupAction(page, async (popup) => {
+    await popup.bringToFront();
+    await popup.reload();
 
-  await clickOnButton(page, 'Sign');
+    await clickOnButton(popup, 'Sign');
+  });
 };

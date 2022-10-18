@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 
 import { clickOnButton, clickOnElement, openAccountDropdown } from '../../helpers';
 import { switchAccount } from '../switchAccount';
