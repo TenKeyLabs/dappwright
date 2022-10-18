@@ -3,7 +3,7 @@ import path from 'path';
 
 import { expect, use as chaiUse } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import puppeteer from 'puppeteer';
+import playwright as puppeteer  from 'playwright';
 
 import { Dappeteer, RECOMMENDED_METAMASK_VERSION } from '../src';
 import * as dappeteer from '../src/index';

@@ -1,16 +1,16 @@
-import { ElementHandle, Page } from 'puppeteer';
+import { ElementHandle, Page } from 'playwright';
 
 // TODO: change text() with '.';
 export const getElementByContent = (page: Page, text: string, type = '*'): Promise<ElementHandle | null> =>
-  page.waitForXPath(`//${type}[contains(text(), '${text}')]`);
+  page.waitForSelector(`//${type}[contains(text(), '${text}')]`);
 
 export const getInputByLabel = (
   page: Page,
   text: string,
   excludeSpan = false,
-  timeout = 1000,
+  timeout = 2000,
 ): Promise<ElementHandle> =>
-  page.waitForXPath(
+  page.waitForSelector(
     [
       `//label[contains(.,'${text}')]/following-sibling::textarea`,
       `//label[contains(.,'${text}')]/following-sibling::*//input`,
@@ -26,8 +26,22 @@ export const getInputByLabel = (
     { timeout },
   );
 
+export const getInputByLabelSelector = (text: string, excludeSpan = false): string =>
+  [
+    `//label[contains(.,'${text}')]/following-sibling::textarea`,
+    `//label[contains(.,'${text}')]/following-sibling::*//input`,
+    `//h6[contains(.,'${text}')]/parent::node()/parent::node()/following-sibling::input`,
+    `//h6[contains(.,'${text}')]/parent::node()/parent::node()/following-sibling::*//input`,
+    ...(!excludeSpan
+      ? [
+          `//span[contains(.,'${text}')]/parent::node()/parent::node()/following-sibling::*//input`,
+          `//span[contains(.,'${text}')]/following-sibling::*//input`,
+        ]
+      : []),
+  ].join('|');
+
 export const getSettingsSwitch = (page: Page, text: string): Promise<ElementHandle | null> =>
-  page.waitForXPath(
+  page.waitForSelector(
     [
       `//span[contains(.,'${text}')]/parent::div/following-sibling::div/div/div/div`,
       `//span[contains(.,'${text}')]/parent::div/following-sibling::div/div/label/div`,
@@ -47,4 +61,4 @@ export const getErrorMessage = async (page: Page): Promise<string | false> => {
 };
 
 export const getAccountMenuButton = (page: Page): Promise<ElementHandle | null> =>
-  page.waitForXPath(`//button[contains(@title,'Account Options')]`);
+  page.waitForSelector(`//button[contains(@title,'Account Options')]`);

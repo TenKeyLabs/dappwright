@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 
 import { getAccountMenuButton, getElementByContent, getInputByLabel, getSettingsSwitch } from './selectors';
 
@@ -59,7 +59,7 @@ export const typeOnInputField = async (
 ): Promise<boolean> => {
   let input;
   try {
-    input = await getInputByLabel(page, label, excludeSpan, 1000);
+    input = await getInputByLabel(page, label, excludeSpan, 5000);
   } catch (e) {
     if (optional) return false;
     throw e;

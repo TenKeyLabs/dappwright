@@ -1,6 +1,6 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 
-import { clickOnButton, clickOnElement, getInputByLabel, typeOnInputField } from '../helpers';
+import { clickOnButton, clickOnElement, getInputByLabel, getInputByLabelSelector, typeOnInputField } from '../helpers';
 import { AddToken } from '../index';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -16,16 +16,21 @@ export const addToken = (page: Page, version?: string) => async ({
 
   // wait to metamask pull token data
   // TODO: handle case when contract is not containing symbol
-  const symbolInput = await getInputByLabel(page, 'Token Symbol');
-  await page.waitForFunction((node) => !!node.value, {}, symbolInput);
+  const symbolInput = await getInputByLabelSelector('Token Symbol');
+  await page.waitForFunction((selector) => !!(document.querySelector(selector) as HTMLInputElement).value, symbolInput);
 
   if (symbol) {
     await clickOnElement(page, 'Edit');
     await typeOnInputField(page, 'Token Symbol', symbol, true);
   }
 
+  const decimalsSelector = await getInputByLabelSelector('Token Decimal');
+  const isDisabled = await page.evaluate(
+    (selector) => (document.querySelector(selector) as HTMLInputElement).disabled,
+    decimalsSelector,
+  );
+
   const decimalsInput = await getInputByLabel(page, 'Token Decimal');
-  const isDisabled = await page.evaluate((node) => node.disabled, decimalsInput);
   if (!isDisabled) await decimalsInput.type(String(decimals));
 
   await clickOnButton(page, 'Add Custom Token');

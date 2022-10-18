@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 
 export const getTokenBalance = (page: Page) => async (tokenSymbol: string): Promise<number> => {
   await page.bringToFront();

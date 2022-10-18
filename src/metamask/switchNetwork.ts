@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 
 import { openNetworkDropdown } from '../helpers';
 
@@ -27,5 +27,5 @@ export const switchNetwork = (page: Page, version?: string) => async (network = 
   const networkButton = (await page.$$('li.dropdown-menu-item'))[networkIndex];
   await networkButton.click();
 
-  await page.waitForXPath(`//*[text() = '${networkFullName}']`);
+  await page.waitForSelector(`//*[text() = '${networkFullName}']`);
 };

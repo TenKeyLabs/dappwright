@@ -1,12 +1,11 @@
-import { BrowserLaunchArgumentOptions, Page } from 'puppeteer';
+import { Page } from 'playwright';
+import { RECOMMENDED_METAMASK_VERSION } from './setup/constants';
 
 import { Path } from './setup/metamaskDownloader';
 
-import { RECOMMENDED_METAMASK_VERSION } from './index';
-
 export type LaunchOptions = OfficialOptions | CustomOptions;
 
-type DappaterBrowserLaunchArgumentOptions = Omit<BrowserLaunchArgumentOptions, 'headless'>;
+type DappaterBrowserLaunchArgumentOptions = Omit<any, 'headed'>;
 
 export type OfficialOptions = DappaterBrowserLaunchArgumentOptions & {
   metamaskVersion: typeof RECOMMENDED_METAMASK_VERSION | 'latest' | string;
@@ -45,9 +44,10 @@ export type TransactionOptions = {
 
 export type Dappeteer = {
   lock: () => Promise<void>;
-  unlock: (password: string) => Promise<void>;
+  unlock: (password?: string) => Promise<void>;
   addNetwork: (options: AddNetwork) => Promise<void>;
   addToken: (options: AddToken) => Promise<void>;
+  createAccount: () => Promise<void>;
   importPK: (pk: string) => Promise<void>;
   switchAccount: (accountNumber: number) => Promise<void>;
   switchNetwork: (network: string) => Promise<void>;

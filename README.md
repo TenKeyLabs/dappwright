@@ -12,7 +12,7 @@ $ yarn add @chainsafe/dappeteer
 ## Usage
 
 ```js
-import puppeteer from 'puppeteer';
+import playwright as puppeteer  from 'playwright';
 import dappeteer from '@chainsafe/dappeteer';
 
 async function main() {
@@ -39,6 +39,6 @@ async function main() {
 main();
 ```
 
-- All methods can be found on [API page](docs/API.md)  
-- Instructions to setup [dAppeteer with Jest](docs/JEST.md)  
+- All methods can be found on [API page](docs/API.md)
+- Instructions to setup [dAppeteer with Jest](docs/JEST.md)
 - Mocha example can be found [inside test folder](./test)

@@ -1,5 +1,5 @@
 import NodeEnvironment from 'jest-environment-node';
-import puppeteer from 'puppeteer';
+import { chromium } from 'playwright';
 
 import { getMetamaskWindow } from '../index';
 
@@ -18,8 +18,8 @@ class DappeteerEnvironment extends NodeEnvironment {
     }
 
     // connect to puppeteer
-    const browser = await puppeteer.connect({
-      browserWSEndpoint: wsEndpoint,
+    const browser = await chromium.connect({
+      wsEndpoint: wsEndpoint,
     });
     this.global.browser = browser;
     this.global.metamask = await getMetamaskWindow(browser);
