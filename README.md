@@ -2,7 +2,7 @@
 
 E2E testing for dApps using Playwright + MetaMask
 
-This is a fork of [dAppeteer](github.com/chainsafe/dappeteer)
+This is a fork of [dAppeteer](https://github.com/chainsafe/dappeteer)
 
 ## Installation
 
