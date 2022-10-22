@@ -71,6 +71,7 @@ export const test = base.extend<{
   },
 });
 
+test.describe.configure({ mode: "serial" }); // Avoid colliding browser sessions
 test("can connect to an application", async ({ page, metamask }) => {
   await page.locator("text=MetaMask").click();
   await metamask.approve();
