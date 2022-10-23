@@ -14,8 +14,8 @@ export const openNetworkDropdown = async (page: Page): Promise<void> => {
 };
 
 export const openProfileDropdown = async (page: Page): Promise<void> => {
-  const accountSwitcher = await page.waitForSelector('.identicon');
-  await accountSwitcher.click();
+  const accountSwitcher = await page.waitForSelector('.account-menu__icon');
+  await accountSwitcher.click({ noWaitAfter: true, force: true });
 };
 
 export const openAccountDropdown = async (page: Page): Promise<void> => {

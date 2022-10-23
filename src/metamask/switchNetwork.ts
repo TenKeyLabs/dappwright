@@ -7,6 +7,7 @@ import { openNetworkDropdown } from '../helpers';
 export const switchNetwork = (page: Page, version?: string) => async (network = 'main'): Promise<void> => {
   await page.bringToFront();
   await openNetworkDropdown(page);
+  await page.waitForSelector(':nth-match(li.dropdown-menu-item, 2)');
 
   const networkIndex = await page.evaluate((network) => {
     const elements = document.querySelectorAll('li.dropdown-menu-item');
