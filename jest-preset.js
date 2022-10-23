@@ -1,5 +1,5 @@
 module.exports = {
-  globalSetup: `@chainsafe/dappwright/dist/jest/setup.js`,
-  globalTeardown: `@chainsafe/dappwright/dist/jest/teardown.js`,
-  testEnvironment: `@chainsafe/dappwright/dist/jest/DappwrightEnvironment.js`,
+  globalSetup: `@tenkeylabs/dappwright/dist/jest/setup.js`,
+  globalTeardown: `@tenkeylabs/dappwright/dist/jest/teardown.js`,
+  testEnvironment: `@tenkeylabs/dappwright/dist/jest/DappwrightEnvironment.js`,
 };

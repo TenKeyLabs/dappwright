@@ -9,7 +9,7 @@ export const importPk =
     await page.bringToFront();
     await openProfileDropdown(page);
 
-    await clickOnElement(page, 'Import Account');
+    await clickOnElement(page, 'Import account');
     await typeOnInputField(page, 'your private key', privateKey);
     await clickOnButton(page, 'Import');
 
