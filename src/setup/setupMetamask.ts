@@ -22,9 +22,8 @@ export async function setupMetamask<Options = MetamaskOptions>(
   options?: Options,
   steps: Step<Options>[] = defaultMetamaskSteps,
 ): Promise<Dappwright> {
-  const page = await getWelcomScreen(browserContext);
+  const page = await getWelcomeScreen(browserContext);
 
-  await page.reload();
   // goes through the installation steps required by metamask
   for (const step of steps) {
     await step(page, options);
@@ -33,8 +32,11 @@ export async function setupMetamask<Options = MetamaskOptions>(
   return getMetamask(page);
 }
 
-const getWelcomScreen = async (browserContext: BrowserContext): Promise<Page> => {
-  console.log('Welcome pages', browserContext.pages().length);
-  if (browserContext.pages().length > 1) return browserContext.pages()[1]; // Sometime the page loads before the script
-  return await browserContext.waitForEvent('page');
+const getWelcomeScreen = async (browserContext: BrowserContext): Promise<Page> => {
+  const page = await browserContext.waitForEvent('page');
+
+  await page.waitForLoadState('domcontentloaded');
+  await page.reload();
+
+  return page;
 };
