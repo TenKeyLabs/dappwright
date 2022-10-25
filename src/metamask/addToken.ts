@@ -12,27 +12,20 @@ export const addToken = (page: Page, version?: string) => async ({
   await page.bringToFront();
 
   await clickOnElement(page, 'Import tokens');
-  await typeOnInputField(page, 'Token Contract Address', tokenAddress);
+  await page.waitForTimeout(500);
+  await clickOnButton(page, 'Custom token');
+  await typeOnInputField(page, 'Token contract address', tokenAddress);
 
-  // wait to metamask pull token data
   // TODO: handle case when contract is not containing symbol
-  const symbolInput = await getInputByLabelSelector('Token Symbol');
-  await page.waitForFunction((selector) => !!(document.querySelector(selector) as HTMLInputElement).value, symbolInput);
+  const symbolInput = await getInputByLabelSelector('Token symbol');
 
   if (symbol) {
-    await clickOnElement(page, 'Edit');
-    await typeOnInputField(page, 'Token Symbol', symbol, true);
+    await typeOnInputField(page, 'Token symbol', symbol, true);
   }
 
-  const decimalsSelector = await getInputByLabelSelector('Token Decimal');
-  const isDisabled = await page.evaluate(
-    (selector) => (document.querySelector(selector) as HTMLInputElement).disabled,
-    decimalsSelector,
-  );
+  const decimalsInput = await getInputByLabel(page, 'Token decimal');
+  if (!(await decimalsInput.isDisabled())) await decimalsInput.type(String(decimals));
 
-  const decimalsInput = await getInputByLabel(page, 'Token Decimal');
-  if (!isDisabled) await decimalsInput.type(String(decimals));
-
-  await clickOnButton(page, 'Add Custom Token');
-  await clickOnButton(page, 'Import Tokens');
+  await clickOnButton(page, 'Add custom token');
+  await clickOnButton(page, 'Import tokens');
 };

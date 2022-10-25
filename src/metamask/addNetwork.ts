@@ -32,4 +32,7 @@ export const addNetwork = (page: Page, version?: string) => async ({
   await clickOnButton(page, 'Save');
 
   await page.waitForSelector(`//*[text() = '${networkName}']`);
+
+  const gotItButtonVisible = await page.isVisible(`//button[contains(text(), 'Got it')]`);
+  if (gotItButtonVisible) await clickOnButton(page, 'Got it');
 };
