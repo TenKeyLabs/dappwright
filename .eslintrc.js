@@ -19,7 +19,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
-        varsIgnorePattern: '^_',
+        argsIgnorePattern: '^_',
       },
     ],
     '@typescript-eslint/explicit-function-return-type': [
@@ -55,16 +55,6 @@ module.exports = {
         selector: 'variable',
         modifiers: ['destructured'],
         format: null,
-      },
-    ],
-    'import/order': [
-      'error',
-      {
-        groups: ['builtin', 'external', 'parent', 'internal', 'sibling'],
-        'newlines-between': 'always',
-        alphabetize: {
-          order: 'asc',
-        },
       },
     ],
   },

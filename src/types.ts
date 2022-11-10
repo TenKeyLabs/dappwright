@@ -1,10 +1,10 @@
 import { Page } from 'playwright-core';
 import { RECOMMENDED_METAMASK_VERSION } from './setup/constants';
-
 import { Path } from './setup/metamaskDownloader';
 
 export type LaunchOptions = OfficialOptions | CustomOptions;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DappwrightBrowserLaunchArgumentOptions = Omit<any, 'headed'>;
 
 export type OfficialOptions = DappwrightBrowserLaunchArgumentOptions & {

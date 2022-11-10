@@ -1,11 +1,8 @@
-import path from 'path';
-
 import { existsSync } from 'node:fs';
 import { cwd } from 'node:process';
-
-import { LaunchOptions } from '../types';
-
+import path from 'path';
 import { RECOMMENDED_METAMASK_VERSION } from '../setup/constants';
+import { LaunchOptions } from '../types';
 import { DappwrightJestConfig } from './global';
 
 export const DAPPWRIGHT_DEFAULT_CONFIG: LaunchOptions = { metamaskVersion: RECOMMENDED_METAMASK_VERSION };
