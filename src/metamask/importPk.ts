@@ -4,7 +4,7 @@ import { clickOnButton, clickOnElement, getErrorMessage, openProfileDropdown, ty
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const importPk =
-  (page: Page, version?: string) =>
+  (page: Page, _version?: string) =>
   async (privateKey: string): Promise<void> => {
     await page.bringToFront();
     await openProfileDropdown(page);
