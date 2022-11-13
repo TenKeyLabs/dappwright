@@ -1,6 +1,6 @@
 import { Browser, Page } from 'playwright-core';
 
-import { Dappwright, LaunchOptions, MetamaskOptions } from '..';
+import { Dappwright, LaunchOptions, MetamaskOptions } from '../../src';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
