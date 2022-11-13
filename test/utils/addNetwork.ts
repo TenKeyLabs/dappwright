@@ -7,31 +7,31 @@ import { pause } from '../utils';
 export const addNetworkTests = async (): Promise<void> => {
   after(async () => {
     await metamask.switchNetwork('local');
-    await metamask.helpers.deleteNetwork('Binance Smart Chain');
+    await metamask.helpers.deleteNetwork('Avalanche Network');
     await pause(0.5);
   });
 
   it('should add network with required params', async () => {
     await metamask.addNetwork({
-      networkName: 'Binance Smart Chain',
-      rpc: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
-      chainId: 97,
-      symbol: 'BNB',
+      networkName: 'Avalanche Network',
+      rpc: 'https://api.avax.network/ext/bc/C/rpc',
+      chainId: 43114,
+      symbol: 'AVAX',
     });
 
     const selectedNetwork = await metamask.page.evaluate(
       () => (document.querySelector('.network-display > span:nth-child(2)') as HTMLSpanElement).innerHTML,
     );
-    expect(selectedNetwork).to.be.equal('Binance Smart Chain');
+    expect(selectedNetwork).to.be.equal('Avalanche Network');
   });
 
   it('should fail to add already added network', async () => {
     await expect(
       metamask.addNetwork({
-        networkName: 'Binance Smart Chain',
-        rpc: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
-        chainId: 97,
-        symbol: 'BNB',
+        networkName: 'Avalanche Network',
+        rpc: 'https://api.avax.network/ext/bc/C/rpc',
+        chainId: 43114,
+        symbol: 'AVAX',
       }),
     ).to.be.rejectedWith(SyntaxError);
 
