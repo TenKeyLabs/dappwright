@@ -10,7 +10,7 @@ export const importPKTests = async (): Promise<void> => {
   });
 
   after(async () => {
-    await metamask.helpers.deleteAccount(2);
+    await metamask.deleteAccount(2);
     await pause(0.5);
   });
 

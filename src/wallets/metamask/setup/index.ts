@@ -1,17 +1,17 @@
 import { BrowserContext, Page } from 'playwright-core';
 
-import { Dappwright, MetamaskOptions, OfficialOptions } from '../types';
+import { Dappwright, MetaMaskOptions, OfficialOptions } from '../../../types';
 
 import fs from 'fs';
-import { launch } from './launch';
-import { setupMetamask } from './setupMetamask';
+import { launch } from '../../../launch';
+import { setupMetamask } from '../setup';
 
-export * from './launch';
-export * from './setupMetamask';
+export * from '../../../launch';
+export * from '../setup';
 
 export const bootstrap = async (
   browserName: string,
-  { seed, password, showTestNets, ...launchOptions }: OfficialOptions & MetamaskOptions,
+  { seed, password, showTestNets, ...launchOptions }: OfficialOptions & MetaMaskOptions,
 ): Promise<[Dappwright, Page, BrowserContext]> => {
   fs.rmSync('./metamaskSession', { recursive: true, force: true });
   const browserContext = await launch(browserName, launchOptions);

@@ -4,8 +4,11 @@ import { get } from 'https';
 import * as path from 'path';
 
 import StreamZip from 'node-stream-zip';
+import os from 'os';
+import { OfficialOptions } from '../../../types';
+import { isNewerVersion } from './isNewerVersion';
 
-const defaultDirectory = path.resolve(__dirname, '..', '..', 'metamask');
+const defaultDirectory = path.resolve(os.tmpdir(), 'dappwright', 'metamask');
 
 export type Path =
   | string
@@ -14,7 +17,51 @@ export type Path =
       extract: string;
     };
 
-export default async (version: string, location?: Path): Promise<string> => {
+export default (recommendedVersion: string, location?: Path) =>
+  async (options: OfficialOptions): Promise<string> => {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    let METAMASK_PATH;
+
+    const { version } = options;
+
+    console.log(os.tmpdir());
+
+    if (version) {
+      /* eslint-disable no-console */
+      console.log(); // new line
+      if (version === 'latest')
+        console.warn(
+          '\x1b[33m%s\x1b[0m',
+          `It is not recommended to run metamask with "latest" version. Use it at your own risk or set to the recommended version "${recommendedVersion}".`,
+        );
+      else if (isNewerVersion(recommendedVersion, version))
+        console.warn(
+          '\x1b[33m%s\x1b[0m',
+          `Seems you are running newer version of MetaMask that recommended by dappwright team.
+      Use it at your own risk or set to the recommended version "${recommendedVersion}".`,
+        );
+      else if (isNewerVersion(version, recommendedVersion))
+        console.warn(
+          '\x1b[33m%s\x1b[0m',
+          `Seems you are running older version of MetaMask that recommended by dappwright team.
+      Use it at your own risk or set the recommended version "${recommendedVersion}".`,
+        );
+      else console.log(`Running tests on MetaMask version ${version}`);
+
+      console.log(); // new line
+
+      METAMASK_PATH = await download(version, location);
+    } else {
+      console.log(`Running tests on local MetaMask build`);
+
+      // METAMASK_PATH = (rest as CustomOptions).metamaskPath;
+      /* eslint-enable no-console */
+    }
+
+    return METAMASK_PATH;
+  };
+
+const download = async (version?: string, location?: Path) => {
   const metamaskDirectory = typeof location === 'string' ? location : location?.extract || defaultDirectory;
   const downloadDirectory =
     typeof location === 'string' ? location : location?.download || path.resolve(defaultDirectory, 'download');
@@ -23,8 +70,10 @@ export default async (version: string, location?: Path): Promise<string> => {
     const extractDestination = path.resolve(metamaskDirectory, version.replace(/\./g, '_'));
     if (fs.existsSync(extractDestination)) return extractDestination;
   }
+
   const { filename, downloadUrl, tag } = await getMetamaskReleases(version);
   const extractDestination = path.resolve(metamaskDirectory, tag.replace(/\./g, '_'));
+
   if (!fs.existsSync(extractDestination)) {
     const downloadedFile = await downloadMetamaskReleases(filename, downloadUrl, downloadDirectory);
     const zip = new StreamZip.async({ file: downloadedFile });

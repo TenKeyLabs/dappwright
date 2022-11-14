@@ -1,15 +1,15 @@
 import { BrowserContext, Page } from 'playwright-core';
 
-import { getMetamask } from '../metamask';
-import { Dappwright, MetamaskOptions } from '../types';
+import { MetaMask, MetaMaskOptions } from '.';
+import { Dappwright } from '../../types';
 
-import { closePopup, confirmWelcomeScreen, importAccount, noThanksTelemetry, showTestNets } from './setupActions';
+import { closePopup, confirmWelcomeScreen, importAccount, noThanksTelemetry, showTestNets } from './setup/setupActions';
 
 /**
  * Setup MetaMask with base account
  * */
 type Step<Options> = (page: Page, options?: Options) => void;
-const defaultMetamaskSteps: Step<MetamaskOptions>[] = [
+const defaultMetamaskSteps: Step<MetaMaskOptions>[] = [
   confirmWelcomeScreen,
   noThanksTelemetry,
   importAccount,
@@ -17,7 +17,7 @@ const defaultMetamaskSteps: Step<MetamaskOptions>[] = [
   showTestNets,
 ];
 
-export async function setupMetamask<Options = MetamaskOptions>(
+export async function setupMetamask<Options = MetaMaskOptions>(
   browserContext: BrowserContext,
   options?: Options,
   steps: Step<Options>[] = defaultMetamaskSteps,
@@ -29,7 +29,7 @@ export async function setupMetamask<Options = MetamaskOptions>(
     await step(page, options);
   }
 
-  return getMetamask(page);
+  return new MetaMask(page);
 }
 
 const getWelcomeScreen = async (browserContext: BrowserContext): Promise<Page> => {

@@ -8,7 +8,7 @@ import { Dappwright } from '../src';
 import * as dappwright from '../src/index';
 
 import { BrowserContext, Page } from 'playwright-core';
-import { RECOMMENDED_METAMASK_VERSION } from '../src/setup/constants';
+import { MetaMask } from '../src/wallets/metamask';
 import deploy from './deploy';
 import { pause } from './utils';
 import { addNetworkTests } from './utils/addNetwork';
@@ -38,7 +38,8 @@ describe('dappwright', () => {
   before(async () => {
     testContract = await deploy();
     [metamask, testPage, browserContext] = await dappwright.bootstrap('', {
-      metamaskVersion: process.env.METAMASK_VERSION || RECOMMENDED_METAMASK_VERSION,
+      wallet: 'metamask',
+      version: process.env.METAMASK_VERSION || MetaMask.RECOMMENDED_VERSION,
       seed: 'pioneer casual canoe gorilla embrace width fiction bounce spy exhibit another dog',
       password: 'password1234',
     });
@@ -91,7 +92,7 @@ describe('dappwright', () => {
     });
 
     after(async () => {
-      await metamask.helpers.deleteAccount(2);
+      await metamask.deleteAccount(2);
       await pause(0.5);
     });
 
@@ -131,12 +132,12 @@ describe('dappwright', () => {
   });
 
   it('should return token balance', async () => {
-    const tokenBalance: number = await metamask.helpers.getTokenBalance('ETH');
+    const tokenBalance: number = await metamask.getTokenBalance('ETH');
     expect(tokenBalance).to.be.greaterThan(0);
   });
 
   it('should return 0 token balance when token not found', async () => {
-    const tokenBalance: number = await metamask.helpers.getTokenBalance('FARTBUCKS');
+    const tokenBalance: number = await metamask.getTokenBalance('FARTBUCKS');
     expect(tokenBalance).to.be.equal(0);
   });
 

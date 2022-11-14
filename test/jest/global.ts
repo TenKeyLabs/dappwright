@@ -1,6 +1,7 @@
 import { Browser, Page } from 'playwright-core';
 
-import { Dappwright } from '../../src';
+import { Dappwright, LaunchOptions } from '../../src';
+import { MetaMaskOptions } from '../../src/wallets/metamask';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -12,3 +13,8 @@ declare global {
     }
   }
 }
+
+export type DappwrightJestConfig = Partial<{
+  dappwright: LaunchOptions;
+  metamask: MetaMaskOptions;
+}>;
