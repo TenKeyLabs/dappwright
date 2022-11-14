@@ -1,6 +1,6 @@
 import { Page } from 'playwright-core';
 
-import { clickOnButton } from '../helpers';
+import { clickOnButton } from '../../../helpers';
 
 import { performPopupAction } from './util';
 

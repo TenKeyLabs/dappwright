@@ -1,10 +1,11 @@
 import { existsSync } from 'node:fs';
 import { cwd } from 'node:process';
-import path from 'path';
-import { RECOMMENDED_METAMASK_VERSION } from '../setup/constants';
-import { DappwrightConfig, LaunchOptions } from '../types';
 
-export const DAPPWRIGHT_DEFAULT_CONFIG: LaunchOptions = { metamaskVersion: RECOMMENDED_METAMASK_VERSION };
+import path from 'path';
+import { DappwrightConfig, LaunchOptions } from '../types';
+import { MetaMask } from '../wallets/metamask';
+
+export const DAPPWRIGHT_DEFAULT_CONFIG: LaunchOptions = { metamaskVersion: MetaMask.RECOMMENDED_VERSION };
 
 export async function getDappwrightConfig(): Promise<DappwrightConfig> {
   const configPath = 'dappwright.config.js';

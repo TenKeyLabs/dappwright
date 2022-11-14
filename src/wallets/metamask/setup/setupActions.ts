@@ -1,4 +1,5 @@
 import { Page } from 'playwright-core';
+import { MetaMaskOptions } from '..';
 
 import {
   clickOnButton,
@@ -7,8 +8,7 @@ import {
   clickOnSettingsSwitch,
   openNetworkDropdown,
   typeOnInputField,
-} from '../helpers';
-import { MetamaskOptions } from '../types';
+} from '../../../helpers';
 
 export async function showTestNets(metamaskPage: Page): Promise<void> {
   await openNetworkDropdown(metamaskPage);
@@ -31,7 +31,7 @@ export async function importAccount(
   {
     seed = 'already turtle birth enroll since owner keep patch skirt drift any dinner',
     password = 'password1234',
-  }: MetamaskOptions,
+  }: MetaMaskOptions,
 ): Promise<void> {
   await clickOnButton(metamaskPage, 'Import wallet');
 

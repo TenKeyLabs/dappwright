@@ -7,7 +7,7 @@ import { pause } from '../utils';
 export const addNetworkTests = async (): Promise<void> => {
   after(async () => {
     await metamask.switchNetwork('local');
-    await metamask.helpers.deleteNetwork('Avalanche Network');
+    await metamask.deleteNetwork('Binance Smart Chain');
     await pause(0.5);
   });
 
