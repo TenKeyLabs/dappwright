@@ -1,4 +1,4 @@
-import { launch, setupMetamask } from '../index';
+import { launch, setupMetamask } from '../../src/index';
 
 import { getDappwrightConfig } from './config';
 

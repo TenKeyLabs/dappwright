@@ -1,7 +1,7 @@
 import NodeEnvironment from 'jest-environment-node';
 import { chromium } from 'playwright-core';
 
-import { getMetamaskWindow } from '../index';
+import { getMetamaskWindow } from '../../src/index';
 
 class DappwrightEnvironment extends NodeEnvironment {
   constructor(config) {
