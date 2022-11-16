@@ -1,7 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-
-import * as solc from 'solc';
+import fs from 'fs';
+import path from 'path';
+import solc from 'solc';
 
 type ContractSources = Record<string, { content: string }>;
 
@@ -27,7 +26,9 @@ const INPUT = {
   sources: buildSources(),
   settings: {
     outputSelection: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       '*': {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         '*': ['abi', 'evm.bytecode'],
       },
     },
