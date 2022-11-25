@@ -9,8 +9,6 @@ import { MetaMask } from './wallets/metamask';
 export async function launch(browserName: string, options: OfficialOptions): Promise<playwright.BrowserContext> {
   const extensionPath = await MetaMask.download(options);
 
-  console.log('Extension Path', extensionPath);
-
   return playwright.chromium.launchPersistentContext('./metamaskSession', {
     headless: false,
     args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],

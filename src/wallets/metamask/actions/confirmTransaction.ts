@@ -6,9 +6,8 @@ import { performPopupAction } from './util';
 
 const MIN_GAS = 21000;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const confirmTransaction =
-  (page: Page, version?: string) =>
+  (page: Page) =>
   async (options?: TransactionOptions): Promise<void> => {
     // await page.bringToFront();
     // await page.waitForTimeout(500);

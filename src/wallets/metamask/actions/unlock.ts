@@ -2,9 +2,8 @@ import { Page } from 'playwright-core';
 import { clickOnButton, typeOnInputField } from '../../../helpers';
 import { closePopup } from '../setup/setupActions';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const unlock =
-  (page: Page, version?: string) =>
+  (page: Page) =>
   async (password = 'password1234'): Promise<void> => {
     await page.bringToFront();
 

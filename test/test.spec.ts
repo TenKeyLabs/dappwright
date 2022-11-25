@@ -16,15 +16,6 @@ import { importPKTests } from './utils/importPK';
 
 chaiUse(chaiAsPromised);
 
-// function getCounterNumber(contract): Promise<number> {
-//   return contract.methods
-//     .count()
-//     .call()
-//     .then((res) => {
-//       return Number(res);
-//     });
-// }
-
 async function clickElement(page, selector): Promise<void> {
   await page.bringToFront();
   await page.waitForSelector(selector);
@@ -39,7 +30,7 @@ describe('dappwright', () => {
     testContract = await deploy();
     [metamask, testPage, browserContext] = await dappwright.bootstrap('', {
       wallet: 'metamask',
-      version: process.env.METAMASK_VERSION || MetaMask.RECOMMENDED_VERSION,
+      version: process.env.METAMASK_VERSION || MetaMask.recommendedVersion,
       seed: 'pioneer casual canoe gorilla embrace width fiction bounce spy exhibit another dog',
       password: 'password1234',
     });

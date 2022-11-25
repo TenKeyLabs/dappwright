@@ -10,7 +10,7 @@ import {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const importPk =
-  (page: Page, version?: string) =>
+  (page: Page) =>
   async (privateKey: string): Promise<void> => {
     await page.bringToFront();
     await openProfileDropdown(page);

@@ -21,8 +21,8 @@ export type MetaMaskOptions = {
 };
 
 export class MetaMask extends Wallet {
-  NAME = 'metamask';
-  static RECOMMENDED_VERSION = 'v10.20.0';
+  name = 'metamask';
+  static recommendedVersion = 'v10.20.0';
 
   options: MetaMaskOptions;
 
@@ -30,22 +30,22 @@ export class MetaMask extends Wallet {
     super(page, version);
   }
 
-  addNetwork = addNetwork(this.page, this.version);
+  addNetwork = addNetwork(this.page);
   approve = approve(this.page, this.version);
-  confirmTransaction = confirmTransaction(this.page, this.version);
+  confirmTransaction = confirmTransaction(this.page);
   createAccount = createAccount(this.page, this.version);
-  importPK = importPk(this.page, this.version);
+  importPK = importPk(this.page);
   lock = lock(this.page, this.version);
   sign = sign(this.page, this.version);
-  switchAccount = switchAccount(this.page, this.version);
-  switchNetwork = switchNetwork(this.page, this.version);
-  unlock = unlock(this.page, this.version);
+  switchAccount = switchAccount(this.page);
+  switchNetwork = switchNetwork(this.page);
+  unlock = unlock(this.page);
   addToken = addToken(this.page);
   deleteAccount = deleteAccount(this.page, this.version);
-  deleteNetwork = deleteNetwork(this.page, this.version);
+  deleteNetwork = deleteNetwork(this.page);
   getTokenBalance = getTokenBalance(this.page);
 
-  static download = downloader(this.RECOMMENDED_VERSION);
+  static download = downloader(this.recommendedVersion);
 }
 // export const getMetmask = async (page: Page, version?: string): Promise<Dappwright> => {
 //   return {

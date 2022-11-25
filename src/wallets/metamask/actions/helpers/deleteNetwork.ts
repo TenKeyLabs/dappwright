@@ -4,7 +4,7 @@ import { clickOnButton, clickOnLogo, getElementByContent, openNetworkDropdown } 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const deleteNetwork =
-  (page: Page, version?: string) =>
+  (page: Page) =>
   async (name: string): Promise<void> => {
     await page.bringToFront();
 
