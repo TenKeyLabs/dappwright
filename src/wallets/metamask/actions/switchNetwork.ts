@@ -5,7 +5,7 @@ import { openNetworkDropdown } from '../../../helpers';
 // TODO: validate - for now works fine as it is.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const switchNetwork =
-  (page: Page, version?: string) =>
+  (page: Page) =>
   async (network = 'main'): Promise<void> => {
     await page.bringToFront();
     await openNetworkDropdown(page);

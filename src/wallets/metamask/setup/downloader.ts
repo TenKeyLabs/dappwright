@@ -65,7 +65,7 @@ export default (recommendedVersion: string, location?: Path) =>
     return METAMASK_PATH;
   };
 
-const download = async (version?: string, location?: Path) => {
+const download = async (version?: string, location?: Path): Promise<string> => {
   const metamaskDirectory = typeof location === 'string' ? location : location?.extract || defaultDirectory;
   const downloadDirectory =
     typeof location === 'string' ? location : location?.download || path.resolve(defaultDirectory, 'download');

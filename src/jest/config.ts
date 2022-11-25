@@ -5,7 +5,7 @@ import path from 'path';
 import { DappwrightConfig, LaunchOptions } from '../types';
 import { MetaMask } from '../wallets/metamask';
 
-export const DAPPWRIGHT_DEFAULT_CONFIG: LaunchOptions = { metamaskVersion: MetaMask.RECOMMENDED_VERSION };
+export const DAPPWRIGHT_DEFAULT_CONFIG: LaunchOptions = { metamaskVersion: MetaMask.recommendedVersion };
 
 export async function getDappwrightConfig(): Promise<DappwrightConfig> {
   const configPath = 'dappwright.config.js';

@@ -3,9 +3,8 @@ import { Page } from 'playwright-core';
 import { clickOnButton, getErrorMessage, openNetworkDropdown, typeOnInputField } from '../../../helpers';
 import { AddNetwork } from '../../../index';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const addNetwork =
-  (page: Page, version?: string) =>
+  (page: Page) =>
   async ({ networkName, rpc, chainId, symbol }: AddNetwork): Promise<void> => {
     await page.bringToFront();
     await openNetworkDropdown(page);
