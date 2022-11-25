@@ -17,14 +17,18 @@ export type Path =
       extract: string;
     };
 
+const isEmpty = (path): boolean => {
+  const items = fs.readdirSync(path, { withFileTypes: true });
+  const files = items.filter((item) => item.isFile() && !item.name.startsWith('.'));
+  return files.length === 0;
+};
+
 export default (recommendedVersion: string, location?: Path) =>
   async (options: OfficialOptions): Promise<string> => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     let METAMASK_PATH;
 
     const { version } = options;
-
-    console.log(os.tmpdir());
 
     if (version) {
       /* eslint-disable no-console */
@@ -68,13 +72,18 @@ const download = async (version?: string, location?: Path) => {
 
   if (version !== 'latest') {
     const extractDestination = path.resolve(metamaskDirectory, version.replace(/\./g, '_'));
-    if (fs.existsSync(extractDestination)) return extractDestination;
+    if (fs.existsSync(extractDestination) && !isEmpty(extractDestination)) return extractDestination;
   }
 
   const { filename, downloadUrl, tag } = await getMetamaskReleases(version);
   const extractDestination = path.resolve(metamaskDirectory, tag.replace(/\./g, '_'));
 
-  if (!fs.existsSync(extractDestination)) {
+  // Clean if system tmp files are cleaned but dir structure can persist
+  if (fs.existsSync(extractDestination) && isEmpty(extractDestination)) {
+    fs.rmdirSync(extractDestination, { recursive: true });
+  }
+
+  if (!fs.existsSync(extractDestination) || isEmpty(extractDestination)) {
     const downloadedFile = await downloadMetamaskReleases(filename, downloadUrl, downloadDirectory);
     const zip = new StreamZip.async({ file: downloadedFile });
     fs.mkdirSync(extractDestination);
