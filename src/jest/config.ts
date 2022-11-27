@@ -1,8 +1,11 @@
 import { existsSync } from 'node:fs';
 import { cwd } from 'node:process';
-
 import path from 'path';
 import { DappwrightConfig, LaunchOptions } from '../types';
+<<<<<<< HEAD
+=======
+
+>>>>>>> c727eea (Fixes build output structure and type paths)
 import { MetaMask } from '../wallets/metamask';
 
 export const DAPPWRIGHT_DEFAULT_CONFIG: LaunchOptions = { metamaskVersion: MetaMask.recommendedVersion };
