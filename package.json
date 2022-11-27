@@ -2,17 +2,20 @@
   "name": "@tenkeylabs/dappwright",
   "version": "1.0.7",
   "description": "E2E testing for dApps using Playwright + MetaMask",
-  "src": "src/index.ts",
+  "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "./dist/index.mjs",
+  "module": "dist/index.mjs",
   "exports": {
     "types": "./dist/index.d.ts",
     "require": "./dist/index.js",
     "import": "./dist/index.mjs",
     "default": "./dist/index.modern.mjs"
   },
-  "unpkg": "./dist/foo.umd.js",
+  "unpkg": "dist/index.umd.js",
+  "files": [
+    "dist/"
+  ],
   "engines": {
     "node": "16"
   },
