@@ -4,8 +4,8 @@ import path from 'path';
 import { expect, use as chaiUse } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import * as dappwright from '../dist/index';
-import { Dappwright } from '../dist/index';
+import * as dappwright from '../src/index';
+import { Dappwright } from '../src/index';
 
 import { BrowserContext, Page } from 'playwright-core';
 import { MetaMaskWallet } from '../src/wallets/metamask/metamask';
