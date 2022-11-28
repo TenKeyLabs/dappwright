@@ -1,6 +1,5 @@
 import { ElementHandle, Page } from 'playwright-core';
 
-// TODO: change text() with '.';
 export const getElementByContent = (page: Page, text: string, type = '*'): Promise<ElementHandle | null> =>
   page.waitForSelector(`//${type}[contains(text(), '${text}')]`);
 
