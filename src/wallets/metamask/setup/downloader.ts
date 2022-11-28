@@ -8,7 +8,7 @@ import os from 'os';
 import { OfficialOptions } from '../../../types';
 import { isNewerVersion } from './isNewerVersion';
 
-const defaultDirectory = path.resolve(os.tmpdir(), 'dappwright', 'metamask');
+export const defaultDirectory = path.resolve(os.tmpdir(), 'dappwright', 'metamask');
 
 export type Path =
   | string
