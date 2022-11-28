@@ -1,5 +1,4 @@
 import { readdir } from 'fs/promises';
-import path from 'path';
 
 import { expect, use as chaiUse } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -9,6 +8,7 @@ import { Dappwright } from '../src/index';
 
 import { BrowserContext, Page } from 'playwright-core';
 import { MetaMaskWallet } from '../src/wallets/metamask/metamask';
+import { defaultDirectory } from '../src/wallets/metamask/setup/downloader';
 import deploy from './deploy';
 import { pause } from './utils';
 import { addNetworkTests } from './utils/addNetwork';
@@ -39,7 +39,7 @@ describe('dappwright', () => {
     await testPage.goto('http://localhost:8080/');
 
     // output version
-    const directory = path.resolve(__dirname, '..', 'metamask');
+    const directory = defaultDirectory;
     const files = await readdir(directory);
     console.log(`::set-output name=version::${files.pop().replace(/_/g, '.')}`);
   });
