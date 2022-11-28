@@ -1,20 +1,23 @@
 import { Page } from 'playwright-core';
 
-import { clickOnButton } from '../../../helpers';
+import { clickOnButton, waitForChromeState } from '../../../helpers';
 import { performPopupAction } from './util';
 
-// TODO: thing about renaming this method?
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const approve = (page: Page, version?: string) => async (): Promise<void> => {
+export const approve = (page: Page) => async (): Promise<void> => {
   await performPopupAction(page, async (popup) => {
+    // Wait for popup to load
     await popup.waitForLoadState();
     await popup.bringToFront();
-    // await popup.reload();
 
-    // TODO: step 1 of connect chose account to connect?
-    await popup.locator('input[type="checkbox"]').first().check(); // Select all accounts
+    // Select first account
+    await popup.locator('input[type="checkbox"]').first().check();
+
+    // Go through the prompts
     await clickOnButton(popup, 'Next');
     await clickOnButton(popup, 'Connect');
+
+    // Wait and close
+    await waitForChromeState(page);
     await popup.close();
   });
 };

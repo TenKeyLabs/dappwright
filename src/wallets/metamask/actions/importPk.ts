@@ -1,14 +1,8 @@
 import { Page } from 'playwright-core';
 
-import {
-  clickOnButton,
-  clickOnElement,
-  getErrorMessage,
-  openProfileDropdown,
-  typeOnInputField,
-} from '../../../helpers';
+import { clickOnButton, clickOnElement, typeOnInputField } from '../../../helpers';
+import { getErrorMessage, openProfileDropdown } from './helpers';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const importPk =
   (page: Page) =>
   async (privateKey: string): Promise<void> => {

@@ -1,9 +1,6 @@
 import { Page } from 'playwright-core';
+import { openNetworkDropdown } from './helpers';
 
-import { openNetworkDropdown } from '../../../helpers';
-
-// TODO: validate - for now works fine as it is.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const switchNetwork =
   (page: Page) =>
   async (network = 'main'): Promise<void> => {

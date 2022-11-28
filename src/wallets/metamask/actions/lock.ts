@@ -1,16 +1,11 @@
 import { Page } from 'playwright-core';
 
-import { clickOnButton, openProfileDropdown } from '../../../helpers';
+import { clickOnButton } from '../../../helpers';
+import { openProfileDropdown } from './helpers';
 
-export const lock =
-  (
-    page: Page,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    version?: string,
-  ) =>
-  async (): Promise<void> => {
-    await page.bringToFront();
+export const lock = (page: Page) => async (): Promise<void> => {
+  await page.bringToFront();
 
-    await openProfileDropdown(page);
-    await clickOnButton(page, 'Lock');
-  };
+  await openProfileDropdown(page);
+  await clickOnButton(page, 'Lock');
+};

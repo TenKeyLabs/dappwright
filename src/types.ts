@@ -1,5 +1,6 @@
-import { Page } from 'playwright-core';
-import { MetaMaskOptions } from './wallets/metamask';
+import { BrowserContext, Page } from 'playwright-core';
+import Wallet from './wallets/wallet';
+import { WalletIdOptions } from './wallets/wallets';
 
 export type LaunchOptions = OfficialOptions | DappwrightBrowserLaunchArgumentOptions;
 
@@ -8,12 +9,16 @@ type DappwrightBrowserLaunchArgumentOptions = Omit<any, 'headed'>;
 
 export type DappwrightConfig = Partial<{
   dappwright: LaunchOptions;
-  metamask: MetaMaskOptions;
 }>;
 
 export type OfficialOptions = DappwrightBrowserLaunchArgumentOptions & {
-  wallet: 'metamask';
+  wallet: WalletIdOptions;
   version: 'latest' | string;
+};
+
+export type DappwrightLaunchResponse = {
+  wallet: Wallet;
+  browserContext: BrowserContext;
 };
 
 export type AddNetwork = {

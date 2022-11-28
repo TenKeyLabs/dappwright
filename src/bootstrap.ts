@@ -2,17 +2,16 @@ import fs from 'fs';
 import { BrowserContext, Page } from 'playwright-core';
 import { launch } from './launch';
 import { Dappwright, OfficialOptions } from './types';
-import { MetaMaskOptions } from './wallets/metamask';
-import { setupMetamask } from './wallets/metamask/setup';
+import { getWallet, WalletOptions } from './wallets/wallets';
 
 export const bootstrap = async (
   browserName: string,
-  { seed, password, showTestNets, ...launchOptions }: OfficialOptions & MetaMaskOptions,
+  { seed, password, showTestNets, ...launchOptions }: OfficialOptions & WalletOptions,
 ): Promise<[Dappwright, Page, BrowserContext]> => {
-  fs.rmSync('./metamaskSession', { recursive: true, force: true });
-  const browserContext = await launch(browserName, launchOptions);
-  const dappwright = await setupMetamask(browserContext, { seed, password, showTestNets });
-  const pages = await browserContext.pages();
+  fs.rmSync('./dappwrightSession', { recursive: true, force: true });
+  const { browserContext } = await launch(browserName, launchOptions);
+  const wallet = await getWallet('metamask', browserContext);
+  await wallet.setup({ seed, password, showTestNets });
 
-  return [dappwright, pages[0], browserContext];
+  return [wallet, wallet.page, browserContext];
 };
