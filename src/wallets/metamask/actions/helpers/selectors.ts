@@ -15,7 +15,6 @@ export const getErrorMessage = async (page: Page): Promise<string | false> => {
     page.waitForSelector(`span.error`, options),
     page.waitForSelector(`.typography--color-error-1`, options),
     page.waitForSelector(`.typography--color-error-default`, options),
-    // page.waitForSelector(`.form-field__input--warning`, options),
     page.waitForSelector(`.form-field__input--error`, options),
   ]).catch(() => null);
   if (!errorElement) return false;
