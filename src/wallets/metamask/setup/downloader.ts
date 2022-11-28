@@ -4,8 +4,11 @@ import { get } from 'https';
 import * as path from 'path';
 
 import StreamZip from 'node-stream-zip';
+import os from 'os';
+import { OfficialOptions } from '../../../types';
+import { isNewerVersion } from './isNewerVersion';
 
-const defaultDirectory = path.resolve(__dirname, '..', '..', 'metamask');
+const defaultDirectory = path.resolve(os.tmpdir(), 'dappwright', 'metamask');
 
 export type Path =
   | string
@@ -14,18 +17,73 @@ export type Path =
       extract: string;
     };
 
-export default async (version: string, location?: Path): Promise<string> => {
+const isEmpty = (path): boolean => {
+  const items = fs.readdirSync(path, { withFileTypes: true });
+  const files = items.filter((item) => item.isFile() && !item.name.startsWith('.'));
+  return files.length === 0;
+};
+
+export default (recommendedVersion: string, location?: Path) =>
+  async (options: OfficialOptions): Promise<string> => {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    let METAMASK_PATH;
+
+    const { version } = options;
+
+    if (version) {
+      /* eslint-disable no-console */
+      console.log(); // new line
+      if (version === 'latest')
+        console.warn(
+          '\x1b[33m%s\x1b[0m',
+          `It is not recommended to run metamask with "latest" version. Use it at your own risk or set to the recommended version "${recommendedVersion}".`,
+        );
+      else if (isNewerVersion(recommendedVersion, version))
+        console.warn(
+          '\x1b[33m%s\x1b[0m',
+          `Seems you are running a newer version (${version}) of MetaMask than recommended by the Dappwright team.
+      Use it at your own risk or set to the recommended version "${recommendedVersion}".`,
+        );
+      else if (isNewerVersion(version, recommendedVersion))
+        console.warn(
+          '\x1b[33m%s\x1b[0m',
+          `Seems you are running an older version (${version}) of MetaMask than recommended by the Dappwright team.
+      Use it at your own risk or set the recommended version "${recommendedVersion}".`,
+        );
+      else console.log(`Running tests on MetaMask version ${version}`);
+
+      console.log(); // new line
+
+      METAMASK_PATH = await download('v' + version, location);
+    } else {
+      console.log(`Running tests on local MetaMask build`);
+
+      // METAMASK_PATH = (rest as CustomOptions).metamaskPath;
+      /* eslint-enable no-console */
+    }
+
+    return METAMASK_PATH;
+  };
+
+const download = async (version?: string, location?: Path): Promise<string> => {
   const metamaskDirectory = typeof location === 'string' ? location : location?.extract || defaultDirectory;
   const downloadDirectory =
     typeof location === 'string' ? location : location?.download || path.resolve(defaultDirectory, 'download');
 
   if (version !== 'latest') {
     const extractDestination = path.resolve(metamaskDirectory, version.replace(/\./g, '_'));
-    if (fs.existsSync(extractDestination)) return extractDestination;
+    if (fs.existsSync(extractDestination) && !isEmpty(extractDestination)) return extractDestination;
   }
+
   const { filename, downloadUrl, tag } = await getMetamaskReleases(version);
   const extractDestination = path.resolve(metamaskDirectory, tag.replace(/\./g, '_'));
-  if (!fs.existsSync(extractDestination)) {
+
+  // Clean if system tmp files are cleaned but dir structure can persist
+  if (fs.existsSync(extractDestination) && isEmpty(extractDestination)) {
+    fs.rmdirSync(extractDestination, { recursive: true });
+  }
+
+  if (!fs.existsSync(extractDestination) || isEmpty(extractDestination)) {
     const downloadedFile = await downloadMetamaskReleases(filename, downloadUrl, downloadDirectory);
     const zip = new StreamZip.async({ file: downloadedFile });
     fs.mkdirSync(extractDestination);

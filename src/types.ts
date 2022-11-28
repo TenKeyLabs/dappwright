@@ -1,31 +1,24 @@
-import { Page } from 'playwright-core';
-import { RECOMMENDED_METAMASK_VERSION } from './setup/constants';
-import { Path } from './setup/metamaskDownloader';
+import { BrowserContext, Page } from 'playwright-core';
+import Wallet from './wallets/wallet';
+import { WalletIdOptions } from './wallets/wallets';
 
-export type LaunchOptions = OfficialOptions | CustomOptions;
+export type LaunchOptions = OfficialOptions | DappwrightBrowserLaunchArgumentOptions;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DappwrightBrowserLaunchArgumentOptions = Omit<any, 'headed'>;
 
 export type DappwrightConfig = Partial<{
   dappwright: LaunchOptions;
-  metamask: MetamaskOptions;
 }>;
 
 export type OfficialOptions = DappwrightBrowserLaunchArgumentOptions & {
-  metamaskVersion: typeof RECOMMENDED_METAMASK_VERSION | 'latest' | string;
-  metamaskLocation?: Path;
+  wallet: WalletIdOptions;
+  version: 'latest' | string;
 };
 
-export type CustomOptions = DappwrightBrowserLaunchArgumentOptions & {
-  metamaskVersion?: string;
-  metamaskPath: string;
-};
-
-export type MetamaskOptions = {
-  seed?: string;
-  password?: string;
-  showTestNets?: boolean;
+export type DappwrightLaunchResponse = {
+  wallet: Wallet;
+  browserContext: BrowserContext;
 };
 
 export type AddNetwork = {
@@ -59,10 +52,8 @@ export type Dappwright = {
   confirmTransaction: (options?: TransactionOptions) => Promise<void>;
   sign: () => Promise<void>;
   approve: () => Promise<void>;
-  helpers: {
-    getTokenBalance: (tokenSymbol: string) => Promise<number>;
-    deleteAccount: (accountNumber: number) => Promise<void>;
-    deleteNetwork: (name: string) => Promise<void>;
-  };
+  getTokenBalance: (tokenSymbol: string) => Promise<number>;
+  deleteAccount: (accountNumber: number) => Promise<void>;
+  deleteNetwork: (name: string) => Promise<void>;
   page: Page;
 };

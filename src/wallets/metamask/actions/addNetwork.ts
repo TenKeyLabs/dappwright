@@ -1,11 +1,11 @@
 import { Page } from 'playwright-core';
+import { clickOnButton, typeOnInputField } from '../../../helpers';
 
-import { clickOnButton, getErrorMessage, openNetworkDropdown, typeOnInputField } from '../helpers';
-import { AddNetwork } from '../index';
+import { AddNetwork } from '../../../index';
+import { getErrorMessage, openNetworkDropdown } from './helpers';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const addNetwork =
-  (page: Page, _version: string) =>
+  (page: Page) =>
   async ({ networkName, rpc, chainId, symbol }: AddNetwork): Promise<void> => {
     await page.bringToFront();
     await openNetworkDropdown(page);

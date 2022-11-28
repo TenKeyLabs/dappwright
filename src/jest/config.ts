@@ -1,10 +1,10 @@
 import { existsSync } from 'node:fs';
 import { cwd } from 'node:process';
 import path from 'path';
-import { RECOMMENDED_METAMASK_VERSION } from '../setup/constants';
 import { DappwrightConfig, LaunchOptions } from '../types';
+import { MetaMaskWallet } from '../wallets/metamask/metamask';
 
-export const DAPPWRIGHT_DEFAULT_CONFIG: LaunchOptions = { metamaskVersion: RECOMMENDED_METAMASK_VERSION };
+export const DAPPWRIGHT_DEFAULT_CONFIG: LaunchOptions = { metamaskVersion: MetaMaskWallet.recommendedVersion };
 
 export async function getDappwrightConfig(): Promise<DappwrightConfig> {
   const configPath = 'dappwright.config.js';
@@ -13,7 +13,6 @@ export async function getDappwrightConfig(): Promise<DappwrightConfig> {
   if (!existsSync(filePath))
     return {
       dappwright: DAPPWRIGHT_DEFAULT_CONFIG,
-      metamask: {},
     };
 
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -23,9 +22,6 @@ export async function getDappwrightConfig(): Promise<DappwrightConfig> {
     dappwright: {
       ...DAPPWRIGHT_DEFAULT_CONFIG,
       ...config.dappwright,
-    },
-    metamask: {
-      ...config.metamask,
     },
   };
 }

@@ -1,14 +1,13 @@
 import { Page } from 'playwright-core';
 
-import { TransactionOptions } from '..';
-import { clickOnButton, typeOnInputField } from '../helpers';
+import { TransactionOptions } from '../../..';
+import { clickOnButton, typeOnInputField } from '../../../helpers';
 import { performPopupAction } from './util';
 
 const MIN_GAS = 21000;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const confirmTransaction =
-  (page: Page, _version?: string) =>
+  (page: Page) =>
   async (options?: TransactionOptions): Promise<void> => {
     // await page.bringToFront();
     // await page.waitForTimeout(500);

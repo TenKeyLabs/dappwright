@@ -1,10 +1,9 @@
 import { Page } from 'playwright-core';
-import { clickOnButton, clickOnElement, getInputByLabel, typeOnInputField } from '../helpers';
-import { AddToken } from '../index';
+import { clickOnButton, clickOnElement, getInputByLabel, typeOnInputField } from '../../../helpers';
+import { AddToken } from '../../../types';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const addToken =
-  (page: Page, _version?: string) =>
+  (page: Page) =>
   async ({ tokenAddress, symbol, decimals = 0 }: AddToken): Promise<void> => {
     await page.bringToFront();
 
@@ -12,6 +11,9 @@ export const addToken =
     await page.waitForTimeout(500);
     await clickOnButton(page, 'Custom token');
     await typeOnInputField(page, 'Token contract address', tokenAddress);
+
+    // TODO: handle case when contract is not containing symbol
+    // const symbolInput = await getInputByLabelSelector('Token symbol');
 
     if (symbol) {
       await typeOnInputField(page, 'Token symbol', symbol, true);
