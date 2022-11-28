@@ -1,6 +1,6 @@
 import { expect } from 'chai';
+import { clickOnLogo, openProfileDropdown } from '../../src/wallets/metamask/actions/helpers';
 
-import { clickOnLogo, openProfileDropdown } from '../../src/helpers';
 import { metamask } from '../test.spec';
 import { pause } from '../utils';
 

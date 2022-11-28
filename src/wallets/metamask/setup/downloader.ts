@@ -41,20 +41,20 @@ export default (recommendedVersion: string, location?: Path) =>
       else if (isNewerVersion(recommendedVersion, version))
         console.warn(
           '\x1b[33m%s\x1b[0m',
-          `Seems you are running newer version of MetaMask that recommended by dappwright team.
+          `Seems you are running newer version (${version}) of MetaMask that recommended by dappwright team.
       Use it at your own risk or set to the recommended version "${recommendedVersion}".`,
         );
       else if (isNewerVersion(version, recommendedVersion))
         console.warn(
           '\x1b[33m%s\x1b[0m',
-          `Seems you are running older version of MetaMask that recommended by dappwright team.
+          `Seems you are running older version (${version}) of MetaMask that recommended by dappwright team.
       Use it at your own risk or set the recommended version "${recommendedVersion}".`,
         );
       else console.log(`Running tests on MetaMask version ${version}`);
 
       console.log(); // new line
 
-      METAMASK_PATH = await download(version, location);
+      METAMASK_PATH = await download('v' + version, location);
     } else {
       console.log(`Running tests on local MetaMask build`);
 

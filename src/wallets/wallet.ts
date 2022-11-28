@@ -1,5 +1,6 @@
 import { Page } from 'playwright-core';
 import { AddNetwork, AddToken, Dappwright, OfficialOptions, TransactionOptions } from '../types';
+import { Step, WalletIdOptions, WalletOptions } from './wallets';
 
 export default abstract class Wallet implements Dappwright {
   version: string;
@@ -7,17 +8,19 @@ export default abstract class Wallet implements Dappwright {
 
   // abstract options: WalletOptions;
 
-  constructor(page: Page, version?: string) {
+  constructor(page: Page) {
     this.page = page;
-    this.version = version;
   }
 
   // Name of the wallet
-  abstract name: string;
+  static id: WalletIdOptions;
   static recommendedVersion: string;
 
   // Extension downloader
   static download: (options: OfficialOptions) => Promise<string>;
+
+  // Setup
+  abstract setup: (options?: WalletOptions, steps?: Step<WalletOptions>[]) => Promise<void>;
 
   // Wallet actions
   abstract lock: () => Promise<void>;

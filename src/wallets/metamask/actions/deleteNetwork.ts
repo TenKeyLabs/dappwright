@@ -1,8 +1,7 @@
 import { Page } from 'playwright-core';
+import { clickOnButton, getElementByContent } from '../../../helpers';
+import { clickOnLogo, openNetworkDropdown } from './helpers';
 
-import { clickOnButton, clickOnLogo, getElementByContent, openNetworkDropdown } from '../../../../helpers';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const deleteNetwork =
   (page: Page) =>
   async (name: string): Promise<void> => {

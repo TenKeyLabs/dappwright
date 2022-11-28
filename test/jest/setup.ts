@@ -1,14 +1,15 @@
-import { launch, setupMetamask } from '../../src/index';
+import { getWallet, launch } from '../../src/index';
 
 import { getDappwrightConfig } from './config';
 
 export default async function (browserName: string): Promise<void> {
-  const { dappwright, metamask } = await getDappwrightConfig();
+  const { dappwright: dappwrightConfig } = await getDappwrightConfig();
 
-  const browserContext = await launch(browserName, dappwright);
+  const dappwright = await launch(browserName, dappwrightConfig);
   try {
-    await setupMetamask(browserContext, metamask);
-    global.browser = browserContext.browser();
+    const wallet = await getWallet('metamask', dappwright.browserContext);
+    await wallet.setup();
+    global.browser = dappwright.browserContext;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(error);

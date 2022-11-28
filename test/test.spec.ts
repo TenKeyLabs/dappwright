@@ -4,11 +4,11 @@ import path from 'path';
 import { expect, use as chaiUse } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { Dappwright } from '../src';
-import * as dappwright from '../src/index';
+import * as dappwright from '../dist/index';
+import { Dappwright } from '../dist/index';
 
 import { BrowserContext, Page } from 'playwright-core';
-import { MetaMask } from '../src/wallets/metamask';
+import { MetaMaskWallet } from '../src/wallets/metamask/metamask';
 import deploy from './deploy';
 import { pause } from './utils';
 import { addNetworkTests } from './utils/addNetwork';
@@ -30,7 +30,7 @@ describe('dappwright', () => {
     testContract = await deploy();
     [metamask, testPage, browserContext] = await dappwright.bootstrap('', {
       wallet: 'metamask',
-      version: process.env.METAMASK_VERSION || MetaMask.recommendedVersion,
+      version: process.env.METAMASK_VERSION || MetaMaskWallet.recommendedVersion,
       seed: 'pioneer casual canoe gorilla embrace width fiction bounce spy exhibit another dog',
       password: 'password1234',
     });
