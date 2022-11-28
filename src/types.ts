@@ -7,6 +7,11 @@ export type LaunchOptions = OfficialOptions | CustomOptions;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DappwrightBrowserLaunchArgumentOptions = Omit<any, 'headed'>;
 
+export type DappwrightConfig = Partial<{
+  dappwright: LaunchOptions;
+  metamask: MetamaskOptions;
+}>;
+
 export type OfficialOptions = DappwrightBrowserLaunchArgumentOptions & {
   metamaskVersion: typeof RECOMMENDED_METAMASK_VERSION | 'latest' | string;
   metamaskLocation?: Path;
