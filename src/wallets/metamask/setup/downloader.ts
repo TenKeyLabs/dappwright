@@ -41,7 +41,7 @@ export default (recommendedVersion: string, location?: Path) =>
       else if (isNewerVersion(recommendedVersion, version))
         console.warn(
           '\x1b[33m%s\x1b[0m',
-          `Seems you are running newer version (${version}) of MetaMask that recommended by dappwright team.
+          `Seems you are running a newer version (${version}) of MetaMask than recommended by the Dappwright team.
       Use it at your own risk or set to the recommended version "${recommendedVersion}".`,
         );
       else if (isNewerVersion(version, recommendedVersion))
