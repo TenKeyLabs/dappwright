@@ -1,6 +1,6 @@
 import { Page } from 'playwright-core';
 import Wallet from '../wallet';
-import { WalletIdOptions, WalletOptions } from '../wallets';
+import { Step, WalletIdOptions, WalletOptions } from '../wallets';
 import {
   addNetwork,
   addToken,
@@ -19,10 +19,12 @@ import {
 } from './actions';
 import { setup } from './setup';
 import downloader from './setup/downloader';
+import { closePopup, confirmWelcomeScreen, importAccount, noThanksTelemetry, showTestNets } from './setup/setupActions';
 
 export class MetaMaskWallet extends Wallet {
   static recommendedVersion = '10.20.0';
   static id = 'metamask' as WalletIdOptions;
+  static releasesUrl = 'https://api.github.com/repos/metamask/metamask-extension/releases';
 
   options: WalletOptions;
 
@@ -30,6 +32,19 @@ export class MetaMaskWallet extends Wallet {
     super(page);
   }
 
+  // Extension Downloader
+  static download = downloader(this.id, this.releasesUrl, this.recommendedVersion);
+
+  // Setup Steps
+  defaultSetupSteps: Step<WalletOptions>[] = [
+    confirmWelcomeScreen,
+    noThanksTelemetry,
+    importAccount,
+    closePopup,
+    showTestNets,
+  ];
+
+  // Actions
   addNetwork = addNetwork(this.page);
   approve = approve(this.page);
   confirmTransaction = confirmTransaction(this.page);
@@ -44,7 +59,5 @@ export class MetaMaskWallet extends Wallet {
   deleteAccount = deleteAccount(this.page);
   deleteNetwork = deleteNetwork(this.page);
   getTokenBalance = getTokenBalance(this.page);
-  setup = setup(this.page);
-
-  static download = downloader(this.recommendedVersion);
+  setup = setup(this.page, this.defaultSetupSteps);
 }
