@@ -1,14 +1,13 @@
 import * as fs from 'fs';
 import { IncomingMessage } from 'http';
 import { get } from 'https';
+import * as os from 'os';
 import * as path from 'path';
 
 import StreamZip from 'node-stream-zip';
-import os from 'os';
 import { OfficialOptions } from '../../../types';
+import { WalletIdOptions } from '../../wallets';
 import { isNewerVersion } from './isNewerVersion';
-
-export const defaultDirectory = path.resolve(os.tmpdir(), 'dappwright', 'metamask');
 
 export type Path =
   | string
@@ -23,10 +22,10 @@ const isEmpty = (path): boolean => {
   return files.length === 0;
 };
 
-export default (recommendedVersion: string, location?: Path) =>
+export default (walletId: WalletIdOptions, releasesUrl: string, recommendedVersion: string) =>
   async (options: OfficialOptions): Promise<string> => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    let METAMASK_PATH;
+    let EXTENSION_PATH;
 
     const { version } = options;
 
@@ -36,47 +35,45 @@ export default (recommendedVersion: string, location?: Path) =>
       if (version === 'latest')
         console.warn(
           '\x1b[33m%s\x1b[0m',
-          `It is not recommended to run metamask with "latest" version. Use it at your own risk or set to the recommended version "${recommendedVersion}".`,
+          `It is not recommended to run ${walletId} with "latest" version. Use it at your own risk or set to the recommended version "${recommendedVersion}".`,
         );
       else if (isNewerVersion(recommendedVersion, version))
         console.warn(
           '\x1b[33m%s\x1b[0m',
-          `Seems you are running a newer version (${version}) of MetaMask than recommended by the Dappwright team.
+          `Seems you are running a newer version (${version}) of ${walletId} than recommended by the Dappwright team.
       Use it at your own risk or set to the recommended version "${recommendedVersion}".`,
         );
       else if (isNewerVersion(version, recommendedVersion))
         console.warn(
           '\x1b[33m%s\x1b[0m',
-          `Seems you are running an older version (${version}) of MetaMask than recommended by the Dappwright team.
+          `Seems you are running an older version (${version}) of ${walletId} than recommended by the Dappwright team.
       Use it at your own risk or set the recommended version "${recommendedVersion}".`,
         );
-      else console.log(`Running tests on MetaMask version ${version}`);
+      else console.log(`Running tests on ${walletId} version ${version}`);
 
       console.log(''); // new line
 
-      METAMASK_PATH = await download('v' + version, location);
+      EXTENSION_PATH = await download('v' + version, releasesUrl, downloadDir(walletId));
     } else {
-      console.log(`Running tests on local MetaMask build`);
-
-      // METAMASK_PATH = (rest as CustomOptions).metamaskPath;
-      /* eslint-enable no-console */
+      console.log(`Running tests on local ${walletId} build`);
     }
 
-    return METAMASK_PATH;
+    return EXTENSION_PATH;
   };
 
-const download = async (version?: string, location?: Path): Promise<string> => {
-  const metamaskDirectory = typeof location === 'string' ? location : location?.extract || defaultDirectory;
-  const downloadDirectory =
-    typeof location === 'string' ? location : location?.download || path.resolve(defaultDirectory, 'download');
+export const downloadDir = (walletId: WalletIdOptions): string => {
+  return path.resolve(os.tmpdir(), 'dappwright', walletId);
+};
 
+const download = async (version: string, releasesUrl: string, location: string): Promise<string> => {
+  console.log(location);
   if (version !== 'latest') {
-    const extractDestination = path.resolve(metamaskDirectory, version.replace(/\./g, '_'));
+    const extractDestination = path.resolve(location, version.replace(/\./g, '_'));
     if (fs.existsSync(extractDestination) && !isEmpty(extractDestination)) return extractDestination;
   }
 
-  const { filename, downloadUrl, tag } = await getMetamaskReleases(version);
-  const extractDestination = path.resolve(metamaskDirectory, tag.replace(/\./g, '_'));
+  const { filename, downloadUrl, tag } = await getGithubRelease(releasesUrl, version);
+  const extractDestination = path.resolve(location, tag.replace(/\./g, '_'));
 
   // Clean if system tmp files are cleaned but dir structure can persist
   if (fs.existsSync(extractDestination) && isEmpty(extractDestination)) {
@@ -84,7 +81,7 @@ const download = async (version?: string, location?: Path): Promise<string> => {
   }
 
   if (!fs.existsSync(extractDestination) || isEmpty(extractDestination)) {
-    const downloadedFile = await downloadMetamaskReleases(filename, downloadUrl, downloadDirectory);
+    const downloadedFile = await downloadGithubRelease(filename, downloadUrl, location);
     const zip = new StreamZip.async({ file: downloadedFile });
     fs.mkdirSync(extractDestination);
     await zip.extract(null, extractDestination);
@@ -114,7 +111,7 @@ const request = (url: string): Promise<IncomingMessage> =>
     });
   });
 
-const downloadMetamaskReleases = (name: string, url: string, location: string): Promise<string> =>
+const downloadGithubRelease = (name: string, url: string, location: string): Promise<string> =>
   // eslint-disable-next-line no-async-promise-executor
   new Promise(async (resolve) => {
     if (!fs.existsSync(location)) {
@@ -129,12 +126,11 @@ const downloadMetamaskReleases = (name: string, url: string, location: string): 
     });
   });
 
-type MetamaskReleases = { downloadUrl: string; filename: string; tag: string };
-const metamaskReleasesUrl = 'https://api.github.com/repos/metamask/metamask-extension/releases';
-const getMetamaskReleases = (version: string): Promise<MetamaskReleases> =>
+type GithubRelease = { downloadUrl: string; filename: string; tag: string };
+const getGithubRelease = (releasesUrl: string, version: string): Promise<GithubRelease> =>
   new Promise((resolve, reject) => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const request = get(metamaskReleasesUrl, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (response) => {
+    const request = get(releasesUrl, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (response) => {
       let body = '';
       response.on('data', (chunk) => {
         body += chunk;
@@ -160,7 +156,7 @@ const getMetamaskReleases = (version: string): Promise<MetamaskReleases> =>
     });
     request.on('error', (error) => {
       // eslint-disable-next-line no-console
-      console.warn('getMetamaskReleases error:', error.message);
+      console.warn('getGithubRelease error:', error.message);
       throw error;
     });
   });

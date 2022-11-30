@@ -6,7 +6,7 @@ import { DappwrightLaunchResponse, OfficialOptions } from './types';
 import { getWallet, getWalletType } from './wallets/wallets';
 
 /**
- * Launch Playwright chromium instance with MetaMask plugin installed
+ * Launch Playwright chromium instance with wallet plugin installed
  * */
 export const sessionPath = path.resolve(os.tmpdir(), 'dappwright', 'session');
 
@@ -22,7 +22,7 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
   });
 
   return {
-    wallet: await getWallet('metamask', browserContext),
+    wallet: await getWallet(wallet.id, browserContext),
     browserContext,
   };
 }

@@ -15,12 +15,14 @@ export default abstract class Wallet implements Dappwright {
   // Name of the wallet
   static id: WalletIdOptions;
   static recommendedVersion: string;
+  static releasesUrl: string;
 
   // Extension downloader
   static download: (options: OfficialOptions) => Promise<string>;
 
   // Setup
   abstract setup: (options?: WalletOptions, steps?: Step<WalletOptions>[]) => Promise<void>;
+  abstract defaultSetupSteps: Step<WalletOptions>[];
 
   // Wallet actions
   abstract lock: () => Promise<void>;
