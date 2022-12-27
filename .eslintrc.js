@@ -19,7 +19,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
-        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
       },
     ],
     '@typescript-eslint/explicit-function-return-type': [
@@ -37,14 +37,21 @@ module.exports = {
     'no-console': 'error',
     '@typescript-eslint/naming-convention': [
       'error',
-      { selector: 'default', format: ['camelCase'] },
       {
         selector: ['classProperty', 'parameterProperty', 'objectLiteralProperty', 'classMethod', 'parameter'],
         format: ['camelCase'],
         leadingUnderscore: 'allow',
       },
       //variable must be in camel or upper case
-      { selector: 'variable', format: ['camelCase', 'UPPER_CASE'], leadingUnderscore: 'allow' },
+      {
+        selector: 'variable',
+        format: ['camelCase', 'UPPER_CASE'],
+        leadingUnderscore: 'allow',
+        filter: {
+          regex: '^_',
+          match: false,
+        },
+      },
       // {selector: "variable", modifiers: ["global"], format: ["PascalCase", "UPPER_CASE"]},
       //classes and types must be in PascalCase
       { selector: ['typeLike', 'enum'], format: ['PascalCase'] },

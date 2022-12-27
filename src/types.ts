@@ -37,7 +37,7 @@ export type AddToken = {
 export type TransactionOptions = {
   gas?: number;
   gasLimit?: number;
-  priority?: number;
+  priority: number;
 };
 
 export type Dappwright = {
