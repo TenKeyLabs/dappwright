@@ -2,46 +2,60 @@ import fs from 'fs';
 import * as http from 'http';
 import * as path from 'path';
 
-import ganache, { Provider } from 'ganache';
+import ganache, { Provider, Server } from 'ganache';
 import handler from 'serve-handler';
 import Web3 from 'web3';
-
+import { Contract } from 'web3-eth-contract';
 import { compileContracts } from './contract';
 
 const counterContract: { address: string } | null = null;
+
+let httpServer: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
+let chainNode: Server<'ethereum'>;
 
 export function getCounterContract(): { address: string } | null {
   return counterContract;
 }
 
-async function deploy(): Promise<{ address: string }> {
+export async function start(): Promise<Contract> {
   const provider = await waitForGanache();
   await startTestServer();
   return await deployContract(provider);
 }
 
-async function waitForGanache(): Promise<Provider> {
-  console.log('Starting ganache...');
-  const server = ganache.server({ seed: 'asd123', logging: { quiet: true } });
-  await server.listen(8545);
-  console.log('Ganache running at http://localhost:8545');
-  return server.provider;
+export async function stop(): Promise<void> {
+  await new Promise<void>((resolve) => {
+    httpServer.close(() => {
+      resolve();
+    });
+  });
+  await chainNode.close();
 }
 
-async function deployContract(provider: Provider): Promise<{ address: string } | null> {
+async function waitForGanache(): Promise<Provider> {
+  console.log('Starting ganache...');
+  chainNode = ganache.server({ seed: 'asd123', logging: { quiet: true } });
+  await chainNode.listen(8545);
+  console.log('Ganache running at http://localhost:8545');
+  return chainNode.provider;
+}
+
+async function deployContract(provider: Provider): Promise<Contract> {
   console.log('Deploying test contract...');
   const web3 = new Web3(provider as unknown as Web3['currentProvider']);
   const compiledContracts = compileContracts();
   const counterContractInfo = compiledContracts['Counter.sol']['Counter'];
   const counterContractDef = new web3.eth.Contract(counterContractInfo.abi);
+
+  // deploy contract
   const accounts = await web3.eth.getAccounts();
   const counterContract = await counterContractDef
     .deploy({ data: counterContractInfo.evm.bytecode.object })
     .send({ from: accounts[0], gas: 4000000 });
   console.log('Contract deployed at', counterContract.options.address);
 
-  // create file data for dapp
-  const dataJsPath = path.join(__dirname, 'dapp', 'data.js');
+  // export contract spec
+  const dataJsPath = path.join(__dirname, 'public', 'Counter.js');
   const data = `const ContractInfo = ${JSON.stringify(
     { ...counterContractInfo, ...counterContract.options },
     null,
@@ -52,24 +66,22 @@ async function deployContract(provider: Provider): Promise<{ address: string } |
   });
   console.log('path:', dataJsPath);
 
-  return { ...counterContract, ...counterContract, ...counterContract.options };
+  return counterContract;
 }
 
 async function startTestServer(): Promise<void> {
   console.log('Starting test server...');
-  const server = http.createServer((request, response) => {
+  httpServer = http.createServer((request, response) => {
     return handler(request, response, {
-      public: path.join(__dirname, 'dapp'),
+      public: path.join(__dirname, 'public'),
       cleanUrls: true,
     });
   });
 
   await new Promise<void>((resolve) => {
-    server.listen(8080, () => {
+    httpServer.listen(8080, () => {
       console.log('Server running at http://localhost:8080');
       resolve();
     });
   });
 }
-
-export default deploy;

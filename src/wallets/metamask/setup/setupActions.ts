@@ -10,6 +10,7 @@ export async function showTestNets(metamaskPage: Page): Promise<void> {
   await clickOnElement(metamaskPage, 'Show/hide');
   await clickOnSettingsSwitch(metamaskPage, 'Show test networks');
   await clickOnLogo(metamaskPage);
+  await metamaskPage.waitForTimeout(1000);
 }
 
 export async function confirmWelcomeScreen(metamaskPage: Page): Promise<void> {

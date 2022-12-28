@@ -7,5 +7,5 @@ dist
 /metamask
 .idea
 *.log
-test/dapp/data.js
+**/Counter.js
 metamaskSession/
