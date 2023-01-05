@@ -2,7 +2,7 @@ import { Page } from 'playwright-core';
 import { clickOnButton, typeOnInputField } from '../../../helpers';
 
 import { AddNetwork } from '../../../index';
-import { getErrorMessage, openNetworkDropdown } from './helpers';
+import { clickOnLogo, getErrorMessage, openNetworkDropdown } from './helpers';
 
 export const addNetwork =
   (page: Page) =>
@@ -24,7 +24,10 @@ export const addNetwork =
     await page.waitForTimeout(500);
 
     const errorMessage = await getErrorMessage(page);
-    if (errorMessage) throw new SyntaxError(errorMessage);
+    if (errorMessage) {
+      await clickOnLogo(page);
+      throw new SyntaxError(errorMessage);
+    }
 
     await clickOnButton(page, 'Save');
 

@@ -4,5 +4,5 @@ export const performPopupAction = async (page: Page, action: (popup: Page) => Pr
   const popup = await page.context().waitForEvent('page'); // Wait for the popup to show up
 
   await action(popup);
-  await popup.close();
+  if (!popup.isClosed()) await popup.waitForEvent('close');
 };

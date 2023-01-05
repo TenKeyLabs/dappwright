@@ -66,7 +66,6 @@ export const downloadDir = (walletId: WalletIdOptions): string => {
 };
 
 const download = async (version: string, releasesUrl: string, location: string): Promise<string> => {
-  console.log(location);
   if (version !== 'latest') {
     const extractDestination = path.resolve(location, version.replace(/\./g, '_'));
     if (fs.existsSync(extractDestination) && !isEmpty(extractDestination)) return extractDestination;

@@ -26,7 +26,16 @@ export const getWalletType = (id: WalletIdOptions): WalletTypes => {
 export const getWallet = async (id: WalletIdOptions, browserContext: BrowserContext): Promise<MetaMaskWallet> => {
   const wallet = getWalletType(id);
 
-  if (browserContext.pages().length === 1) await browserContext.waitForEvent('page');
+  if (browserContext.pages().length === 1) {
+    try {
+      await browserContext.waitForEvent('page', { timeout: 1000 });
+    } catch {
+      // Open the wallet if tab doesn't pop up automatically
+      const page = await browserContext.newPage();
+      await page.goto(wallet.extensionUrl);
+    }
+  }
+
   const page = browserContext.pages()[1];
 
   return new wallet(page);

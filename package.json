@@ -26,7 +26,9 @@
     "lint": "eslint --color --ext .ts src/ test/",
     "lint:fix": "yarn run lint --fix",
     "test": "jest -i",
-    "test:dev": "jest -i --watch",
+    "test:dev": "jest -i --watch --testTimeout=600000",
+    "test:debug": "PWDEBUG=1 jest -i --watch --testTimeout=600000 --runInBand",
+    "test:dapp": "node --require ts-node/register test/dapp/start.ts",
     "changeset:publish": "yarn build && changeset publish"
   },
   "repository": {

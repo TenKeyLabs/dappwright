@@ -16,6 +16,7 @@ export default abstract class Wallet implements Dappwright {
   static id: WalletIdOptions;
   static recommendedVersion: string;
   static releasesUrl: string;
+  static extensionUrl: string;
 
   // Extension downloader
   static download: (options: OfficialOptions) => Promise<string>;
@@ -25,18 +26,20 @@ export default abstract class Wallet implements Dappwright {
   abstract defaultSetupSteps: Step<WalletOptions>[];
 
   // Wallet actions
-  abstract lock: () => Promise<void>;
-  abstract unlock: (password?: string) => Promise<void>;
   abstract addNetwork: (options: AddNetwork) => Promise<void>;
   abstract addToken: (options: AddToken) => Promise<void>;
-  abstract createAccount: () => Promise<void>;
-  abstract importPK: (pk: string) => Promise<void>;
-  abstract switchAccount: (accountNumber: number) => Promise<void>;
-  abstract switchNetwork: (network: string) => Promise<void>;
-  abstract confirmTransaction: (options?: TransactionOptions) => Promise<void>;
-  abstract sign: () => Promise<void>;
   abstract approve: () => Promise<void>;
-  abstract getTokenBalance: (tokenSymbol: string) => Promise<number>;
+  abstract createAccount: () => Promise<void>;
+  abstract confirmNetworkSwitch: () => Promise<void>;
+  abstract confirmTransaction: (options?: TransactionOptions) => Promise<void>;
   abstract deleteAccount: (accountNumber: number) => Promise<void>;
   abstract deleteNetwork: (name: string) => Promise<void>;
+  abstract getTokenBalance: (tokenSymbol: string) => Promise<number>;
+  abstract hasNetwork: (name: string) => Promise<boolean>;
+  abstract importPK: (pk: string) => Promise<void>;
+  abstract lock: () => Promise<void>;
+  abstract sign: () => Promise<void>;
+  abstract switchAccount: (accountNumber: number) => Promise<void>;
+  abstract switchNetwork: (network: string) => Promise<void>;
+  abstract unlock: (password?: string) => Promise<void>;
 }

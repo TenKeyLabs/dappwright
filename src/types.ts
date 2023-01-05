@@ -41,19 +41,22 @@ export type TransactionOptions = {
 };
 
 export type Dappwright = {
-  lock: () => Promise<void>;
-  unlock: (password?: string) => Promise<void>;
   addNetwork: (options: AddNetwork) => Promise<void>;
   addToken: (options: AddToken) => Promise<void>;
-  createAccount: () => Promise<void>;
-  importPK: (pk: string) => Promise<void>;
-  switchAccount: (accountNumber: number) => Promise<void>;
-  switchNetwork: (network: string) => Promise<void>;
-  confirmTransaction: (options?: TransactionOptions) => Promise<void>;
-  sign: () => Promise<void>;
   approve: () => Promise<void>;
-  getTokenBalance: (tokenSymbol: string) => Promise<number>;
+  confirmNetworkSwitch: () => Promise<void>;
+  confirmTransaction: (options?: TransactionOptions) => Promise<void>;
+  createAccount: () => Promise<void>;
   deleteAccount: (accountNumber: number) => Promise<void>;
   deleteNetwork: (name: string) => Promise<void>;
+  getTokenBalance: (tokenSymbol: string) => Promise<number>;
+  hasNetwork: (name: string) => Promise<boolean>;
+  importPK: (pk: string) => Promise<void>;
+  lock: () => Promise<void>;
+  sign: () => Promise<void>;
+  switchAccount: (accountNumber: number) => Promise<void>;
+  switchNetwork: (network: string) => Promise<void>;
+  unlock: (password?: string) => Promise<void>;
+
   page: Page;
 };

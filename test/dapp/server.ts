@@ -34,9 +34,8 @@ export async function stop(): Promise<void> {
 
 async function waitForGanache(): Promise<Provider> {
   console.log('Starting ganache...');
-  chainNode = ganache.server({ seed: 'asd123', logging: { quiet: true } });
+  chainNode = ganache.server({ chain: { chainId: 31337 }, wallet: { seed: 'asd123' }, logging: { quiet: true } });
   await chainNode.listen(8545);
-  console.log('Ganache running at http://localhost:8545');
   return chainNode.provider;
 }
 

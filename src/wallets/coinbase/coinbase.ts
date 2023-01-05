@@ -1,62 +1,29 @@
 import { Page } from 'playwright-core';
-import { AddNetwork } from '../../types';
-import { performPopupAction } from '../metamask/actions';
 import { setup } from '../metamask/setup';
 import downloader from '../metamask/setup/downloader';
 import Wallet from '../wallet';
 import { Step, WalletIdOptions, WalletOptions } from '../wallets';
+import {
+  addNetwork,
+  approve,
+  confirmTransaction,
+  deleteNetwork,
+  getStarted,
+  getTokenBalance,
+  hasNetwork,
+  lock,
+  sign,
+  switchNetwork,
+  unlock,
+} from './actions';
 
-export async function getStarted(
-  page: Page,
-  {
-    seed = 'already turtle birth enroll since owner keep patch skirt drift any dinner',
-    password = 'password1234!!!!',
-  }: WalletOptions,
-): Promise<void> {
-  // Welcome screen
-  await page.getByTestId('btn-import-existing-wallet').click();
-
-  // Import Wallet
-  await page.getByTestId('btn-import-recovery-phrase').click();
-  await page.getByTestId('seed-phrase-input').fill(seed);
-  await page.getByTestId('btn-import-wallet').click();
-  await page.getByTestId('setPassword').fill(password);
-  await page.getByTestId('setPasswordVerify').fill(password);
-  await page.getByTestId('terms-and-privacy-policy').check();
-  await page.getByTestId('btn-password-continue').click();
-
-  // Allow extension state/settings to settle
-  await page.waitForTimeout(3000);
-
-  // Open Home in tab
-  await page.goto('chrome-extension://hnfanknocfeofbddgcijnmhnfnkdnaad/index.html');
-}
-
-export const approve = (page: Page) => async () => {
-  await performPopupAction(page, async (popup: Page) => {
-    await popup.getByTestId('allow-authorize-button').click();
-    await popup.waitForTimeout(2000); // quitting too quickly causes failure
-  });
-};
-
-export const sign = (page: Page) => async () => {
-  await performPopupAction(page, async (popup: Page) => {
-    await popup.getByTestId('sign-message').click();
-    await popup.waitForTimeout(2000); // quitting too quickly causes failure
-  });
-};
-
-export const unlock =
-  (page: Page) =>
-  async (password: string = 'password1234!!!!') => {
-    await page.getByTestId('unlock-with-password').fill(password);
-    await page.getByTestId('unlock-wallet-button').click();
-  };
+export const extensionUrl = 'chrome-extension://hnfanknocfeofbddgcijnmhnfnkdnaad/index.html';
 
 export class CoinbaseWallet extends Wallet {
-  static recommendedVersion = '2.36.1';
   static id = 'coinbase' as WalletIdOptions;
-  static releasesUrl = 'https://api.github.com/repos/osis/coinbase-wallet-versions/releases';
+  static recommendedVersion = '3.0.4';
+  static releasesUrl = 'https://api.github.com/repos/osis/coinbase-wallet-archive/releases';
+  static extensionUrl = 'chrome-extension://hnfanknocfeofbddgcijnmhnfnkdnaad/index.html';
 
   options: WalletOptions;
 
@@ -64,23 +31,32 @@ export class CoinbaseWallet extends Wallet {
     super(page);
   }
 
-  defaultSetupSteps: Step<WalletOptions>[] = [getStarted];
+  // Extension Downloader
+  static download = downloader(this.id, this.releasesUrl, this.recommendedVersion);
 
-  addNetwork = async (options: AddNetwork) => console.log('Not Implemented');
-  approve = approve(this.page);
-  createAccount = async () => console.log('Not Implemented');
-  confirmTransaction = async () => console.log('Not Implemented');
-  importPK = async () => console.log('Not Implemented');
-  lock = async () => console.log('Not Implemented');
-  sign = sign(this.page);
-  switchAccount = async () => console.log('Not Implemented');
-  switchNetwork = async () => console.log('Not Implemented');
-  unlock = unlock(this.page);
-  addToken = async () => console.log('Not Implemented');
-  deleteAccount = async () => console.log('Not Implemented');
-  deleteNetwork = async () => console.log('Not Implemented');
-  getTokenBalance = async (tokenSymbol: string) => 0;
+  // Setup
+  defaultSetupSteps: Step<WalletOptions>[] = [getStarted];
   setup = setup(this.page, this.defaultSetupSteps);
 
-  static download = downloader(this.id, this.releasesUrl, this.recommendedVersion);
+  // Actions
+  addNetwork = addNetwork(this.page);
+  addToken = async () => console.warn('addToken not implemented');
+  approve = approve(this.page);
+  createAccount = async () => console.warn('createAccount not Implemented');
+  confirmNetworkSwitch = async () => {
+    console.warn('confirmNetworkSwitch not implemented');
+  };
+  confirmTransaction = async () => confirmTransaction(this.page);
+  deleteAccount = async () => console.warn('deleteAccount not implemented');
+  deleteNetwork = deleteNetwork(this.page);
+  getTokenBalance = getTokenBalance(this.page);
+  hasNetwork = hasNetwork(this.page);
+  importPK = async () => {
+    throw SyntaxError('import pk not supported in coinbase wallet');
+  };
+  lock = lock(this.page);
+  sign = sign(this.page);
+  switchAccount = async () => console.warn('switchAccount not implemented');
+  switchNetwork = async () => switchNetwork(this.page);
+  unlock = unlock(this.page);
 }
