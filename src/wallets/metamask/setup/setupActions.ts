@@ -1,6 +1,6 @@
 import { Page } from 'playwright-core';
 
-import { clickOnButton, clickOnElement, typeOnInputField } from '../../../helpers';
+import { clickOnButton, clickOnElement, typeOnInputField, waitForChromeState } from '../../../helpers';
 import { WalletOptions } from '../../wallets';
 import { clickOnLogo, clickOnSettingsSwitch, openNetworkDropdown } from '../actions/helpers';
 
@@ -10,7 +10,7 @@ export async function showTestNets(metamaskPage: Page): Promise<void> {
   await clickOnElement(metamaskPage, 'Show/hide');
   await clickOnSettingsSwitch(metamaskPage, 'Show test networks');
   await clickOnLogo(metamaskPage);
-  await metamaskPage.waitForTimeout(1000);
+  await waitForChromeState(metamaskPage);
 }
 
 export async function confirmWelcomeScreen(metamaskPage: Page): Promise<void> {

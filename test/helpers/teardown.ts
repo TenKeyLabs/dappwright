@@ -1,6 +1,7 @@
-import { stop } from '../dapp';
+import { BrowserContext } from 'playwright-core';
+import { stop } from '../dapp/server';
 
 export default async function (): Promise<void> {
-  globalThis.browserContext.close();
+  await Promise.all([global.browserContexts.map((context: BrowserContext) => context.close())]);
   await stop();
 }

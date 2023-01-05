@@ -3,6 +3,13 @@ async function start() {
   let counterContract;
   let accounts;
 
+  window.ethereum.on('chainChanged', function (chainId) {
+    const switchNetwork = document.createElement('div');
+    switchNetwork.id = 'switchNetwork';
+    switchNetwork.textContent = `switchNetwork - ${parseInt(chainId, 16)}`;
+    document.body.appendChild(switchNetwork);
+  });
+
   const connectButton = document.querySelector('.connect-button');
   connectButton.addEventListener('click', async function () {
     accounts = await ethereum.request({
@@ -13,6 +20,14 @@ async function start() {
     connected.id = 'connected';
     connected.textContent = 'connected';
     document.body.appendChild(connected);
+  });
+
+  const switchNetworkButton = document.querySelector('.switch-network-button');
+  switchNetworkButton.addEventListener('click', async function () {
+    await ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: '0x7A69' }],
+    });
   });
 
   const increaseButton = document.querySelector('.increase-button');
@@ -47,7 +62,6 @@ async function start() {
   const transferButton = document.querySelector('.transfer-button');
   transferButton.addEventListener('click', async function () {
     const accounts = await provider.send('eth_requestAccounts', []);
-    // await counterContract.increase().send();
     await ethereum.request({
       method: 'eth_sendTransaction',
       params: [{ to: accounts[0], from: accounts[0], value: '10000000000000000' }],

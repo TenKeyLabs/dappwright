@@ -1,0 +1,173 @@
+import { ElementHandle, Page } from 'playwright-core';
+import { AddNetwork } from '../..';
+import { waitForChromeState } from '../../helpers';
+import { performPopupAction } from '../metamask/actions';
+import { WalletOptions } from '../wallets';
+import { extensionUrl } from './coinbase';
+
+const goHome = async (page: Page) => {
+  await page.getByTestId('portfolio-navigation-link').click();
+};
+
+export async function getStarted(
+  page: Page,
+  {
+    seed = 'already turtle birth enroll since owner keep patch skirt drift any dinner',
+    password = 'password1234!!!!',
+  }: WalletOptions,
+): Promise<void> {
+  // Welcome screen
+  await page.getByTestId('btn-import-existing-wallet').click();
+
+  // Import Wallet
+  await page.getByTestId('btn-import-recovery-phrase').click();
+  await page.getByTestId('seed-phrase-input').fill(seed);
+  await page.getByTestId('btn-import-wallet').click();
+  await page.getByTestId('setPassword').fill(password);
+  await page.getByTestId('setPasswordVerify').fill(password);
+  await page.getByTestId('terms-and-privacy-policy').check();
+  await page.getByTestId('btn-password-continue').click();
+
+  // Allow extension state/settings to settle
+  await waitForChromeState(page);
+}
+
+export const approve = (page: Page) => async () => {
+  await performPopupAction(page, async (popup: Page) => {
+    await popup.getByTestId('allow-authorize-button').click();
+  });
+};
+
+export const sign = (page: Page) => async () => {
+  await performPopupAction(page, async (popup: Page) => {
+    await popup.getByTestId('sign-message').click();
+  });
+};
+
+export const lock = (page: Page) => async () => {
+  await page.getByTestId('settings-navigation-link').click();
+  await page.getByTestId('lock-wallet-button').click();
+};
+
+export const unlock =
+  (page: Page) =>
+  async (password: string = 'password1234!!!!') => {
+    await page.getByTestId('unlock-with-password').fill(password);
+    await page.getByTestId('unlock-wallet-button').click();
+
+    // Go back home since wallet returns to last visited page when unlocked.
+    await goHome(page);
+
+    // Wait for homescreen data to load
+    await page.waitForSelector("//div[@data-testid='asset-list']//*[not(text='')]", { timeout: 10000 });
+  };
+
+export const switchNetwork = async (page: Page) => {
+  console.warn('switchNetwork not implemented');
+};
+
+export const confirmTransaction = async (page: Page) => {
+  await performPopupAction(page, async (popup: Page) => {
+    try {
+      await (await popup.waitForSelector("text='Got it'", { timeout: 1000 })).click();
+    } catch {}
+
+    await popup.getByTestId('request-confirm-button').click();
+  });
+};
+
+export const addNetwork = (page: Page) => async (options: AddNetwork) => {
+  // Add network flow closes current screen and opens another, direct access is cleaner for now
+  const settingsPage = await page.context().newPage();
+  await settingsPage.goto(`${extensionUrl}?internalPopUpRequest=true&action=addCustomNetwork`);
+  await settingsPage.getByTestId('custom-network-name-input').fill(options.networkName);
+  await settingsPage.getByTestId('custom-network-rpc-url-input').fill(options.rpc);
+  await settingsPage.getByTestId('custom-network-chain-id-input').fill(options.chainId.toString());
+  await settingsPage.getByTestId('custom-network-currency-symbol-input').fill(options.symbol);
+  await settingsPage.getByTestId('custom-network-save').click();
+
+  // Check for error messages
+  let errorNode;
+  try {
+    errorNode = await settingsPage.waitForSelector('//span[@data-testid="text-input-error-label"]', {
+      timeout: 50,
+    });
+  } catch {}
+
+  if (errorNode) {
+    const errorMessage = await errorNode.textContent();
+    await settingsPage.close();
+    throw new SyntaxError(errorMessage);
+  }
+
+  await settingsPage.waitForEvent('close');
+
+  // New network isn't reflected until page is reloaded
+  await page.bringToFront();
+  await page.reload();
+};
+
+export const deleteNetwork = (page: Page) => async (name: string) => {
+  await page.getByTestId('settings-navigation-link').click();
+  await page.getByTestId('settings-networks-menu-cell-pressable').click();
+
+  // Search for network then click on the first result
+  await page.getByTestId('network-list-search').fill('cronos');
+  (await page.waitForSelector('//div[@data-testid="list-"][1]//button')).click();
+
+  await page.getByTestId('custom-network-delete').click();
+  await goHome(page);
+};
+
+export const hasNetwork =
+  (page: Page) =>
+  async (name: string): Promise<boolean> => {
+    await page.getByTestId('settings-navigation-link').click();
+    await page.getByTestId('settings-networks-menu-cell-pressable').click();
+    await page.getByTestId('network-list-search').fill(name);
+    const networkIsListed = await page.isVisible('//div[@data-testid="list-"][1]//button');
+    await goHome(page);
+    return networkIsListed;
+  };
+
+export const getTokenBalance =
+  (page: Page) =>
+  async (tokenSymbol: string): Promise<number> => {
+    const readFromCryptoTab = async (): Promise<ElementHandle<SVGElement | HTMLElement>> => {
+      await page.bringToFront();
+      await page.getByTestId('portfolio-selector-nav-tabLabel--crypto').click();
+      return await page.waitForSelector(
+        '//button[contains(@data-testid, "asset-item")][contains(@data-testid, "ETH")]',
+        {
+          timeout: 500,
+        },
+      );
+    };
+
+    const readFromTestnetTab = async (): Promise<ElementHandle<SVGElement | HTMLElement>> => {
+      await page.getByTestId('portfolio-selector-nav-tabLabel--testnet').click();
+      return await page.waitForSelector(
+        '//button[contains(@data-testid, "asset-item")][contains(@data-testid, "ETH")]',
+        {
+          timeout: 500,
+        },
+      );
+    };
+
+    const readAttempts = [readFromCryptoTab, readFromTestnetTab];
+
+    let button: ElementHandle<SVGElement | HTMLElement>;
+    for (const attempt of readAttempts) {
+      try {
+        button = await attempt();
+      } catch {}
+    }
+
+    if (!button) return 0;
+
+    const text = await button.textContent();
+    const regexp = new RegExp(`(\\d.*) ${tokenSymbol}`, 'i');
+    const matches = text.match(regexp);
+
+    return matches && matches.length >= 2 ? Number(matches[1]) : 0;
+  };
