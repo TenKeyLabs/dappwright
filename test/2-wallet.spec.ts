@@ -132,10 +132,33 @@ describe.each<OfficialOptions>([
       });
     });
 
-    it('should switch accounts', async () => {
-      await forMetaMask(wallet, async () => {
+    describe('');
+    describe('createAccount', () => {
+      it.only('should create a new wallet/account', async () => {
+        await wallet.createAccount();
+
+        const expectedAccountName = wallet instanceof MetaMaskWallet ? 'Account 2' : 'Wallet 2';
+        expect(wallet.page.getByText(expectedAccountName));
+      });
+    });
+
+    describe('switchAccount', () => {
+      it.only('should switch accounts', async () => {
         await wallet.switchAccount(1);
-        expect(wallet.page.getByText('Account 2'));
+        const expectedAccountName = wallet instanceof MetaMaskWallet ? 'Account 1' : 'Wallet 1';
+        expect(wallet.page.getByText('Account 1'));
+      });
+    });
+
+    describe('deleteAccount', () => {
+      it('should be able to delete an account', async () => {
+        await forMetaMask(wallet, async () => {
+          const beforeDelete = await countAccounts();
+          await wallet.deleteAccount(2);
+          const afterDelete = await countAccounts();
+
+          expect(beforeDelete - 1).toEqual(afterDelete);
+        });
       });
     });
 
@@ -160,16 +183,6 @@ describe.each<OfficialOptions>([
         await expect(
           wallet.importPK('4f3edf983ac636a65ace7c78d9aa706d3b113bce9c46f30d7d21715b23b10'),
         ).rejects.toThrowError(SyntaxError);
-      });
-    });
-
-    it('should be able to delete an account', async () => {
-      await forMetaMask(wallet, async () => {
-        const beforeDelete = await countAccounts();
-        await wallet.deleteAccount(2);
-        const afterDelete = await countAccounts();
-
-        expect(beforeDelete - 1).toEqual(afterDelete);
       });
     });
   });

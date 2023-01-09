@@ -7,12 +7,14 @@ import {
   addNetwork,
   approve,
   confirmTransaction,
+  createAccount,
   deleteNetwork,
   getStarted,
   getTokenBalance,
   hasNetwork,
   lock,
   sign,
+  switchAccount,
   switchNetwork,
   unlock,
 } from './actions';
@@ -42,7 +44,7 @@ export class CoinbaseWallet extends Wallet {
   addNetwork = addNetwork(this.page);
   addToken = async () => console.warn('addToken not implemented');
   approve = approve(this.page);
-  createAccount = async () => console.warn('createAccount not Implemented');
+  createAccount = createAccount(this.page);
   confirmNetworkSwitch = async () => {
     console.warn('confirmNetworkSwitch not implemented');
   };
@@ -56,7 +58,7 @@ export class CoinbaseWallet extends Wallet {
   };
   lock = lock(this.page);
   sign = sign(this.page);
-  switchAccount = async () => console.warn('switchAccount not implemented');
+  switchAccount = switchAccount(this.page);
   switchNetwork = async () => switchNetwork(this.page);
   unlock = unlock(this.page);
 }
