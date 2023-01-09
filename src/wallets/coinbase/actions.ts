@@ -171,3 +171,19 @@ export const getTokenBalance =
 
     return matches && matches.length >= 2 ? Number(matches[1]) : 0;
   };
+
+export const createAccount = (page: Page) => async () => {
+  await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
+  await page.getByTestId('wallet-switcher--action').click();
+  await page.getByTestId('manage-wallets-account-item--action-cell-pressable').click();
+
+  // Help information pops up the first time
+  try {
+    await page.getByTestId('add-new-wallet--continue').click();
+  } catch {}
+};
+
+export const switchAccount = (page: Page) => async (i: number) => {
+  await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
+  (await page.waitForSelector(`(//button[@data-testid="wallet-switcher--wallet-item-cell-pressable"])[${i}]`)).click();
+};
