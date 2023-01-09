@@ -17,13 +17,13 @@ import {
   unlock,
 } from './actions';
 
-export const extensionUrl = 'chrome-extension://hnfanknocfeofbddgcijnmhnfnkdnaad/index.html';
+export const extensionUrl = 'chrome-extension://niockamnihbifmabjckhncfbggkcanme/index.html';
 
 export class CoinbaseWallet extends Wallet {
   static id = 'coinbase' as WalletIdOptions;
   static recommendedVersion = '3.0.4';
   static releasesUrl = 'https://api.github.com/repos/osis/coinbase-wallet-archive/releases';
-  static extensionUrl = 'chrome-extension://hnfanknocfeofbddgcijnmhnfnkdnaad/index.html';
+  static extensionUrl = extensionUrl;
 
   options: WalletOptions;
 
