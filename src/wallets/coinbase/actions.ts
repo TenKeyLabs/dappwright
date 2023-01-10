@@ -187,3 +187,7 @@ export const switchAccount = (page: Page) => async (i: number) => {
   await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
   (await page.waitForSelector(`(//button[@data-testid="wallet-switcher--wallet-item-cell-pressable"])[${i}]`)).click();
 };
+
+export const deleteAccount = (page: Page) => async (i: number) => {
+  console.warn('deleteAccount not implemented - Coinbase does not support additional private keys');
+};
