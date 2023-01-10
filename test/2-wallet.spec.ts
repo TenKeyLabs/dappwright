@@ -6,6 +6,24 @@ import { MetaMaskWallet } from '../src/wallets/metamask/metamask';
 import { forMetaMask } from './helpers/itForWallet';
 import launchBrowser from './helpers/launchBrowser';
 
+// TODO: Add this to the wallet interface
+const countAccounts = async (wallet: Dappwright): Promise<number> => {
+  let count;
+
+  if (wallet instanceof MetaMaskWallet) {
+    await openProfileDropdown(wallet.page);
+    const container = await wallet.page.$('.account-menu__accounts');
+    count = (await container.$$('.account-menu__account')).length;
+    await openProfileDropdown(wallet.page);
+  } else {
+    await wallet.page.getByTestId('portfolio-header--switcher-cell-pressable').click();
+    count = (await wallet.page.$$('//button[@data-testid="wallet-switcher--wallet-item-cell-pressable"]')).length;
+    await wallet.page.getByTestId('portfolio-header--switcher-cell-pressable').click();
+  }
+
+  return count;
+};
+
 describe.each<OfficialOptions>([
   {
     wallet: 'coinbase',
@@ -20,6 +38,7 @@ describe.each<OfficialOptions>([
 
   beforeAll(async () => {
     [browserContext, _, wallet] = await launchBrowser(options);
+    wallet.page.bringToFront();
   });
 
   afterAll(async () => {
@@ -30,6 +49,29 @@ describe.each<OfficialOptions>([
     await wallet.lock();
     await wallet.unlock('password1234!@#$');
   }, 15000); // Coinbase wallet unlock waits for homepage to load
+
+  describe('account management', () => {
+    describe('createAccount', () => {
+      it('should create a new wallet/account', async () => {
+        expect(await countAccounts(wallet)).toEqual(1);
+
+        await wallet.createAccount();
+
+        const expectedAccountName = wallet instanceof MetaMaskWallet ? 'Account 2' : 'Wallet 2';
+        expect(wallet.page.getByText(expectedAccountName));
+        expect(await countAccounts(wallet)).toEqual(2);
+      });
+    });
+
+    describe('switchAccount', () => {
+      it('should switch accounts', async () => {
+        await wallet.switchAccount(1);
+
+        const expectedAccountName = wallet instanceof MetaMaskWallet ? 'Account 1' : 'Wallet 1';
+        expect(wallet.page.getByText(expectedAccountName));
+      });
+    });
+  });
 
   describe('network configurations', () => {
     const options = {
@@ -105,84 +147,59 @@ describe.each<OfficialOptions>([
     // });
   });
 
-  // Metamask functionality
-  describe('when importing a private key', () => {
-    const countAccounts = async (): Promise<number> => {
-      await openProfileDropdown(wallet.page);
-      const container = await wallet.page.$('.account-menu__accounts');
-      const count = (await container.$$('.account-menu__account')).length;
-      await openProfileDropdown(wallet.page);
-
-      return count;
-    };
-
+  // Metamask only
+  describe('private keys', () => {
     beforeEach(async () => {
       await forMetaMask(wallet, async () => {
         await clickOnLogo(wallet.page);
       });
     });
 
-    it('should import private key', async () => {
-      await forMetaMask(wallet, async () => {
-        const beforeImport = await countAccounts();
-        await wallet.importPK('4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b10');
-        const afterImport = await countAccounts();
+    describe('importPK', () => {
+      it('should import private key', async () => {
+        await forMetaMask(wallet, async () => {
+          const beforeImport = await countAccounts(wallet);
+          await wallet.importPK('4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b10');
+          const afterImport = await countAccounts(wallet);
 
-        expect(beforeImport + 1).toEqual(afterImport);
+          expect(beforeImport + 1).toEqual(afterImport);
+        });
       });
-    });
 
-    describe('');
-    describe('createAccount', () => {
-      it.only('should create a new wallet/account', async () => {
-        await wallet.createAccount();
-
-        const expectedAccountName = wallet instanceof MetaMaskWallet ? 'Account 2' : 'Wallet 2';
-        expect(wallet.page.getByText(expectedAccountName));
+      it('should throw error on duplicated private key', async () => {
+        await forMetaMask(wallet, async () => {
+          await expect(
+            wallet.importPK('4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b10'),
+          ).rejects.toThrowError(SyntaxError);
+        });
       });
-    });
 
-    describe('switchAccount', () => {
-      it.only('should switch accounts', async () => {
-        await wallet.switchAccount(1);
-        const expectedAccountName = wallet instanceof MetaMaskWallet ? 'Account 1' : 'Wallet 1';
-        expect(wallet.page.getByText('Account 1'));
+      it('should throw error on wrong key', async () => {
+        await forMetaMask(wallet, async () => {
+          await expect(
+            wallet.importPK('4f3edf983ac636a65a$@!ce7c78d9aa706d3b113bce9c46f30d7d21715b23b10'),
+          ).rejects.toThrowError(SyntaxError);
+        });
+      });
+
+      it('should throw error on to short key', async () => {
+        await forMetaMask(wallet, async () => {
+          await expect(
+            wallet.importPK('4f3edf983ac636a65ace7c78d9aa706d3b113bce9c46f30d7d21715b23b10'),
+          ).rejects.toThrowError(SyntaxError);
+        });
       });
     });
 
     describe('deleteAccount', () => {
       it('should be able to delete an account', async () => {
         await forMetaMask(wallet, async () => {
-          const beforeDelete = await countAccounts();
-          await wallet.deleteAccount(2);
-          const afterDelete = await countAccounts();
+          const beforeDelete = await countAccounts(wallet);
+          await wallet.deleteAccount(3);
+          const afterDelete = await countAccounts(wallet);
 
           expect(beforeDelete - 1).toEqual(afterDelete);
         });
-      });
-    });
-
-    it('should throw error on duplicated private key', async () => {
-      await forMetaMask(wallet, async () => {
-        await expect(
-          wallet.importPK('4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b10'),
-        ).rejects.toThrowError(SyntaxError);
-      });
-    });
-
-    it('should throw error on wrong key', async () => {
-      await forMetaMask(wallet, async () => {
-        await expect(
-          wallet.importPK('4f3edf983ac636a65a$@!ce7c78d9aa706d3b113bce9c46f30d7d21715b23b10'),
-        ).rejects.toThrowError(SyntaxError);
-      });
-    });
-
-    it('should throw error on to short key', async () => {
-      await forMetaMask(wallet, async () => {
-        await expect(
-          wallet.importPK('4f3edf983ac636a65ace7c78d9aa706d3b113bce9c46f30d7d21715b23b10'),
-        ).rejects.toThrowError(SyntaxError);
       });
     });
   });
