@@ -1,11 +1,11 @@
 import { ElementHandle, Page } from 'playwright-core';
-import { AddNetwork } from '../..';
+import { AddNetwork, AddToken } from '../..';
 import { waitForChromeState } from '../../helpers';
 import { performPopupAction } from '../metamask/actions';
 import { WalletOptions } from '../wallets';
 import { extensionUrl } from './coinbase';
 
-const goHome = async (page: Page) => {
+const goHome = async (page: Page): Promise<void> => {
   await page.getByTestId('portfolio-navigation-link').click();
 };
 
@@ -32,26 +32,26 @@ export async function getStarted(
   await waitForChromeState(page);
 }
 
-export const approve = (page: Page) => async () => {
+export const approve = (page: Page) => async (): Promise<void> => {
   await performPopupAction(page, async (popup: Page) => {
     await popup.getByTestId('allow-authorize-button').click();
   });
 };
 
-export const sign = (page: Page) => async () => {
+export const sign = (page: Page) => async (): Promise<void> => {
   await performPopupAction(page, async (popup: Page) => {
     await popup.getByTestId('sign-message').click();
   });
 };
 
-export const lock = (page: Page) => async () => {
+export const lock = (page: Page) => async (): Promise<void> => {
   await page.getByTestId('settings-navigation-link').click();
   await page.getByTestId('lock-wallet-button').click();
 };
 
 export const unlock =
   (page: Page) =>
-  async (password: string = 'password1234!!!!') => {
+  async (password = 'password1234!!!!'): Promise<void> => {
     await page.getByTestId('unlock-with-password').fill(password);
     await page.getByTestId('unlock-wallet-button').click();
 
@@ -62,62 +62,67 @@ export const unlock =
     await page.waitForSelector("//div[@data-testid='asset-list']//*[not(text='')]", { timeout: 10000 });
   };
 
-export const switchNetwork = async (page: Page) => {
-  console.warn('switchNetwork not implemented');
-};
-
-export const confirmTransaction = async (page: Page) => {
-  await performPopupAction(page, async (popup: Page) => {
+export const confirmTransaction = (page: Page) => async (): Promise<void> => {
+  await performPopupAction(page, async (popup: Page): Promise<void> => {
     try {
+      // Help prompt appears once
       await (await popup.waitForSelector("text='Got it'", { timeout: 1000 })).click();
-    } catch {}
+    } catch {
+      // Ignore missing help prompt
+    }
 
     await popup.getByTestId('request-confirm-button').click();
   });
 };
 
-export const addNetwork = (page: Page) => async (options: AddNetwork) => {
-  // Add network flow closes current screen and opens another, direct access is cleaner for now
-  const settingsPage = await page.context().newPage();
-  await settingsPage.goto(`${extensionUrl}?internalPopUpRequest=true&action=addCustomNetwork`);
-  await settingsPage.getByTestId('custom-network-name-input').fill(options.networkName);
-  await settingsPage.getByTestId('custom-network-rpc-url-input').fill(options.rpc);
-  await settingsPage.getByTestId('custom-network-chain-id-input').fill(options.chainId.toString());
-  await settingsPage.getByTestId('custom-network-currency-symbol-input').fill(options.symbol);
-  await settingsPage.getByTestId('custom-network-save').click();
+export const addNetwork =
+  (page: Page) =>
+  async (options: AddNetwork): Promise<void> => {
+    // Add network flow closes current screen and opens another, direct access is cleaner for now
+    const settingsPage = await page.context().newPage();
+    await settingsPage.goto(`${extensionUrl}?internalPopUpRequest=true&action=addCustomNetwork`);
+    await settingsPage.getByTestId('custom-network-name-input').fill(options.networkName);
+    await settingsPage.getByTestId('custom-network-rpc-url-input').fill(options.rpc);
+    await settingsPage.getByTestId('custom-network-chain-id-input').fill(options.chainId.toString());
+    await settingsPage.getByTestId('custom-network-currency-symbol-input').fill(options.symbol);
+    await settingsPage.getByTestId('custom-network-save').click();
 
-  // Check for error messages
-  let errorNode;
-  try {
-    errorNode = await settingsPage.waitForSelector('//span[@data-testid="text-input-error-label"]', {
-      timeout: 50,
-    });
-  } catch {}
+    // Check for error messages
+    let errorNode;
+    try {
+      errorNode = await settingsPage.waitForSelector('//span[@data-testid="text-input-error-label"]', {
+        timeout: 50,
+      });
+    } catch {
+      // No errors found
+    }
 
-  if (errorNode) {
-    const errorMessage = await errorNode.textContent();
-    await settingsPage.close();
-    throw new SyntaxError(errorMessage);
-  }
+    if (errorNode) {
+      const errorMessage = await errorNode.textContent();
+      await settingsPage.close();
+      throw new SyntaxError(errorMessage);
+    }
 
-  await settingsPage.waitForEvent('close');
+    await settingsPage.waitForEvent('close');
 
-  // New network isn't reflected until page is reloaded
-  await page.bringToFront();
-  await page.reload();
-};
+    // New network isn't reflected until page is reloaded
+    await page.bringToFront();
+    await page.reload();
+  };
 
-export const deleteNetwork = (page: Page) => async (name: string) => {
-  await page.getByTestId('settings-navigation-link').click();
-  await page.getByTestId('settings-networks-menu-cell-pressable').click();
+export const deleteNetwork =
+  (page: Page) =>
+  async (name: string): Promise<void> => {
+    await page.getByTestId('settings-navigation-link').click();
+    await page.getByTestId('settings-networks-menu-cell-pressable').click();
 
-  // Search for network then click on the first result
-  await page.getByTestId('network-list-search').fill('cronos');
-  (await page.waitForSelector('//div[@data-testid="list-"][1]//button')).click();
+    // Search for network then click on the first result
+    await page.getByTestId('network-list-search').fill(name);
+    (await page.waitForSelector('//div[@data-testid="list-"][1]//button')).click();
 
-  await page.getByTestId('custom-network-delete').click();
-  await goHome(page);
-};
+    await page.getByTestId('custom-network-delete').click();
+    await goHome(page);
+  };
 
 export const hasNetwork =
   (page: Page) =>
@@ -157,10 +162,12 @@ export const getTokenBalance =
     const readAttempts = [readFromCryptoTab, readFromTestnetTab];
 
     let button: ElementHandle<SVGElement | HTMLElement>;
-    for (const attempt of readAttempts) {
+    for (const readAttempt of readAttempts) {
       try {
-        button = await attempt();
-      } catch {}
+        button = await readAttempt();
+      } catch {
+        // Failed to read token value
+      }
     }
 
     if (!button) return 0;
@@ -172,22 +179,54 @@ export const getTokenBalance =
     return matches && matches.length >= 2 ? Number(matches[1]) : 0;
   };
 
-export const createAccount = (page: Page) => async () => {
+export const createAccount = (page: Page) => async (): Promise<void> => {
   await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
   await page.getByTestId('wallet-switcher--action').click();
   await page.getByTestId('manage-wallets-account-item--action-cell-pressable').click();
 
-  // Help information pops up the first time
+  // Help prompt appears once
   try {
     await page.getByTestId('add-new-wallet--continue').click();
-  } catch {}
+  } catch {
+    // Ignore missing help prompt
+  }
 };
 
-export const switchAccount = (page: Page) => async (i: number) => {
-  await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
-  (await page.waitForSelector(`(//button[@data-testid="wallet-switcher--wallet-item-cell-pressable"])[${i}]`)).click();
+export const switchAccount =
+  (page: Page) =>
+  async (i: number): Promise<void> => {
+    await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
+    (
+      await page.waitForSelector(`(//button[@data-testid="wallet-switcher--wallet-item-cell-pressable"])[${i}]`)
+    ).click();
+  };
+
+//
+// Unimplemented actions
+//
+
+export const deleteAccount = async (_i: number): Promise<void> => {
+  // eslint-disable-next-line no-console
+  console.warn('deleteAccount not implemented - Coinbase does not support importing/removing additional private keys');
 };
 
-export const deleteAccount = (page: Page) => async (i: number) => {
-  console.warn('deleteAccount not implemented - Coinbase does not support additional private keys');
+export const addToken = async (_: AddToken): Promise<void> => {
+  // eslint-disable-next-line no-console
+  console.warn('importPK not implemented - Coinbase does not support importing/removing private keys');
+};
+
+export const importPK = async (_: string): Promise<void> => {
+  // eslint-disable-next-line no-console
+  console.warn('importPK not implemented - Coinbase does not support importing/removing private keys');
+};
+
+export const switchNetwork = async (_: string): Promise<void> => {
+  // eslint-disable-next-line no-console
+  console.warn('switchNetwork not implemented');
+};
+
+// TODO: Cannot implement until verified coinbase wallet bug is fixed.
+export const confirmNetworkSwitch = async (): Promise<void> => {
+  // eslint-disable-next-line no-console
+  console.warn('confirmNetorkSwitch not implemented');
 };

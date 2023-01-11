@@ -5,13 +5,17 @@ import Wallet from '../wallet';
 import { Step, WalletIdOptions, WalletOptions } from '../wallets';
 import {
   addNetwork,
+  addToken,
   approve,
+  confirmNetworkSwitch,
   confirmTransaction,
   createAccount,
+  deleteAccount,
   deleteNetwork,
   getStarted,
   getTokenBalance,
   hasNetwork,
+  importPK,
   lock,
   sign,
   switchAccount,
@@ -42,23 +46,19 @@ export class CoinbaseWallet extends Wallet {
 
   // Actions
   addNetwork = addNetwork(this.page);
-  addToken = async () => console.warn('addToken not implemented');
+  addToken = addToken;
   approve = approve(this.page);
   createAccount = createAccount(this.page);
-  confirmNetworkSwitch = async () => {
-    console.warn('confirmNetworkSwitch not implemented');
-  };
-  confirmTransaction = async () => confirmTransaction(this.page);
-  deleteAccount = async () => console.warn('deleteAccount not implemented');
+  confirmNetworkSwitch = confirmNetworkSwitch;
+  confirmTransaction = confirmTransaction(this.page);
+  deleteAccount = deleteAccount;
   deleteNetwork = deleteNetwork(this.page);
   getTokenBalance = getTokenBalance(this.page);
   hasNetwork = hasNetwork(this.page);
-  importPK = async () => {
-    throw SyntaxError('import pk not supported in coinbase wallet');
-  };
+  importPK = importPK;
   lock = lock(this.page);
   sign = sign(this.page);
   switchAccount = switchAccount(this.page);
-  switchNetwork = async () => switchNetwork(this.page);
+  switchNetwork = switchNetwork;
   unlock = unlock(this.page);
 }
