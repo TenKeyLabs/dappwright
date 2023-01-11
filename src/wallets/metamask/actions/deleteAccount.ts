@@ -1,6 +1,6 @@
 import { Page } from 'playwright-core';
 
-import { clickOnButton, clickOnElement } from '../../../helpers';
+import { clickOnButton, clickOnElement, waitForChromeState } from '../../../helpers';
 import { openAccountDropdown } from './helpers';
 import { switchAccount } from './switchAccount';
 
@@ -15,5 +15,5 @@ export const deleteAccount =
     await openAccountDropdown(page);
     await clickOnElement(page, 'Remove account');
     await clickOnButton(page, 'Remove');
-    await page.waitForTimeout(1000);
+    await waitForChromeState(page);
   };
