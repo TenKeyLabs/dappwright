@@ -19,10 +19,10 @@ const conditionalCallback = (
 };
 
 // For wallet logic within an test
-export const forMetaMask = (wallet: Dappwright, callback: () => Promise<any>): Promise<void> => {
+export const forMetaMask = (wallet: Dappwright, callback: () => Promise<void>): Promise<void> => {
   return conditionalCallback(wallet, MetaMaskWallet, callback);
 };
 
-export const forCoinbase = (wallet: Dappwright, callback: () => Promise<any>): Promise<void> => {
+export const forCoinbase = (wallet: Dappwright, callback: () => Promise<void>): Promise<void> => {
   return conditionalCallback(wallet, CoinbaseWallet, callback);
 };
