@@ -26,7 +26,8 @@
     "lint": "eslint --color --ext .ts src/ test/",
     "lint:fix": "yarn run lint --fix",
     "test": "mocha",
-    "test:dev": "mocha --timeout 36000000"
+    "test:dev": "mocha --timeout 36000000",
+    "changeset:publish": "yarn build && changeset publish"
   },
   "repository": {
     "type": "git",
@@ -50,6 +51,8 @@
     "node-stream-zip": "^1.13.0"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.4.8",
+    "@changesets/cli": "^2.26.0",
     "@jest/types": "^27.1.1",
     "@types/chai": "^4.2.22",
     "@types/mocha": "^7.0.2",
