@@ -48,7 +48,7 @@ describe.each<OfficialOptions>([
   it('should lock and unlock', async () => {
     await wallet.lock();
     await wallet.unlock('password1234!@#$');
-  }, 15000); // Coinbase wallet unlock waits for homepage to load
+  }); // Coinbase wallet unlock waits for homepage to load
 
   describe('account management', () => {
     describe('createAccount', () => {
