@@ -32,7 +32,7 @@ export default (recommendedVersion: string, location?: Path) =>
 
     if (version) {
       /* eslint-disable no-console */
-      console.log(); // new line
+      console.log(''); // new line
       if (version === 'latest')
         console.warn(
           '\x1b[33m%s\x1b[0m',
@@ -52,7 +52,7 @@ export default (recommendedVersion: string, location?: Path) =>
         );
       else console.log(`Running tests on MetaMask version ${version}`);
 
-      console.log(); // new line
+      console.log(''); // new line
 
       METAMASK_PATH = await download('v' + version, location);
     } else {
