@@ -57,7 +57,7 @@
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-import": "^2.25.0",
-    "eslint-plugin-prettier": "^3.3.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "ganache": "^7.4.3",
     "microbundle": "^0.15.1",
     "playwright-core": "^1.27.1",
