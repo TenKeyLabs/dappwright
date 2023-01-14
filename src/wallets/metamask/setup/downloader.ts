@@ -71,6 +71,9 @@ const download = async (version: string, releasesUrl: string, location: string):
     if (fs.existsSync(extractDestination) && !isEmpty(extractDestination)) return extractDestination;
   }
 
+  // eslint-disable-next-line no-console
+  console.log('Downloading extension...');
+
   const { filename, downloadUrl, tag } = await getGithubRelease(releasesUrl, version);
   const extractDestination = path.resolve(location, tag.replace(/\./g, '_'));
 
@@ -129,11 +132,14 @@ type GithubRelease = { downloadUrl: string; filename: string; tag: string };
 const getGithubRelease = (releasesUrl: string, version: string): Promise<GithubRelease> =>
   new Promise((resolve, reject) => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const request = get(releasesUrl, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (response) => {
+    const options = { headers: { 'User-Agent': 'Mozilla/5.0' } };
+    if (process.env.GITHUB_TOKEN) options.headers['Authorization'] = `Bearer ${process.env.GITHUB_TOKEN}`;
+    const request = get(releasesUrl, options, (response) => {
       let body = '';
       response.on('data', (chunk) => {
         body += chunk;
       });
+
       response.on('end', () => {
         const data = JSON.parse(body);
         if (data.message) return reject(data.message);

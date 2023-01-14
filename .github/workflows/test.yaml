@@ -37,7 +37,14 @@ jobs:
           node-version: '16'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: |
+          yarn install --frozen-lockfile
+          npx playwright install
+
+      - name: Install Browsers
+        run: npx playwright install
 
       - name: Test
-        run: xvfb-run --auto-servernum yarn run test
+        run: |
+          export GITHUB_TOKEN='${{ secrets.GITHUB_TOKEN }}'
+          xvfb-run --auto-servernum yarn run test

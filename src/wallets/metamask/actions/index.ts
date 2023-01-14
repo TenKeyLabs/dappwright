@@ -6,7 +6,7 @@ export * from './createAccount';
 export * from './deleteAccount';
 export * from './deleteNetwork';
 export * from './getTokenBalance';
-export * from './importPK';
+export * from './importPk';
 export * from './lock';
 export * from './sign';
 export * from './switchAccount';
