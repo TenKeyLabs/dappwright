@@ -6,7 +6,7 @@ type ContractSources = Record<string, { content: string }>;
 
 function buildSources(): ContractSources {
   const sources: ContractSources = {};
-  const contractsLocation = path.join(__dirname, '.');
+  const contractsLocation = __dirname;
   const contractsFiles = fs.readdirSync(contractsLocation);
 
   contractsFiles.forEach((file) => {
