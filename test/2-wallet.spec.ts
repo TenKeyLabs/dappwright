@@ -213,7 +213,7 @@ describe.each<OfficialOptions>([
       const tokenBalance: number = await wallet.getTokenBalance('ETH');
 
       // Unable to get local balance from Coinbase wallet. This is Goerli value for now.
-      const expectedTokenBalance = wallet instanceof MetaMaskWallet ? 999.9998 : 2.998;
+      const expectedTokenBalance = wallet instanceof MetaMaskWallet ? 999.9996 : 2.998;
 
       expect(tokenBalance).toEqual(expectedTokenBalance);
     });

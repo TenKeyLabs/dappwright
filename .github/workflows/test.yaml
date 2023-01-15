@@ -45,6 +45,7 @@ jobs:
         run: npx playwright install
 
       - name: Test
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         run: |
-          export GITHUB_TOKEN='${{ secrets.GITHUB_TOKEN }}'
           xvfb-run --auto-servernum yarn run test
