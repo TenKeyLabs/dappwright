@@ -62,7 +62,7 @@
     "microbundle": "^0.15.1",
     "playwright-core": "^1.27.1",
     "prettier": "^2.7.1",
-    "serve-handler": "5.0.8",
+    "serve-handler": "6.1.5",
     "solc": "0.8.17",
     "jest": "29.3.1",
     "ts-jest": "^29.0.3",
