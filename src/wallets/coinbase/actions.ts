@@ -3,7 +3,6 @@ import { AddNetwork, AddToken } from '../..';
 import { waitForChromeState } from '../../helpers';
 import { performPopupAction } from '../metamask/actions';
 import { WalletOptions } from '../wallets';
-import { extensionUrl } from './coinbase';
 
 const goHome = async (page: Page): Promise<void> => {
   await page.getByTestId('portfolio-navigation-link').click();
@@ -80,7 +79,7 @@ export const addNetwork =
   async (options: AddNetwork): Promise<void> => {
     // Add network flow closes current screen and opens another, direct access is cleaner for now
     const settingsPage = await page.context().newPage();
-    await settingsPage.goto(`${extensionUrl}?internalPopUpRequest=true&action=addCustomNetwork`);
+    await settingsPage.goto(`${page.url()}?internalPopUpRequest=true&action=addCustomNetwork`);
     await settingsPage.getByTestId('custom-network-name-input').fill(options.networkName);
     await settingsPage.getByTestId('custom-network-rpc-url-input').fill(options.rpc);
     await settingsPage.getByTestId('custom-network-chain-id-input').fill(options.chainId.toString());

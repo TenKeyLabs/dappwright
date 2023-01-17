@@ -1,4 +1,3 @@
-import { Page } from 'playwright-core';
 import Wallet from '../wallet';
 import { Step, WalletIdOptions, WalletOptions } from '../wallets';
 import {
@@ -27,13 +26,9 @@ export class MetaMaskWallet extends Wallet {
   static id = 'metamask' as WalletIdOptions;
   static recommendedVersion = '10.20.0';
   static releasesUrl = 'https://api.github.com/repos/metamask/metamask-extension/releases';
-  static extensionUrl = 'chrome-extension://pmlhcfhikiidanoeecddljgpcmipdkak/home.html';
+  static homePath = '/home.html';
 
   options: WalletOptions;
-
-  constructor(page: Page) {
-    super(page);
-  }
 
   // Extension Downloader
   static download = downloader(this.id, this.releasesUrl, this.recommendedVersion);

@@ -6,8 +6,6 @@ export default abstract class Wallet implements Dappwright {
   version: string;
   page: Page;
 
-  // abstract options: WalletOptions;
-
   constructor(page: Page) {
     this.page = page;
   }
@@ -16,7 +14,7 @@ export default abstract class Wallet implements Dappwright {
   static id: WalletIdOptions;
   static recommendedVersion: string;
   static releasesUrl: string;
-  static extensionUrl: string;
+  static homePath: string;
 
   // Extension downloader
   static download: (options: OfficialOptions) => Promise<string>;
