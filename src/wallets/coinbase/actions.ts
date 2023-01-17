@@ -212,7 +212,7 @@ export const deleteAccount = async (_i: number): Promise<void> => {
 
 export const addToken = async (_: AddToken): Promise<void> => {
   // eslint-disable-next-line no-console
-  console.warn('importPK not implemented - Coinbase does not support importing/removing private keys');
+  console.warn('addToken not implemented - Coinbase does not support adding custom tokens');
 };
 
 export const importPK = async (_: string): Promise<void> => {
