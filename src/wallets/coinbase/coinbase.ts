@@ -1,33 +1,35 @@
 import { Page } from 'playwright-core';
+import { setup } from '../metamask/setup';
+import downloader from '../metamask/setup/downloader';
 import Wallet from '../wallet';
 import { Step, WalletIdOptions, WalletOptions } from '../wallets';
 import {
   addNetwork,
   addToken,
   approve,
+  confirmNetworkSwitch,
   confirmTransaction,
   createAccount,
   deleteAccount,
   deleteNetwork,
+  getStarted,
   getTokenBalance,
-  importPk,
+  hasNetwork,
+  importPK,
   lock,
   sign,
   switchAccount,
   switchNetwork,
   unlock,
 } from './actions';
-import { allowNetworkSwitch as confirmNetworkSwitch } from './actions/allowNetworkSwitch';
-import { hasNetwork } from './actions/hasNetwork';
-import { setup } from './setup';
-import downloader from './setup/downloader';
-import { closePopup, confirmWelcomeScreen, importAccount, noThanksTelemetry, showTestNets } from './setup/setupActions';
 
-export class MetaMaskWallet extends Wallet {
-  static id = 'metamask' as WalletIdOptions;
-  static recommendedVersion = '10.20.0';
-  static releasesUrl = 'https://api.github.com/repos/metamask/metamask-extension/releases';
-  static extensionUrl = 'chrome-extension://pmlhcfhikiidanoeecddljgpcmipdkak/home.html';
+export const extensionUrl = 'chrome-extension://niockamnihbifmabjckhncfbggkcanme/index.html';
+
+export class CoinbaseWallet extends Wallet {
+  static id = 'coinbase' as WalletIdOptions;
+  static recommendedVersion = '3.0.4';
+  static releasesUrl = 'https://api.github.com/repos/osis/coinbase-wallet-archive/releases';
+  static extensionUrl = extensionUrl;
 
   options: WalletOptions;
 
@@ -39,30 +41,24 @@ export class MetaMaskWallet extends Wallet {
   static download = downloader(this.id, this.releasesUrl, this.recommendedVersion);
 
   // Setup
-  defaultSetupSteps: Step<WalletOptions>[] = [
-    confirmWelcomeScreen,
-    noThanksTelemetry,
-    importAccount,
-    closePopup,
-    showTestNets,
-  ];
+  defaultSetupSteps: Step<WalletOptions>[] = [getStarted];
   setup = setup(this.page, this.defaultSetupSteps);
 
   // Actions
   addNetwork = addNetwork(this.page);
-  addToken = addToken(this.page);
+  addToken = addToken;
   approve = approve(this.page);
   createAccount = createAccount(this.page);
-  confirmNetworkSwitch = confirmNetworkSwitch(this.page);
+  confirmNetworkSwitch = confirmNetworkSwitch;
   confirmTransaction = confirmTransaction(this.page);
-  deleteAccount = deleteAccount(this.page);
+  deleteAccount = deleteAccount;
   deleteNetwork = deleteNetwork(this.page);
   getTokenBalance = getTokenBalance(this.page);
   hasNetwork = hasNetwork(this.page);
-  importPK = importPk(this.page);
+  importPK = importPK;
   lock = lock(this.page);
   sign = sign(this.page);
   switchAccount = switchAccount(this.page);
-  switchNetwork = switchNetwork(this.page);
+  switchNetwork = switchNetwork;
   unlock = unlock(this.page);
 }

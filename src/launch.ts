@@ -6,7 +6,7 @@ import { DappwrightLaunchResponse, OfficialOptions } from './types';
 import { getWallet, getWalletType } from './wallets/wallets';
 
 /**
- * Launch Playwright chromium instance with MetaMask plugin installed
+ * Launch Playwright chromium instance with wallet plugin installed
  * */
 export const sessionPath = path.resolve(os.tmpdir(), 'dappwright', 'session');
 
@@ -16,13 +16,13 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
 
   const extensionPath = await wallet.download(options);
 
-  const browserContext = await playwright.chromium.launchPersistentContext(sessionPath, {
+  const browserContext = await playwright.chromium.launchPersistentContext(path.join(sessionPath, options.wallet), {
     headless: false,
     args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
   });
 
   return {
-    wallet: await getWallet('metamask', browserContext),
+    wallet: await getWallet(wallet.id, browserContext),
     browserContext,
   };
 }

@@ -6,13 +6,20 @@
     <title>Local wallet test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="ethers-5.7.2.umd.min.js"></script>
+    <style>
+      body {
+        font-family: 'Courier New', monospace;
+      }
+    </style>
   </head>
   <body>
     <button class="connect-button">Connect</button>
+    <button class="switch-network-button">Switch Network</button>
     <button class="sign-button">Sign</button>
     <button class="increase-button">Increase</button>
     <button class="increase-fees-button">Increase Fees</button>
     <button class="transfer-button">Transfer</button>
+    <input disabled id="chain-id" />
 
     <script src="Counter.js"></script>
     <script src="main.js"></script>
