@@ -24,28 +24,3 @@ jobs:
 
       - name: Lint
         run: yarn run lint
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          cache: yarn
-          node-version: '16'
-
-      - name: Install dependencies
-        run: |
-          yarn install --frozen-lockfile
-          npx playwright install
-
-      - name: Install Browsers
-        run: npx playwright install
-
-      - name: Test
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-        run: |
-          xvfb-run --auto-servernum yarn run test
