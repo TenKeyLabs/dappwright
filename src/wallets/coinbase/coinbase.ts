@@ -1,4 +1,3 @@
-import { Page } from 'playwright-core';
 import { setup } from '../metamask/setup';
 import downloader from '../metamask/setup/downloader';
 import Wallet from '../wallet';
@@ -23,19 +22,13 @@ import {
   unlock,
 } from './actions';
 
-export const extensionUrl = 'chrome-extension://niockamnihbifmabjckhncfbggkcanme/index.html';
-
 export class CoinbaseWallet extends Wallet {
   static id = 'coinbase' as WalletIdOptions;
   static recommendedVersion = '3.0.4';
   static releasesUrl = 'https://api.github.com/repos/osis/coinbase-wallet-archive/releases';
-  static extensionUrl = extensionUrl;
+  static homePath = '/index.html';
 
   options: WalletOptions;
-
-  constructor(page: Page) {
-    super(page);
-  }
 
   // Extension Downloader
   static download = downloader(this.id, this.releasesUrl, this.recommendedVersion);

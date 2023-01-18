@@ -28,15 +28,38 @@ export const getWallet = async (id: WalletIdOptions, browserContext: BrowserCont
 
   if (browserContext.pages().length === 1) {
     try {
-      await browserContext.waitForEvent('page', { timeout: 1000 });
+      // Wait for the wallet to pop up
+      const page = await browserContext.waitForEvent('page', { timeout: 1000 });
+      return new wallet(page);
     } catch {
-      // Open the wallet if tab doesn't pop up automatically
-      const page = await browserContext.newPage();
-      await page.goto(wallet.extensionUrl);
+      // Wallet has failed to pop up, move on
     }
+
+    // Open the wallet manually if tab doesn't pop up
+    const page = await browserContext.newPage();
+
+    // Go to internal system page to list installed extensions
+    await page.goto('chrome://system/');
+
+    try {
+      await page.waitForSelector('//*[@id="extensions-value-btn"]', { timeout: 5000 });
+      await page.getByRole('button', { name: 'Expand all…' }).click();
+    } catch {
+      // Chrome doesn't have enough information on the screen to show the expand button, move on
+    }
+
+    // Extract extension id
+    const extensionsEl = await page.waitForSelector('//*[@id="extensions-value"]');
+    const extensionsContext = (await extensionsEl.textContent()).split(/ : |\n/);
+    const walletNameIndex = extensionsContext.findIndex((context: string) => context.toLowerCase().includes(wallet.id));
+    const extensionId = extensionsContext[walletNameIndex - 1];
+
+    // Load extension homepage
+    await page.goto(`chrome-extension://${extensionId}${wallet.homePath}`);
+
+    return new wallet(page);
   }
 
   const page = browserContext.pages()[1];
-
   return new wallet(page);
 };

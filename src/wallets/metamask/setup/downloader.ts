@@ -53,7 +53,7 @@ export default (walletId: WalletIdOptions, releasesUrl: string, recommendedVersi
 
       console.log(''); // new line
 
-      EXTENSION_PATH = await download('v' + version, releasesUrl, downloadDir(walletId));
+      EXTENSION_PATH = await download(version, releasesUrl, downloadDir(walletId));
     } else {
       console.log(`Running tests on local ${walletId} build`);
     }
@@ -74,7 +74,7 @@ const download = async (version: string, releasesUrl: string, location: string):
   // eslint-disable-next-line no-console
   console.log('Downloading extension...');
 
-  const { filename, downloadUrl, tag } = await getGithubRelease(releasesUrl, version);
+  const { filename, downloadUrl, tag } = await getGithubRelease(releasesUrl, `v${version}`);
   const extractDestination = path.resolve(location, tag.replace(/\./g, '_'));
 
   // Clean if system tmp files are cleaned but dir structure can persist
