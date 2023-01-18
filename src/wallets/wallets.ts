@@ -31,7 +31,9 @@ export const getWallet = async (id: WalletIdOptions, browserContext: BrowserCont
       // Wait for the wallet to pop up
       const page = await browserContext.waitForEvent('page', { timeout: 1000 });
       return new wallet(page);
-    } catch {}
+    } catch {
+      // Wallet has failed to pop up, move on
+    }
 
     // Open the wallet manually if tab doesn't pop up
     const page = await browserContext.newPage();
@@ -42,7 +44,9 @@ export const getWallet = async (id: WalletIdOptions, browserContext: BrowserCont
     try {
       await page.waitForSelector('//*[@id="extensions-value-btn"]', { timeout: 5000 });
       await page.getByRole('button', { name: 'Expand all…' }).click();
-    } catch {}
+    } catch {
+      // Chrome doesn't have enough information on the screen to show the expand button, move on
+    }
 
     // Extract extension id
     const extensionsEl = await page.waitForSelector('//*[@id="extensions-value"]');
