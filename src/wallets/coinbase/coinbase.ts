@@ -16,6 +16,7 @@ import {
   hasNetwork,
   importPK,
   lock,
+  navigateHome,
   sign,
   switchAccount,
   switchNetwork,
@@ -34,7 +35,7 @@ export class CoinbaseWallet extends Wallet {
   static download = downloader(this.id, this.releasesUrl, this.recommendedVersion);
 
   // Setup
-  defaultSetupSteps: Step<WalletOptions>[] = [getStarted];
+  defaultSetupSteps: Step<WalletOptions>[] = [getStarted, navigateHome];
   setup = setup(this.page, this.defaultSetupSteps);
 
   // Actions
