@@ -1,6 +1,6 @@
 # dAppwright
 
-E2E testing for dApps using Playwright + MetaMask
+E2E testing for dApps using Playwright + MetaMask or Coinbase Wallet
 
 This is a fork of [dAppeteer](https://github.com/chainsafe/dappeteer)
 
@@ -16,8 +16,8 @@ $ yarn add @tenkeylabs/dappwright
 ```typescript
 # global-setup.ts
 
-import dappwright, { CoinbaseWallet, MetaMaskWallet } from "@tenkeylabs/dappwright";
-import playwright  from 'playwright';
+import dappwright, { MetaMaskWallet } from "@tenkeylabs/dappwright";
+import playwright from 'playwright';
 
 async function globalSetup(config: FullConfig) {
   const [metamask, page, context] = await dappwright.bootstrap("", {
