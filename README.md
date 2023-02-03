@@ -1,8 +1,6 @@
 # dAppwright
 
-E2E testing for dApps using Playwright + MetaMask or Coinbase Wallet
-
-This is a fork of [dAppeteer](https://github.com/chainsafe/dappeteer)
+E2E testing for dApps using Playwright + MetaMask & Coinbase Wallet
 
 ## Installation
 
@@ -80,3 +78,7 @@ test("can connect to an application", async ({ page, metamask }) => {
   await page.waitForUrl("http://localhost:3000/dashboard");
 })
 ```
+
+## Special Thanks
+
+This project is a fork of the [Chainsafe](https://github.com/chainsafe/dappeteer) and [Decentraland](https://github.com/decentraland/dappeteer) version of dAppeteer.
