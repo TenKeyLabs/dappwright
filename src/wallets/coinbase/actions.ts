@@ -117,7 +117,7 @@ export const deleteNetwork =
 
     // Search for network then click on the first result
     await page.getByTestId('network-list-search').fill(name);
-    (await page.waitForSelector('//div[@data-testid="list-"][1]//button')).click();
+    await (await page.waitForSelector('//div[@data-testid="list-"][1]//button')).click();
 
     await page.getByTestId('custom-network-delete').click();
     await goHome(page);
@@ -189,13 +189,15 @@ export const createAccount = (page: Page) => async (): Promise<void> => {
   } catch {
     // Ignore missing help prompt
   }
+
+  await waitForChromeState(page);
 };
 
 export const switchAccount =
   (page: Page) =>
   async (i: number): Promise<void> => {
     await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
-    (
+    await (
       await page.waitForSelector(`(//button[@data-testid="wallet-switcher--wallet-item-cell-pressable"])[${i}]`)
     ).click();
   };
