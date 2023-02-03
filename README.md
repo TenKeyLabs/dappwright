@@ -21,10 +21,11 @@ import playwright  from 'playwright';
 
 async function globalSetup(config: FullConfig) {
   const [metamask, page, context] = await dappwright.bootstrap("", {
-    metamaskVersion: "v10.20.0",
+    wallet: "metamask",
+    version: MetaMaskWallet.recommendedVersion,
   });
 
-  // Add a custom network
+  // Add Hardhet network
   await metamask.addNetwork({
     networkName: "Hardhat",
     rpc: "http://127.0.0.1:8545/",
@@ -34,7 +35,6 @@ async function globalSetup(config: FullConfig) {
 
   // Add an extra account
   await metamask.createAccount();
-  await page.waitForTimeout(3000); // Metamask needs some time to commit changes to disk
 
   await context.close();
 }
@@ -52,20 +52,17 @@ export const test = base.extend<{
   context: async ({}, use) => {
     // Launch context with the same session from global-setup
     const context: BrowserContext = await dappwright.launch("", {
-      metamaskVersion: "v10.20.0",
+      metamaskVersion: MetaMaskWallet.recommendedVersion,
     });
 
     // Unlock the wallet
-    const metamaskPage = await context.waitForEvent("page");
-    const metamask = await dappwright.getMetamask(metamaskPage);
     await metamask.unlock();
 
     await use(context);
     await context.close();
   },
   metamask: async ({ context }, use) => {
-    const metamaskPage = context.pages()[1];
-    const metamask = await dappwright.getMetamask(metamaskPage);
+    const metamask = await dappwright.getWallet("metamask", context);
 
     await use(metamask);
   },
@@ -73,8 +70,13 @@ export const test = base.extend<{
 
 test.describe.configure({ mode: "serial" }); // Avoid colliding browser sessions
 test("can connect to an application", async ({ page, metamask }) => {
+  // Click a connect wallet button
   await page.locator("text=MetaMask").click();
+
+  // Approve the connection when MetaMask pops up
   await metamask.approve();
+
+  // Wait for the dapp to redirect
   await page.waitForUrl("http://localhost:3000/dashboard");
 })
 ```
