@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.2.0
+
+### Minor Changes
+
+- [#56](https://github.com/TenKeyLabs/dappwright/pull/56) [`381d229`](https://github.com/TenKeyLabs/dappwright/commit/381d22910755a87dfd66df18f38bc2b26883833f) Thanks [@osis](https://github.com/osis)! - export wallet types
+
+### Patch Changes
+
+- [#58](https://github.com/TenKeyLabs/dappwright/pull/58) [`f6bfcab`](https://github.com/TenKeyLabs/dappwright/commit/f6bfcab42eb738ba2b3028db51648ba4affa79a2) Thanks [@osis](https://github.com/osis)! - adds missing await for coinbase account switch click
+
+- [#57](https://github.com/TenKeyLabs/dappwright/pull/57) [`6187ce6`](https://github.com/TenKeyLabs/dappwright/commit/6187ce61e3bb654cf60463c8115c998b9e7de3f0) Thanks [@osis](https://github.com/osis)! - navigate home after coinbase setup
+
+- [#58](https://github.com/TenKeyLabs/dappwright/pull/58) [`f6bfcab`](https://github.com/TenKeyLabs/dappwright/commit/f6bfcab42eb738ba2b3028db51648ba4affa79a2) Thanks [@osis](https://github.com/osis)! - adds missing await for coinbase accountSwitch & deleteNetwork clicks
+
 ## 2.1.0
 
 ### Minor Changes
