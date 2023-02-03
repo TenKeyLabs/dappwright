@@ -1,6 +1,8 @@
 import { BrowserContext, Page } from 'playwright-core';
 import Wallet from './wallets/wallet';
 import { WalletIdOptions } from './wallets/wallets';
+export { CoinbaseWallet } from './wallets/coinbase/coinbase';
+export { MetaMaskWallet } from './wallets/metamask/metamask';
 
 export type LaunchOptions = OfficialOptions | DappwrightBrowserLaunchArgumentOptions;
 
