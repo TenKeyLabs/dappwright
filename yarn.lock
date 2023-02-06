@@ -4510,9 +4510,9 @@ functions-have-names@^1.2.2:
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
 ganache@^7.4.3:
-  version "7.7.3"
-  resolved "https://registry.yarnpkg.com/ganache/-/ganache-7.7.3.tgz#c36f982166239a3cf8ae040942c08a4ba6e62dc3"
-  integrity sha512-dZTUHjzSuvDTMUpKaBTWJnpcWpsBUtqciA8ttdmC/r/XRXJhDa0EpypisYULhoV8tx76G08mOuM/B1vhPbh20A==
+  version "7.7.4"
+  resolved "https://registry.yarnpkg.com/ganache/-/ganache-7.7.4.tgz#aea533f769a9a5b452ef101c0a6b9970651400c4"
+  integrity sha512-ies0uaFAnHrTzCJaCg/FYFVD4B9DFouKkWpEmQDCQRYwT4n5SqbZDR7aIDy/iATtBzkJJsQ6RptE9Ovr32Dmpw==
   dependencies:
     "@trufflesuite/bigint-buffer" "1.1.10"
     "@types/bn.js" "^5.1.0"
