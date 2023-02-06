@@ -16,6 +16,7 @@ export type DappwrightConfig = Partial<{
 export type OfficialOptions = DappwrightBrowserLaunchArgumentOptions & {
   wallet: WalletIdOptions;
   version: 'latest' | string;
+  headless?: boolean;
 };
 
 export type DappwrightLaunchResponse = {
