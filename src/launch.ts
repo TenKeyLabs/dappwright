@@ -17,7 +17,7 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
   const extensionPath = await wallet.download(options);
 
   const browserContext = await playwright.chromium.launchPersistentContext(path.join(sessionPath, options.wallet), {
-    headless: false,
+    headless: true,
     args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
   });
 
