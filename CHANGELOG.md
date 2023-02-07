@@ -2,9 +2,11 @@
 
 ## 2.2.1
 
-### Patch Changes
+### Minor Changes
 
 - [#66](https://github.com/TenKeyLabs/dappwright/pull/66) [`9f551e2`](https://github.com/TenKeyLabs/dappwright/commit/9f551e2c7354e86809835357adc5c0314102c783) Thanks [@witem](https://github.com/witem)! - Add headless option to bootstrap
+
+### Patch Changes
 
 - [#64](https://github.com/TenKeyLabs/dappwright/pull/64) [`e7a3eed`](https://github.com/TenKeyLabs/dappwright/commit/e7a3eeda9ce23a9afca96dbd5d82652795809bca) Thanks [@dependabot](https://github.com/apps/dependabot)! - chore: bump jest from 29.3.1 to 29.4.1
 
