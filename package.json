@@ -65,7 +65,7 @@
     "playwright-core": "^1.27.1",
     "prettier": "^2.7.1",
     "serve-handler": "6.1.5",
-    "solc": "0.8.17",
+    "solc": "0.8.18",
     "jest": "29.4.1",
     "ts-jest": "^29.0.3",
     "ts-node": "10.9.1",
