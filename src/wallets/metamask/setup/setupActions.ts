@@ -8,13 +8,26 @@ export async function showTestNets(metamaskPage: Page): Promise<void> {
   await openNetworkDropdown(metamaskPage);
 
   await clickOnElement(metamaskPage, 'Show/hide');
+  await clickOnSettingsSwitch(metamaskPage, 'Advanced gas controls');
   await clickOnSettingsSwitch(metamaskPage, 'Show test networks');
   await clickOnLogo(metamaskPage);
   await waitForChromeState(metamaskPage);
 }
 
-export async function confirmWelcomeScreen(metamaskPage: Page): Promise<void> {
-  await clickOnButton(metamaskPage, 'Get started');
+export async function importWallet(metamaskPage: Page): Promise<void> {
+  await metamaskPage.getByTestId('onboarding-import-wallet').click();
+  await metamaskPage.getByTestId('import-srp-confirm').click();
+  await metamaskPage.getByTestId('create-password-new').fill('sdfsdf');
+  await metamaskPage.getByTestId('create-password-confirm').click();
+  await metamaskPage.getByTestId('create-password-confirm').fill('sdfsdfs');
+  await metamaskPage.getByTestId('create-password-new').dblclick();
+  await metamaskPage.getByTestId('create-password-new').fill('10keylabs');
+  await metamaskPage.getByTestId('create-password-new').press('Tab');
+  await metamaskPage.getByTestId('create-password-confirm').fill('10keylabs');
+  await metamaskPage.getByTestId('create-password-import').click();
+  await metamaskPage.getByTestId('onboarding-complete-done').click();
+  await metamaskPage.getByTestId('pin-extension-next').click();
+  await metamaskPage.getByTestId('pin-extension-done').click();
 }
 
 export async function noThanksTelemetry(metamaskPage: Page): Promise<void> {
@@ -23,25 +36,28 @@ export async function noThanksTelemetry(metamaskPage: Page): Promise<void> {
 
 export async function importAccount(
   metamaskPage: Page,
-  {
-    seed = 'already turtle birth enroll since owner keep patch skirt drift any dinner',
-    password = 'password1234',
-  }: WalletOptions,
+  { seed = 'already turtle birth enroll since owner keep patch skirt drift any dinner' }: WalletOptions,
 ): Promise<void> {
-  await clickOnButton(metamaskPage, 'Import wallet');
+  await metamaskPage.getByTestId('onboarding-import-wallet').click();
+  await metamaskPage.getByTestId('metametrics-i-agree').click();
 
   for (const [index, seedPart] of seed.split(' ').entries())
     await typeOnInputField(metamaskPage, `${index + 1}.`, seedPart);
 
-  await typeOnInputField(metamaskPage, 'New password', password);
-  await typeOnInputField(metamaskPage, 'Confirm password', password);
+  await metamaskPage.getByTestId('import-srp-confirm').click();
+}
 
-  // select checkbox "I have read and agree to the"
-  const acceptTerms = await metamaskPage.waitForSelector('.create-new-vault__terms-label');
-  await acceptTerms.click();
+export async function createPassword(metamaskPage: Page, { password = 'password1234' }: WalletOptions): Promise<void> {
+  await metamaskPage.getByTestId('create-password-new').fill(password);
+  await metamaskPage.getByTestId('create-password-confirm').fill(password);
+  await metamaskPage.getByTestId('create-password-terms').click();
+  await metamaskPage.getByTestId('create-password-import').click();
+}
 
-  await clickOnButton(metamaskPage, 'Import');
-  await clickOnButton(metamaskPage, 'All done');
+export async function clearOnboardingHelp(metamaskPage: Page): Promise<void> {
+  await metamaskPage.getByTestId('onboarding-complete-done').click();
+  await metamaskPage.getByTestId('pin-extension-next').click();
+  await metamaskPage.getByTestId('pin-extension-done').click();
 }
 
 export const closePopup = async (page: Page): Promise<void> => {

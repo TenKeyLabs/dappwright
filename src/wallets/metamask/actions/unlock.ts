@@ -1,5 +1,4 @@
 import { Page } from 'playwright-core';
-import { clickOnButton, typeOnInputField } from '../../../helpers';
 import { closePopup } from '../setup/setupActions';
 
 export const unlock =
@@ -7,7 +6,8 @@ export const unlock =
   async (password = 'password1234'): Promise<void> => {
     await page.bringToFront();
 
-    await typeOnInputField(page, 'Password', password);
-    await clickOnButton(page, 'Unlock');
+    await page.getByTestId('unlock-password').fill(password);
+    await page.getByTestId('unlock-submit').click();
+
     await closePopup(page);
   };

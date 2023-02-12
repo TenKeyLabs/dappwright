@@ -20,11 +20,11 @@ import { allowNetworkSwitch as confirmNetworkSwitch } from './actions/allowNetwo
 import { hasNetwork } from './actions/hasNetwork';
 import { setup } from './setup';
 import downloader from './setup/downloader';
-import { closePopup, confirmWelcomeScreen, importAccount, noThanksTelemetry, showTestNets } from './setup/setupActions';
+import { clearOnboardingHelp, closePopup, createPassword, importAccount, showTestNets } from './setup/setupActions';
 
 export class MetaMaskWallet extends Wallet {
   static id = 'metamask' as WalletIdOptions;
-  static recommendedVersion = '10.20.0';
+  static recommendedVersion = '10.25.0';
   static releasesUrl = 'https://api.github.com/repos/metamask/metamask-extension/releases';
   static homePath = '/home.html';
 
@@ -35,9 +35,9 @@ export class MetaMaskWallet extends Wallet {
 
   // Setup
   defaultSetupSteps: Step<WalletOptions>[] = [
-    confirmWelcomeScreen,
-    noThanksTelemetry,
     importAccount,
+    createPassword,
+    clearOnboardingHelp,
     closePopup,
     showTestNets,
   ];
