@@ -3,7 +3,7 @@ import { Dappwright, OfficialOptions } from '../src';
 import { CoinbaseWallet } from '../src/wallets/coinbase/coinbase';
 import { clickOnLogo, openProfileDropdown } from '../src/wallets/metamask/actions/helpers';
 import { MetaMaskWallet } from '../src/wallets/metamask/metamask';
-import { forMetaMask } from './helpers/itForWallet';
+import { forCoinbase, forMetaMask } from './helpers/itForWallet';
 import launchBrowser from './helpers/launchBrowser';
 
 // TODO: Add this to the wallet interface
@@ -210,12 +210,18 @@ describe.each<OfficialOptions>([
     });
 
     it('should return token balance', async () => {
-      const tokenBalance: number = await wallet.getTokenBalance('ETH');
+      await forMetaMask(wallet, async () => {
+        const tokenBalance: number = await wallet.getTokenBalance('ETH');
 
-      // Unable to get local balance from Coinbase wallet. This is Goerli value for now.
-      const expectedTokenBalance = wallet instanceof MetaMaskWallet ? 999.9996 : 2.998;
+        expect(tokenBalance).toEqual(999.9996);
+      });
 
-      expect(tokenBalance).toEqual(expectedTokenBalance);
+      await forCoinbase(wallet, async () => {
+        const tokenBalance: number = await wallet.getTokenBalance('ETH');
+
+        // Unable to get local balance from Coinbase wallet. This is Goerli value for now.
+        expect(tokenBalance).toEqual(1000);
+      });
     });
 
     it('should return 0 token balance when token not found', async () => {

@@ -145,7 +145,7 @@ export const getTokenBalance =
       await page.bringToFront();
       await page.getByTestId('portfolio-selector-nav-tabLabel--crypto').click();
       return await page.waitForSelector(
-        '//button[contains(@data-testid, "asset-item")][contains(@data-testid, "ETH")]',
+        `//button[contains(@data-testid, "asset-item")][contains(@data-testid, "${tokenSymbol}")]`,
         {
           timeout: 500,
         },
@@ -155,7 +155,7 @@ export const getTokenBalance =
     const readFromTestnetTab = async (): Promise<ElementHandle<SVGElement | HTMLElement>> => {
       await page.getByTestId('portfolio-selector-nav-tabLabel--testnet').click();
       return await page.waitForSelector(
-        '//button[contains(@data-testid, "asset-item")][contains(@data-testid, "ETH")]',
+        `//button[contains(@data-testid, "asset-item")][contains(@data-testid, "${tokenSymbol}")]`,
         {
           timeout: 500,
         },
@@ -176,15 +176,14 @@ export const getTokenBalance =
     if (!button) return 0;
 
     const text = await button.textContent();
-    const regexp = new RegExp(`(\\d.*) ${tokenSymbol}`, 'i');
-    const matches = text.match(regexp);
+    const currencyAmount = text.replaceAll(/ |,/g, '').split(tokenSymbol)[2];
 
-    return matches && matches.length >= 2 ? Number(matches[1]) : 0;
+    return currencyAmount ? Number(currencyAmount) : 0;
   };
 
 export const createAccount = (page: Page) => async (): Promise<void> => {
   await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
-  await page.getByTestId('wallet-switcher--action').click();
+  await page.getByTestId('wallet-switcher--manage').click();
   await page.getByTestId('manage-wallets-account-item--action-cell-pressable').click();
 
   // Help prompt appears once

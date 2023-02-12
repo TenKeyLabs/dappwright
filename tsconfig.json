@@ -3,7 +3,7 @@
     "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
-    "lib": ["es2017", "dom"],
+    "lib": ["es2021", "dom"],
     "typeRoots": ["./node_modules/@types", "./types"],
     "declaration": true,
     "esModuleInterop": true,

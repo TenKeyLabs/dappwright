@@ -25,7 +25,7 @@ import {
 
 export class CoinbaseWallet extends Wallet {
   static id = 'coinbase' as WalletIdOptions;
-  static recommendedVersion = '3.0.4';
+  static recommendedVersion = '3.6.0';
   static releasesUrl = 'https://api.github.com/repos/osis/coinbase-wallet-archive/releases';
   static homePath = '/index.html';
 
