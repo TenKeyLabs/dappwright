@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.2
+
+### Patch Changes
+
+- [#68](https://github.com/TenKeyLabs/dappwright/pull/68) [`c24d645`](https://github.com/TenKeyLabs/dappwright/commit/c24d64545545a7af27a8bb3d551219ffdbbc2495) Thanks [@osis](https://github.com/osis)! - Support for MetaMask 10.25.0
+
 ## 2.2.1
 
 ### Minor Changes
