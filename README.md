@@ -50,7 +50,8 @@ export const test = base.extend<{
   context: async ({}, use) => {
     // Launch context with the same session from global-setup
     const context: BrowserContext = await dappwright.launch("", {
-      metamaskVersion: MetaMaskWallet.recommendedVersion,
+      wallet: "metamask",
+      version: MetaMaskWallet.recommendedVersion,
     });
 
     // Unlock the wallet
