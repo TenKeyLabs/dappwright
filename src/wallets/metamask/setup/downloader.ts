@@ -66,16 +66,16 @@ export const downloadDir = (walletId: WalletIdOptions): string => {
 };
 
 const download = async (version: string, releasesUrl: string, location: string): Promise<string> => {
+  const extractDestination = path.resolve(location, version.replace(/\./g, '_'));
+
   if (version !== 'latest') {
-    const extractDestination = path.resolve(location, version.replace(/\./g, '_'));
     if (fs.existsSync(extractDestination) && !isEmpty(extractDestination)) return extractDestination;
   }
 
   // eslint-disable-next-line no-console
   console.log('Downloading extension...');
 
-  const { filename, downloadUrl, tag } = await getGithubRelease(releasesUrl, `v${version}`);
-  const extractDestination = path.resolve(location, tag.replace(/\./g, '_'));
+  const { filename, downloadUrl } = await getGithubRelease(releasesUrl, `v${version}`);
 
   // Clean if system tmp files are cleaned but dir structure can persist
   if (fs.existsSync(extractDestination) && isEmpty(extractDestination)) {
