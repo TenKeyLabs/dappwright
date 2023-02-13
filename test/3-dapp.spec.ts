@@ -76,8 +76,8 @@ describe.each<OfficialOptions>([
         await testPage.click('.transfer-button');
 
         await wallet.confirmTransaction({
-          gas: 21000,
-          priority: 2,
+          gas: 4,
+          priority: 3,
           gasLimit: 202020,
         });
 
