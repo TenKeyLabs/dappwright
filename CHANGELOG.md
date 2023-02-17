@@ -1,5 +1,23 @@
 # Changelog
 
+## 2.2.3
+
+### Patch Changes
+
+- [#72](https://github.com/TenKeyLabs/dappwright/pull/72) [`a5f1320`](https://github.com/TenKeyLabs/dappwright/commit/a5f1320984b35d4540e6dbf6f4f012a460053bec) Thanks [@dependabot](https://github.com/apps/dependabot)! - chore: bump eslint from 8.33.0 to 8.34.0
+
+- [#69](https://github.com/TenKeyLabs/dappwright/pull/69) [`88e2281`](https://github.com/TenKeyLabs/dappwright/commit/88e22815707d2cc6be46be22fe33554366cdc8ac) Thanks [@osis](https://github.com/osis)! - - Support for Coinbase Wallet 3.6.0
+
+  - Fixes static token symbol reference for Coinbase Wallet when using getTokenBalance
+
+- [#80](https://github.com/TenKeyLabs/dappwright/pull/80) [`9a8149c`](https://github.com/TenKeyLabs/dappwright/commit/9a8149c03ff53d2cacfa02e3fc8a507893860f39) Thanks [@dependabot](https://github.com/apps/dependabot)! - chore: bump @typescript-eslint/eslint-plugin from 5.48.1 to 5.52.0
+
+- [#74](https://github.com/TenKeyLabs/dappwright/pull/74) [`0ef4ee0`](https://github.com/TenKeyLabs/dappwright/commit/0ef4ee06185a26991202825a157532633ee39982) Thanks [@dependabot](https://github.com/apps/dependabot)! - chore: bump jest from 29.4.1 to 29.4.2
+
+- [#71](https://github.com/TenKeyLabs/dappwright/pull/71) [`d2d0598`](https://github.com/TenKeyLabs/dappwright/commit/d2d059815b9693bd31584e63b5ebdce2e6c2e318) Thanks [@dependabot](https://github.com/apps/dependabot)! - chore: bump prettier from 2.8.3 to 2.8.4
+
+- [#75](https://github.com/TenKeyLabs/dappwright/pull/75) [`81f6613`](https://github.com/TenKeyLabs/dappwright/commit/81f6613b619817b862aa53619dd8a6e19c29e620) Thanks [@dependabot](https://github.com/apps/dependabot)! - chore: bump @typescript-eslint/parser from 5.48.1 to 5.51.0
+
 ## 2.2.2
 
 ### Patch Changes
