@@ -1,10 +1,18 @@
 # Changelog
 
+## 2.2.4
+
+### Patch Changes
+
+- [#70](https://github.com/TenKeyLabs/dappwright/pull/70) [`71f66b3`](https://github.com/TenKeyLabs/dappwright/commit/71f66b314d7316f12054d86ef7eed17076d092ed) Thanks [@osis](https://github.com/osis)! - Fixes a cache path mismatch in the downloader
+
+- [#76](https://github.com/TenKeyLabs/dappwright/pull/76) [`e8256b3`](https://github.com/TenKeyLabs/dappwright/commit/e8256b32d5fa8098c0181ab9b72739b48c70452f) Thanks [@osis](https://github.com/osis)! - extensions load with consistent ids
+
 ## 2.2.3
 
 ### Patch Changes
 
-- [#69](https://github.com/TenKeyLabs/dappwright/pull/69) [`88e2281`](https://github.com/TenKeyLabs/dappwright/commit/88e22815707d2cc6be46be22fe33554366cdc8ac) Thanks [@osis](https://github.com/osis)! 
+- [#69](https://github.com/TenKeyLabs/dappwright/pull/69) [`88e2281`](https://github.com/TenKeyLabs/dappwright/commit/88e22815707d2cc6be46be22fe33554366cdc8ac) Thanks [@osis](https://github.com/osis)!
   - Support for Coinbase Wallet 3.6.0
   - Fixes static token symbol reference for Coinbase Wallet when using getTokenBalance
 
