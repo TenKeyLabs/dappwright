@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.3
+
+### Patch Changes
+
+- [#69](https://github.com/TenKeyLabs/dappwright/pull/69) [`88e2281`](https://github.com/TenKeyLabs/dappwright/commit/88e22815707d2cc6be46be22fe33554366cdc8ac) Thanks [@osis](https://github.com/osis)! 
+  - Support for Coinbase Wallet 3.6.0
+  - Fixes static token symbol reference for Coinbase Wallet when using getTokenBalance
+
 ## 2.2.2
 
 ### Patch Changes
