@@ -1,6 +1,7 @@
 import { BrowserContext, Page } from 'playwright-core';
 import { CoinbaseWallet } from './coinbase/coinbase';
 import { MetaMaskWallet } from './metamask/metamask';
+import { EXTENSION_ID } from './metamask/setup/downloader';
 
 export type Step<Options> = (page: Page, options?: Options) => void;
 export type WalletIdOptions = 'metamask' | 'coinbase';
@@ -27,35 +28,16 @@ export const getWallet = async (id: WalletIdOptions, browserContext: BrowserCont
   const wallet = getWalletType(id);
 
   if (browserContext.pages().length === 1) {
+    let page: Page;
     try {
       // Wait for the wallet to pop up
-      const page = await browserContext.waitForEvent('page', { timeout: 1000 });
+      page = await browserContext.waitForEvent('page', { timeout: 2000 });
       return new wallet(page);
     } catch {
-      // Wallet has failed to pop up, move on
+      // Open the wallet manually if tab doesn't pop up
+      page = await browserContext.newPage();
+      await page.goto(`chrome-extension://${EXTENSION_ID}${wallet.homePath}`);
     }
-
-    // Open the wallet manually if tab doesn't pop up
-    const page = await browserContext.newPage();
-
-    // Go to internal system page to list installed extensions
-    await page.goto('chrome://system/');
-
-    try {
-      await page.waitForSelector('//*[@id="extensions-value-btn"]', { timeout: 5000 });
-      await page.getByRole('button', { name: 'Expand all…' }).click();
-    } catch {
-      // Chrome doesn't have enough information on the screen to show the expand button, move on
-    }
-
-    // Extract extension id
-    const extensionsEl = await page.waitForSelector('//*[@id="extensions-value"]');
-    const extensionsContext = (await extensionsEl.textContent()).split(/ : |\n/);
-    const walletNameIndex = extensionsContext.findIndex((context: string) => context.toLowerCase().includes(wallet.id));
-    const extensionId = extensionsContext[walletNameIndex - 1];
-
-    // Load extension homepage
-    await page.goto(`chrome-extension://${extensionId}${wallet.homePath}`);
 
     return new wallet(page);
   }

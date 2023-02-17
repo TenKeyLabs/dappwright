@@ -9,6 +9,10 @@ import { OfficialOptions } from '../../../types';
 import { WalletIdOptions } from '../../wallets';
 import { isNewerVersion } from './isNewerVersion';
 
+export const EXTENSION_ID = 'gadekpdjmpjjnnemgnhkbjgnjpdaakgh';
+export const EXTENSION_PUB_KEY =
+  'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnpiOcYGaEp02v5On5luCk/4g9j+ujgWeGlpZVibaSz6kUlyiZvcVNIIUXR568uv5NrEi5+j9+HbzshLALhCn9S43E7Ha6Xkdxs3kOEPBu8FRNwFh2S7ivVr6ixnl2FCGwfkP1S1r7k665eC1/xYdJKGCc8UByfSw24Rtl5odUqZX1SaE6CsQEMymCFcWhpE3fV+LZ6RWWJ63Zm1ac5KmKzXdj7wZzN3onI0Csc8riBZ0AujkThJmCR8tZt2PkVUDX9exa0XkJb79pe0Ken5Bt2jylJhmQB7R3N1pVNhNQt17Sytnwz6zG2YsB2XNd/1VYJe52cPNJc7zvhQJpHjh5QIDAQAB';
+
 export type Path =
   | string
   | {
@@ -87,6 +91,12 @@ const download = async (version: string, releasesUrl: string, location: string):
     const zip = new StreamZip.async({ file: downloadedFile });
     fs.mkdirSync(extractDestination);
     await zip.extract(null, extractDestination);
+
+    // Set the chrome extension to value of EXTENSION_ID
+    const manifestPath = path.resolve(extractDestination, 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+    manifest.key = EXTENSION_PUB_KEY;
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest));
   }
   return extractDestination;
 };
