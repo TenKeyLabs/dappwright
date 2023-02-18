@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.5
+
+### Patch Changes
+
+- [#83](https://github.com/TenKeyLabs/dappwright/pull/83) [`37b82a2`](https://github.com/TenKeyLabs/dappwright/commit/37b82a2a0c7e107ffb71a47813241603a5bc23bd) Thanks [@osis](https://github.com/osis)! - updates the releases repo for coinbase wallet
+
 ## 2.2.4
 
 ### Patch Changes
