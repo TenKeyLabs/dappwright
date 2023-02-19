@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { Dappwright } from '../../src';
 import { CoinbaseWallet } from '../../src/wallets/coinbase/coinbase';
 import { MetaMaskWallet } from '../../src/wallets/metamask/metamask';
