@@ -24,3 +24,8 @@ jobs:
 
       - name: Lint
         run: yarn run lint
+
+      - name: Test
+        run: |
+          npx playwright install --with-deps chromium
+          yarn run test --timeout 1000000

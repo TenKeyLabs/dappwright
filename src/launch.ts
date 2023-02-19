@@ -11,17 +11,21 @@ import { getWallet, getWalletType } from './wallets/wallets';
 export const sessionPath = path.resolve(os.tmpdir(), 'dappwright', 'session');
 
 export async function launch(browserName: string, options: OfficialOptions): Promise<DappwrightLaunchResponse> {
-  const { headless, ...officialOptions } = options;
+  const { ...officialOptions } = options;
   const wallet = getWalletType(officialOptions.wallet);
   if (!wallet) throw new Error('Wallet not supported');
 
   const extensionPath = await wallet.download(officialOptions);
 
+  const browserArgs = [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`];
+
+  if (options.headless != false) browserArgs.push(`--headless=new`);
+
   const browserContext = await playwright.chromium.launchPersistentContext(
     path.join(sessionPath, officialOptions.wallet),
     {
-      headless: headless ?? false,
-      args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
+      headless: false,
+      args: browserArgs,
     },
   );
 
