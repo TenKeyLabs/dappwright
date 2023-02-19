@@ -5,7 +5,7 @@ import { testWithWallet as test } from './helpers/testWithWallet';
 test.describe('when interacting with dapps', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:8080');
-    await page.bringToFront();
+    await page.waitForSelector('#ready');
   });
 
   test('should be able to connect', async ({ wallet, page }) => {

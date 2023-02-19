@@ -3,6 +3,12 @@ import { CoinbaseWallet, MetaMaskWallet, sessionPath } from './src';
 export default defineConfig({
   globalSetup: 'test/helpers/globalSetup.ts',
   workers: 1,
+  webServer: {
+    command: 'yarn test:dapp',
+    url: 'http://localhost:8080',
+    timeout: 120 * 1000,
+    reuseExistingServer: false,
+  },
   projects: [
     {
       name: 'MetaMask',

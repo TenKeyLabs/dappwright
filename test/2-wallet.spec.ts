@@ -189,16 +189,14 @@ test.describe('when interacting with the wallet', () => {
     });
 
     test('should return token balance', async ({ wallet }) => {
-      await forMetaMask(wallet, async () => {
-        const tokenBalance: number = await wallet.getTokenBalance('ETH');
+      const tokenBalance: number = await wallet.getTokenBalance('ETH');
 
+      await forMetaMask(wallet, async () => {
         expect(tokenBalance).toEqual(999.9996);
       });
 
+      // Unable to get local balance from Coinbase wallet. This is Goerli value for now.
       await forCoinbase(wallet, async () => {
-        const tokenBalance: number = await wallet.getTokenBalance('ETH');
-
-        // Unable to get local balance from Coinbase wallet. This is Goerli value for now.
         expect(tokenBalance).toEqual(999.999);
       });
     });
