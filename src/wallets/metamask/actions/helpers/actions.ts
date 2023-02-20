@@ -1,5 +1,5 @@
 import { Page } from 'playwright-core';
-import { getAccountMenuButton, getSettingsSwitch } from '.';
+import { getAccountMenuButton, getSettingsSwitch } from './selectors';
 
 export const clickOnSettingsSwitch = async (page: Page, text: string): Promise<void> => {
   const button = await getSettingsSwitch(page, text);

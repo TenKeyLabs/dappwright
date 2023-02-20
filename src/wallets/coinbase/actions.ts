@@ -1,6 +1,6 @@
 import { ElementHandle, Page } from 'playwright-core';
-import { AddNetwork, AddToken } from '../..';
 import { waitForChromeState } from '../../helpers';
+import { AddNetwork, AddToken } from '../../types';
 import { performPopupAction } from '../metamask/actions';
 import { WalletOptions } from '../wallets';
 

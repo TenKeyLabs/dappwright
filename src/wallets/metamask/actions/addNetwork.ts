@@ -1,7 +1,7 @@
 import { Page } from 'playwright-core';
 import { clickOnButton } from '../../../helpers';
+import { AddNetwork } from '../../../types';
 
-import { AddNetwork } from '../../../index';
 import { clickOnLogo, getErrorMessage, openNetworkDropdown } from './helpers';
 
 export const addNetwork =

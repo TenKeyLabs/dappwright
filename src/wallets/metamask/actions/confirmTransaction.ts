@@ -1,6 +1,6 @@
 import { Page } from 'playwright-core';
+import { TransactionOptions } from '../../../types';
 
-import { TransactionOptions } from '../../..';
 import { performPopupAction } from './util';
 
 export const confirmTransaction =
