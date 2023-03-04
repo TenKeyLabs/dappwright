@@ -71,6 +71,11 @@ async function start() {
     transfer.textContent = 'transferred';
     document.body.appendChild(transfer);
   });
+
+  const ready = document.createElement('div');
+  ready.id = 'ready';
+  ready.textContent = 'ready';
+  document.body.appendChild(ready);
 }
 
 start();

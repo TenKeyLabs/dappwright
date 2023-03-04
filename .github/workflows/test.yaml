@@ -24,3 +24,32 @@ jobs:
 
       - name: Lint
         run: yarn run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: yarn
+          node-version: '16'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Test
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          npx playwright install --with-deps chromium
+          xvfb-run --auto-servernum yarn run test:ci
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-traces
+          path: test-output

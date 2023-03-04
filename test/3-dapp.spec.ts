@@ -5,7 +5,7 @@ import { testWithWallet as test } from './helpers/testWithWallet';
 test.describe('when interacting with dapps', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:8080');
-    await page.bringToFront();
+    await page.waitForSelector('#ready');
   });
 
   test('should be able to connect', async ({ wallet, page }) => {
@@ -32,6 +32,8 @@ test.describe('when interacting with dapps', () => {
 
   test.describe('when confirming a transaction', () => {
     test('should be able to confirm without altering gas settings', async ({ wallet, page }) => {
+      if (wallet instanceof CoinbaseWallet && process.env.CI) test.skip(); // this page doesn't load in github actions
+
       await page.click('.connect-button');
       await page.waitForSelector('#connected');
 

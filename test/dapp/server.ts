@@ -32,7 +32,7 @@ export async function stop(): Promise<void> {
   await chainNode.close();
 }
 
-async function waitForGanache(): Promise<Provider> {
+export async function waitForGanache(): Promise<Provider> {
   console.log('Starting ganache...');
   chainNode = ganache.server({ chain: { chainId: 31337 }, wallet: { seed: 'asd123' }, logging: { quiet: true } });
   await chainNode.listen(8545);
@@ -78,7 +78,7 @@ async function startTestServer(): Promise<void> {
   });
 
   await new Promise<void>((resolve) => {
-    httpServer.listen(8080, () => {
+    httpServer.listen(8080, 'localhost', () => {
       console.log('Server running at http://localhost:8080');
       resolve();
     });
