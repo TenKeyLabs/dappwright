@@ -1,7 +1,7 @@
 async function start() {
   const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
   let counterContract;
-  let accounts;
+  let accounts = await provider.listAccounts();
 
   window.ethereum.on('chainChanged', function (chainId) {
     const switchNetwork = document.createElement('div');

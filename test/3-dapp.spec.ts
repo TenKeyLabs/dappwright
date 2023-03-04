@@ -1,88 +1,58 @@
-import { BrowserContext, Page } from 'playwright-core';
-import { Dappwright, OfficialOptions } from '../src/index';
-import { CoinbaseWallet } from '../src/wallets/coinbase/coinbase';
-import { MetaMaskWallet } from '../src/wallets/metamask/metamask';
-import { forCoinbase, forMetaMask } from './helpers/itForWallet';
-import launchBrowser from './helpers/launchBrowser';
+import { CoinbaseWallet } from '../src';
+import { forCoinbase } from './helpers/itForWallet';
+import { testWithWallet as test } from './helpers/testWithWallet';
 
-describe.each<OfficialOptions>([
-  {
-    wallet: 'coinbase',
-    version: CoinbaseWallet.recommendedVersion,
-  },
-  {
-    wallet: 'metamask',
-    version: MetaMaskWallet.recommendedVersion,
-  },
-])('$wallet - when interacting with dapps', (options: OfficialOptions) => {
-  let browserContext: BrowserContext, wallet: Dappwright, testPage: Page;
-
-  beforeAll(async () => {
-    [browserContext, testPage, wallet] = await launchBrowser(options);
-
-    // Swap network chain IDs to match 31337
-    if (wallet instanceof MetaMaskWallet) {
-      await wallet.switchNetwork('Ethereum Mainnet');
-      await wallet.deleteNetwork('Localhost 8545');
-      await wallet.addNetwork({
-        networkName: 'Localhost 8545',
-        rpc: 'http://localhost:8545',
-        chainId: 31337,
-        symbol: 'ETH',
-      });
-    }
-
-    await testPage.bringToFront();
+test.describe('when interacting with dapps', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('http://localhost:8080');
+    await page.bringToFront();
   });
 
-  afterAll(async () => {
-    await browserContext.close();
-  });
-
-  it('should be able to connect', async () => {
-    await testPage.click('.connect-button');
+  test('should be able to connect', async ({ wallet, page }) => {
+    await page.click('.connect-button');
     await wallet.approve();
 
-    await testPage.waitForSelector('#connected');
+    await page.waitForSelector('#connected');
   });
 
-  it('should be able to switch networks', async () => {
+  test('should be able to switch networks', async ({ wallet, page }) => {
     await forCoinbase(wallet, async () => {
-      await testPage.click('.switch-network-button');
+      await page.click('.switch-network-button');
 
-      await testPage.waitForSelector('#switchNetwork');
+      await page.waitForSelector('#switchNetwork');
     });
   });
 
-  it('should be able to sign messages', async () => {
-    await testPage.click('.sign-button');
+  test('should be able to sign messages', async ({ wallet, page }) => {
+    await page.click('.sign-button');
     await wallet.sign();
 
-    await testPage.waitForSelector('#signed');
+    await page.waitForSelector('#signed');
   });
 
-  describe('when confirming a transaction', () => {
-    it('should be able to confirm without altering gas settings', async () => {
-      await forMetaMask(wallet, async () => {
-        await testPage.click('.increase-button');
-        await wallet.confirmTransaction();
+  test.describe('when confirming a transaction', () => {
+    test('should be able to confirm without altering gas settings', async ({ wallet, page }) => {
+      await page.click('.connect-button');
+      await page.waitForSelector('#connected');
 
-        await testPage.waitForSelector('#increased');
-      });
+      await page.click('.increase-button');
+      await wallet.confirmTransaction();
+
+      await page.waitForSelector('#increased');
     });
 
-    it('should be able to confirm with custom gas settings', async () => {
-      await forMetaMask(wallet, async () => {
-        await testPage.click('.transfer-button');
+    test('should be able to confirm with custom gas settings', async ({ wallet, page }) => {
+      if (wallet instanceof CoinbaseWallet) test.skip();
 
-        await wallet.confirmTransaction({
-          gas: 4,
-          priority: 3,
-          gasLimit: 202020,
-        });
+      await page.click('.transfer-button');
 
-        await testPage.waitForSelector('#transferred');
+      await wallet.confirmTransaction({
+        gas: 4,
+        priority: 3,
+        gasLimit: 202020,
       });
+
+      await page.waitForSelector('#transferred');
     });
   });
 });

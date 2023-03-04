@@ -1,5 +1,5 @@
 import { Page } from 'playwright-core';
-import { clickOnButton, getElementByContent } from '../../../helpers';
+import { clickOnButton, getElementByContent, waitForChromeState } from '../../../helpers';
 import { clickOnLogo, openNetworkDropdown } from './helpers';
 
 export const deleteNetwork =
@@ -16,4 +16,5 @@ export const deleteNetwork =
 
     await clickOnButton(page, 'Delete');
     await clickOnLogo(page);
+    await waitForChromeState(page);
   };

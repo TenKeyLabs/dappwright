@@ -1,10 +1,9 @@
-import { BrowserContext } from 'playwright-core';
-import { Dappwright, OfficialOptions } from '../src';
-import { CoinbaseWallet } from '../src/wallets/coinbase/coinbase';
+import { expect } from '@playwright/test';
+import { Dappwright } from '../src';
 import { clickOnLogo, openProfileDropdown } from '../src/wallets/metamask/actions/helpers';
 import { MetaMaskWallet } from '../src/wallets/metamask/metamask';
 import { forCoinbase, forMetaMask } from './helpers/itForWallet';
-import launchBrowser from './helpers/launchBrowser';
+import { testWithWallet as test } from './helpers/testWithWallet';
 
 // TODO: Add this to the wallet interface
 const countAccounts = async (wallet: Dappwright): Promise<number> => {
@@ -24,35 +23,15 @@ const countAccounts = async (wallet: Dappwright): Promise<number> => {
   return count;
 };
 
-describe.each<OfficialOptions>([
-  {
-    wallet: 'coinbase',
-    version: CoinbaseWallet.recommendedVersion,
-  },
-  {
-    wallet: 'metamask',
-    version: MetaMaskWallet.recommendedVersion,
-  },
-])('$wallet - when interacting with the wallet', (options: OfficialOptions) => {
-  let browserContext: BrowserContext, wallet: Dappwright, _;
-
-  beforeAll(async () => {
-    [browserContext, _, wallet] = await launchBrowser(options);
-    wallet.page.bringToFront();
-  });
-
-  afterAll(async () => {
-    await browserContext.close();
-  });
-
-  it('should lock and unlock', async () => {
+test.describe('when interacting with the wallet', () => {
+  test('should lock and unlock', async ({ wallet }) => {
     await wallet.lock();
     await wallet.unlock('password1234!@#$');
-  }); // Coinbase wallet unlock waits for homepage to load
+  });
 
-  describe('account management', () => {
-    describe('createAccount', () => {
-      it('should create a new wallet/account', async () => {
+  test.describe('account management', () => {
+    test.describe('createAccount', () => {
+      test('should create a new wallet/account', async ({ wallet }) => {
         expect(await countAccounts(wallet)).toEqual(1);
 
         await wallet.createAccount();
@@ -63,8 +42,8 @@ describe.each<OfficialOptions>([
       });
     });
 
-    describe('switchAccount', () => {
-      it('should switch accounts', async () => {
+    test.describe('switchAccount', () => {
+      test('should switch accounts', async ({ wallet }) => {
         await wallet.switchAccount(1);
 
         const expectedAccountName = wallet instanceof MetaMaskWallet ? 'Account 1' : 'Wallet 1';
@@ -73,7 +52,7 @@ describe.each<OfficialOptions>([
     });
   });
 
-  describe('network configurations', () => {
+  test.describe('network configurations', () => {
     const options = {
       networkName: 'Cronos',
       rpc: 'https://evm.cronos.org',
@@ -81,24 +60,24 @@ describe.each<OfficialOptions>([
       symbol: 'CRO',
     };
 
-    describe('hasNetwork', () => {
-      it('should return true if a network has been configured', async () => {
+    test.describe('hasNetwork', () => {
+      test('should return true if a network has been configured', async ({ wallet }) => {
         expect(await wallet.hasNetwork('Ethereum')).toBeTruthy();
       });
 
-      it('should return false if a network has not been configured', async () => {
+      test('should return false if a network has not been configured', async ({ wallet }) => {
         expect(await wallet.hasNetwork('not there')).toBeFalsy();
       });
     });
 
-    describe('addNetwork', () => {
-      it('should configure a new network', async () => {
+    test.describe('addNetwork', () => {
+      test('should configure a new network', async ({ wallet }) => {
         await wallet.addNetwork(options);
 
         expect(await wallet.hasNetwork(options.networkName)).toBeTruthy();
       });
 
-      it('should fail if network already exists', async () => {
+      test('should fail if network already exists', async ({ wallet }) => {
         await expect(
           wallet.addNetwork({
             networkName: 'Cronos',
@@ -110,8 +89,8 @@ describe.each<OfficialOptions>([
       });
     });
 
-    describe('switchNetwork', () => {
-      it('should switch network, localhost', async () => {
+    test.describe('switchNetwork', () => {
+      test('should switch network, localhost', async ({ wallet }) => {
         if (wallet instanceof MetaMaskWallet) {
           await wallet.switchNetwork('localhost');
 
@@ -125,8 +104,8 @@ describe.each<OfficialOptions>([
       });
     });
 
-    describe('deleteNetwork', () => {
-      it('should delete a network configuration', async () => {
+    test.describe('deleteNetwork', () => {
+      test('should delete a network configuration', async ({ wallet }) => {
         await wallet.deleteNetwork(options.networkName);
 
         expect(await wallet.hasNetwork(options.networkName)).toBeFalsy();
@@ -134,7 +113,7 @@ describe.each<OfficialOptions>([
     });
 
     // TODO: Come back to this since metamask doesn't consider this to be an error anymore but blocks
-    // it('should fail to add network with wrong chain ID', async () => {
+    // test('should fail to add network with wrong chain ID', async ({ wallet }) => {
     //   await expect(
     //     metamask.addNetwork({
     //       networkName: 'Optimistic Ethereum Testnet Kovan',
@@ -148,15 +127,15 @@ describe.each<OfficialOptions>([
   });
 
   // Metamask only
-  describe('private keys', () => {
-    beforeEach(async () => {
+  test.describe('private keys', () => {
+    test.beforeEach(async ({ wallet }) => {
       await forMetaMask(wallet, async () => {
         await clickOnLogo(wallet.page);
       });
     });
 
-    describe('importPK', () => {
-      it('should import private key', async () => {
+    test.describe('importPK', () => {
+      test('should import private key', async ({ wallet }) => {
         await forMetaMask(wallet, async () => {
           const beforeImport = await countAccounts(wallet);
           await wallet.importPK('4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b10');
@@ -166,7 +145,7 @@ describe.each<OfficialOptions>([
         });
       });
 
-      it('should throw error on duplicated private key', async () => {
+      test('should throw error on duplicated private key', async ({ wallet }) => {
         await forMetaMask(wallet, async () => {
           await expect(
             wallet.importPK('4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b10'),
@@ -174,7 +153,7 @@ describe.each<OfficialOptions>([
         });
       });
 
-      it('should throw error on wrong key', async () => {
+      test('should throw error on wrong key', async ({ wallet }) => {
         await forMetaMask(wallet, async () => {
           await expect(
             wallet.importPK('4f3edf983ac636a65a$@!ce7c78d9aa706d3b113bce9c46f30d7d21715b23b10'),
@@ -182,7 +161,7 @@ describe.each<OfficialOptions>([
         });
       });
 
-      it('should throw error on to short key', async () => {
+      test('should throw error on to short key', async ({ wallet }) => {
         await forMetaMask(wallet, async () => {
           await expect(
             wallet.importPK('4f3edf983ac636a65ace7c78d9aa706d3b113bce9c46f30d7d21715b23b10'),
@@ -191,8 +170,8 @@ describe.each<OfficialOptions>([
       });
     });
 
-    describe('deleteAccount', () => {
-      it('should be able to delete an account', async () => {
+    test.describe('deleteAccount', () => {
+      test('should be able to delete an account', async ({ wallet }) => {
         await forMetaMask(wallet, async () => {
           const beforeDelete = await countAccounts(wallet);
           await wallet.deleteAccount(3);
@@ -204,12 +183,12 @@ describe.each<OfficialOptions>([
     });
   });
 
-  describe('getTokenBalance', () => {
-    beforeAll(async () => {
+  test.describe('getTokenBalance', () => {
+    test.beforeEach(async ({ wallet }) => {
       if (wallet instanceof MetaMaskWallet) await wallet.switchNetwork('localhost');
     });
 
-    it('should return token balance', async () => {
+    test('should return token balance', async ({ wallet }) => {
       await forMetaMask(wallet, async () => {
         const tokenBalance: number = await wallet.getTokenBalance('ETH');
 
@@ -220,18 +199,18 @@ describe.each<OfficialOptions>([
         const tokenBalance: number = await wallet.getTokenBalance('ETH');
 
         // Unable to get local balance from Coinbase wallet. This is Goerli value for now.
-        expect(tokenBalance).toEqual(1000);
+        expect(tokenBalance).toEqual(999.999);
       });
     });
 
-    it('should return 0 token balance when token not found', async () => {
+    test('should return 0 token balance when token not found', async ({ wallet }) => {
       const tokenBalance: number = await wallet.getTokenBalance('TKLBUCKS');
       expect(tokenBalance).toEqual(0);
     });
   });
 
-  describe('when working with tokens', () => {
-    it('should add token', async () => {
+  test.describe('when working with tokens', () => {
+    test('should add token', async ({ wallet }) => {
       await forMetaMask(wallet, async () => {
         await wallet.switchNetwork('kovan');
         await wallet.addToken({

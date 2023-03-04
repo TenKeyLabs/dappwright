@@ -1,39 +1,15 @@
-import { BrowserContext, Page } from 'playwright-core';
-import { Dappwright, OfficialOptions } from '../src';
-import { CoinbaseWallet } from '../src/wallets/coinbase/coinbase';
-import { MetaMaskWallet } from '../src/wallets/metamask/metamask';
-import launchBrowser from './helpers/launchBrowser';
+import { expect } from '@playwright/test';
+import { testWithWallet as test } from './helpers/testWithWallet';
 
-describe.each<OfficialOptions>([
-  {
-    wallet: 'coinbase',
-    version: CoinbaseWallet.recommendedVersion,
-  },
-  {
-    wallet: 'metamask',
-    version: MetaMaskWallet.recommendedVersion,
-  },
-])('$wallet - when the test environment is initialized', (options: OfficialOptions) => {
-  let browserContext: BrowserContext, wallet: Dappwright, testPage: Page;
+test.describe(`when the test environment is initialized`, () => {
+  test('should open, test page', async ({ page }) => {
+    expect(page).toBeTruthy();
 
-  beforeAll(async () => {
-    [browserContext, testPage, wallet] = await launchBrowser(options);
+    await page.goto('http://localhost:8080');
+    expect(await page.title()).toEqual('Local wallet test');
   });
 
-  afterAll(async () => {
-    await browserContext.close();
-  });
-
-  it('should be running, playwright', async () => {
-    expect(browserContext).toBeTruthy();
-  });
-
-  it('should open, test page', async () => {
-    expect(testPage).toBeTruthy();
-    expect(await testPage.title()).toEqual('Local wallet test');
-  });
-
-  it('should open the wallet', async () => {
+  test('should open the wallet', async ({ wallet }) => {
     expect(wallet.page).toBeTruthy();
   });
 });
