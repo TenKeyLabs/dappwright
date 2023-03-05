@@ -11,73 +11,48 @@ $ yarn add @tenkeylabs/dappwright
 
 ## Usage
 
-```typescript
-# global-setup.ts
-
-import dappwright, { MetaMaskWallet } from "@tenkeylabs/dappwright";
-import playwright from 'playwright';
-
-async function globalSetup(config: FullConfig) {
-  const [metamask, page, context] = await dappwright.bootstrap("", {
-    wallet: "metamask",
-    version: MetaMaskWallet.recommendedVersion,
-  });
-
-  // Add Hardhet network
-  await metamask.addNetwork({
-    networkName: "Hardhat",
-    rpc: "http://127.0.0.1:8545/",
-    chainId: 31337,
-    symbol: "ETH",
-  });
-
-  // Add an extra account
-  await metamask.createAccount();
-
-  await context.close();
-}
-
-export default globalSetup;
-```
+### Quick setup with Hardhat
 
 ```typescript
-# example.spec.ts
+  # test.spec.ts
 
-export const test = base.extend<{
-  context: BrowserContext;
-  metamask: Dappwright;
-}>({
-  context: async ({}, use) => {
-    // Launch context with the same session from global-setup
-    const context: BrowserContext = await dappwright.launch("", {
-      wallet: "metamask",
-      version: MetaMaskWallet.recommendedVersion,
-    });
+  import { BrowserContext, expect, test as baseTest } from "@playwright/test";
+  import dappwright, { Dappwright, MetaMaskWallet } from "@tenkeylabs/dappwright";
 
-    // Unlock the wallet
-    await metamask.unlock();
+  export const test = baseTest.extend<{
+    context: BrowserContext;
+    wallet: Dappwright;
+  }>({
+    context: async ({}, use) => {
+      // Launch context with extension
+      const [wallet, page, context] = await dappwright.bootstrap("", {
+        wallet: "metamask",
+        version: MetaMaskWallet.recommendedVersion,
+        seed: "test test test test test test test test test test test junk", // Hardhat's default https://hardhat.org/hardhat-network/docs/reference#accounts
+      });
 
-    await use(context);
-    await context.close();
-  },
-  metamask: async ({ context }, use) => {
-    const metamask = await dappwright.getWallet("metamask", context);
+      await use(context);
+      await context.close();
+    },
 
-    await use(metamask);
-  },
-});
+    wallet: async ({ context }, use) => {
+      const metamask = await dappwright.getWallet("metamask", context);
 
-test.describe.configure({ mode: "serial" }); // Avoid colliding browser sessions
-test("can connect to an application", async ({ page, metamask }) => {
-  // Click a connect wallet button
-  await page.locator("text=MetaMask").click();
+      await use(metamask);
+    },
+  });
 
-  // Approve the connection when MetaMask pops up
-  await metamask.approve();
+  test.beforeEach(async ({ page }) => {
+    await page.goto("http://localhost:8080");
+  });
 
-  // Wait for the dapp to redirect
-  await page.waitForUrl("http://localhost:3000/dashboard");
-})
+  test("should be able to connect", async ({ wallet, page }) => {
+    await page.click("#connect-button");
+    await wallet.approve();
+
+    const connectStatus = await page.inputValue("#connect-status");
+    expect(connectStatus).toEqual("connected");
+  })
 ```
 
 ## Special Thanks
