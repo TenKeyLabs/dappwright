@@ -31,6 +31,15 @@ $ yarn add @tenkeylabs/dappwright
         seed: "test test test test test test test test test test test junk", // Hardhat's default https://hardhat.org/hardhat-network/docs/reference#accounts
       });
 
+      // Add Hardhat as a custom network
+      // Metamask locks chainIDs on port 8545, use hardhat's --port flag to change - https://hardhat.org/hardhat-network/docs/metamask-issue
+      await wallet.addNetwork({
+        networkName: "Hardhat",
+        rpc: "http://localhost:8546",
+        chainId: 31337,
+        symbol: "ETH",
+      });
+
       await use(context);
       await context.close();
     },
@@ -51,8 +60,11 @@ $ yarn add @tenkeylabs/dappwright
     await wallet.approve();
 
     const connectStatus = await page.inputValue("#connect-status");
+    const networkSwitchStatus = await page.inputValue("#network-switch-status");
+
     expect(connectStatus).toEqual("connected");
-  })
+    expect(networkSwitchStatus).toEqual("31337");
+  });
 ```
 
 ## Special Thanks
