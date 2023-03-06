@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.6
+
+### Patch Changes
+
+- [#88](https://github.com/TenKeyLabs/dappwright/pull/88) [`359e44a`](https://github.com/TenKeyLabs/dappwright/commit/359e44a014ec10be2603f6258301db81e05b7b6a) Thanks [@osis](https://github.com/osis)! - chore: provides an explicit default export for the lib
+
 ## 2.2.5
 
 ### Patch Changes
