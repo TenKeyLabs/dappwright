@@ -25,14 +25,14 @@ $ yarn add @tenkeylabs/dappwright
   }>({
     context: async ({}, use) => {
       // Launch context with extension
-      const [wallet, page, context] = await dappwright.bootstrap("", {
+      const [wallet, _, context] = await dappwright.bootstrap("", {
         wallet: "metamask",
         version: MetaMaskWallet.recommendedVersion,
         seed: "test test test test test test test test test test test junk", // Hardhat's default https://hardhat.org/hardhat-network/docs/reference#accounts
+        headless: false,
       });
 
       // Add Hardhat as a custom network
-      // Metamask locks chainIDs on port 8545, use hardhat's --port flag to change - https://hardhat.org/hardhat-network/docs/metamask-issue
       await wallet.addNetwork({
         networkName: "Hardhat",
         rpc: "http://localhost:8546",
@@ -41,7 +41,6 @@ $ yarn add @tenkeylabs/dappwright
       });
 
       await use(context);
-      await context.close();
     },
 
     wallet: async ({ context }, use) => {
@@ -59,13 +58,19 @@ $ yarn add @tenkeylabs/dappwright
     await page.click("#connect-button");
     await wallet.approve();
 
-    const connectStatus = await page.inputValue("#connect-status");
-    const networkSwitchStatus = await page.inputValue("#network-switch-status");
+    const connectStatus = page.getByTestId("connect-status");
+    expect(connectStatus).toHaveValue("connected");
 
-    expect(connectStatus).toEqual("connected");
-    expect(networkSwitchStatus).toEqual("31337");
+    await page.click("#switch-network-button");
+
+    const networkStatus = page.getByTestId("network-status");
+    expect(networkStatus).toHaveValue("31337");
   });
 ```
+
+### Alternative Setups
+
+There are a number of different ways integrate dAppwright into your test suite. For some other examples, please check out dAppwright's [example application repo](https://github.com/TenKeyLabs/dappwright-examples).
 
 ## Special Thanks
 
