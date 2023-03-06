@@ -1,5 +1,5 @@
 import { Page } from 'playwright-core';
-import { getElementByContent, getInputByLabel } from '.';
+import { getElementByContent, getInputByLabel } from './selectors';
 
 export const waitForChromeState = async (page: Page): Promise<void> => {
   await page.waitForTimeout(3000);

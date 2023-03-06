@@ -1,7 +1,6 @@
 import { expect } from '@playwright/test';
-import { Dappwright } from '../src';
+import { Dappwright, MetaMaskWallet } from '../src';
 import { clickOnLogo, openProfileDropdown } from '../src/wallets/metamask/actions/helpers';
-import { MetaMaskWallet } from '../src/wallets/metamask/metamask';
 import { forCoinbase, forMetaMask } from './helpers/itForWallet';
 import { testWithWallet as test } from './helpers/testWithWallet';
 
