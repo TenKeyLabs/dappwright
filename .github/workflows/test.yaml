@@ -27,6 +27,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.30.0-focal
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -44,9 +46,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          npx playwright install --with-deps chromium
-          xvfb-run --auto-servernum yarn run test:ci
-
+          xvfb-run yarn run test:ci
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v3
