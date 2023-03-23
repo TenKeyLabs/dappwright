@@ -152,7 +152,10 @@ const getGithubRelease = (releasesUrl: string, version: string): Promise<GithubR
 
       response.on('end', () => {
         const data = JSON.parse(body);
-        if (data.message) return reject(data.message);
+        if (data.message)
+          return reject(
+            `There was a problem connecting to github API to get the extension release (URL: ${releasesUrl}). Error: ${data.message}`,
+          );
         for (const result of data) {
           if (result.draft) continue;
           if (version === 'latest' || result.name.includes(version) || result.tag_name.includes(version)) {
