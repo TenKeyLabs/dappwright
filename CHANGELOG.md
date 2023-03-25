@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.7
+
+### Patch Changes
+
+- [#114](https://github.com/TenKeyLabs/dappwright/pull/114) [`59e9889`](https://github.com/TenKeyLabs/dappwright/commit/59e9889f8aa2556da7051a7da056c22b8559d81f) Thanks [@agualis](https://github.com/agualis)! - Improved error message when connecting to github to get the extension's release
+
 ## 2.2.6
 
 ### Patch Changes
