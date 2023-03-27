@@ -6397,10 +6397,15 @@ playwright-core@1.29.0:
   resolved "https://registry.npmjs.org/playwright-core/-/playwright-core-1.29.0.tgz"
   integrity sha512-pboOm1m0RD6z1GtwAbEH60PYRfF87vKdzOSRw2RyO0Y0a7utrMyWN2Au1ojGvQr4umuBMODkKTv607YIRypDSQ==
 
-playwright-core@1.30.0, playwright-core@^1.27.1:
+playwright-core@1.30.0:
   version "1.30.0"
   resolved "https://registry.npmjs.org/playwright-core/-/playwright-core-1.30.0.tgz"
   integrity sha512-7AnRmTCf+GVYhHbLJsGUtskWTE33SwMZkybJ0v6rqR1boxq2x36U7p1vDRV7HO2IwTZgmycracLxPEJI49wu4g==
+
+playwright-core@^1.27.1:
+  version "1.32.1"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.32.1.tgz#5a10c32403323b07d75ea428ebeed866a80b76a1"
+  integrity sha512-KZYUQC10mXD2Am1rGlidaalNGYk3LU1vZqqNk0gT4XPty1jOqgup8KDP8l2CUlqoNKhXM5IfGjWgW37xvGllBA==
 
 playwright-test@^8.2.0:
   version "8.2.0"
