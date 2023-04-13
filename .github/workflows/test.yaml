@@ -49,7 +49,9 @@ jobs:
         with:
           timeout_minutes: 5
           max_attempts: 5
-          command: xvfb-run yarn run test:ci
+          command: |
+            npx playwright install --with-deps chromium
+            xvfb-run --auto-servernum yarn run test:ci
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v3
