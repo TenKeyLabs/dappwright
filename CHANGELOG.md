@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.3.0
+
+### Minor Changes
+
+- [#130](https://github.com/TenKeyLabs/dappwright/pull/130) [`0d4a415`](https://github.com/TenKeyLabs/dappwright/commit/0d4a4159e79fb9ad649acc3559d78fff4d119f05) Thanks [@osis](https://github.com/osis)! - chore: bumps playwright and playwright/core to 1.32.3
+
+### Patch Changes
+
+- [#132](https://github.com/TenKeyLabs/dappwright/pull/132) [`f1e0d5f`](https://github.com/TenKeyLabs/dappwright/commit/f1e0d5fee13b0eb507ff896db3a2ec04cd578650) Thanks [@osis](https://github.com/osis)! - chore: enables support for engines > 16
+
 ## 2.2.7
 
 ### Patch Changes
