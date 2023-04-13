@@ -69,7 +69,7 @@ export const confirmTransaction = (page: Page) => async (): Promise<void> => {
   await performPopupAction(page, async (popup: Page): Promise<void> => {
     try {
       // Help prompt appears once
-      await (await popup.waitForSelector("text='Got it'", { timeout: 1000 })).click();
+      await (await popup.waitForSelector("text='Got it'", { timeout: 5000 })).click();
     } catch {
       // Ignore missing help prompt
     }
