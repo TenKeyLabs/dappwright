@@ -47,6 +47,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
+          timeout_minutes: 5
           max_attempts: 5
           command: xvfb-run yarn run test:ci
       - name: Upload test results
