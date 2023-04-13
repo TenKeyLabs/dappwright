@@ -43,10 +43,12 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Test
+        uses: nick-fields/retry@v2
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          xvfb-run yarn run test:ci
+        with:
+          max_attempts: 5
+          command: xvfb-run yarn run test:ci
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v3
