@@ -46,7 +46,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          npx playwright install --with-deps chromium
           (echo "**** Attempt 1" && xvfb-run --auto-servernum yarn run test:ci) || \
           (echo "**** Attempt 2" && xvfb-run --auto-servernum yarn run test:ci) || \
           (echo "**** Attempt 3" && xvfb-run --auto-servernum yarn run test:ci) || \
