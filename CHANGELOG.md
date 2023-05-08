@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.1
+
+### Patch Changes
+
+- [#147](https://github.com/TenKeyLabs/dappwright/pull/147) [`8815d91`](https://github.com/TenKeyLabs/dappwright/commit/8815d91bf35acd96dbdf0f78e88ecc9576989649) Thanks [@dependabot](https://github.com/apps/dependabot)! - Bumps playwright to 1.33.0
+
+- [#147](https://github.com/TenKeyLabs/dappwright/pull/147) [`8815d91`](https://github.com/TenKeyLabs/dappwright/commit/8815d91bf35acd96dbdf0f78e88ecc9576989649) Thanks [@dependabot](https://github.com/apps/dependabot)! - Removes unnecessary references to playwirght in the package.json
+
 ## 2.3.0
 
 ### Minor Changes
