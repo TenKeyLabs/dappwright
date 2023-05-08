@@ -28,7 +28,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.32.2-focal
+      image: mcr.microsoft.com/playwright:v1.33.0-focal
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
