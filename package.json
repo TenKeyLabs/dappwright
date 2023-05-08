@@ -53,7 +53,6 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.0",
-    "@playwright/test": "^1.32.3",
     "@types/jest": "^29.2.4",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.1.0",
@@ -63,8 +62,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "ganache": "^7.4.3",
     "microbundle": "^0.15.1",
-    "playwright-core": "^1.32.3",
-    "playwright-test": "^8.2.0",
+    "@playwright/test": "^1.33.0",
     "prettier": "^2.7.1",
     "serve-handler": "6.1.5",
     "solc": "0.8.19",
