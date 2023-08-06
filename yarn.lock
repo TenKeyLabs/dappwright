@@ -4065,9 +4065,9 @@ functions-have-names@^1.2.2:
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
 ganache@^7.4.3:
-  version "7.8.0"
-  resolved "https://registry.yarnpkg.com/ganache/-/ganache-7.8.0.tgz#02154384f246b66e98974cbcbb18e8372df3c2e0"
-  integrity sha512-IrUYvsaE/m2/NaVIZ7D/gCnsmyU/buechnH6MhUipzG1qJcZIwIp/DoP/LZUcHyhy0Bv0NKZD2pGOjpRhn7l7A==
+  version "7.9.0"
+  resolved "https://registry.yarnpkg.com/ganache/-/ganache-7.9.0.tgz#561deceb376b1c4e8998ac8e5a842574507d3295"
+  integrity sha512-KdsTZaAKqDXTNDMKnLzg0ngX8wnZKyVGm7HD03GIyUMVRuXI83s0CUEaGIDWRUWTQP7BE8sDh7QtbW+NoX4zrQ==
   dependencies:
     "@trufflesuite/bigint-buffer" "1.1.10"
     "@trufflesuite/uws-js-unofficial" "20.10.0-unofficial.2"
