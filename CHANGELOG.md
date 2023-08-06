@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.3.4
+
+### Patch Changes
+
+- [#175](https://github.com/TenKeyLabs/dappwright/pull/175) [`286fb35`](https://github.com/TenKeyLabs/dappwright/commit/286fb3528c1ddbaa6fc566d70afe38b349daa1e2) Thanks [@dependabot](https://github.com/apps/dependabot)! - chore: bump @playwright/test from 1.35.0 to 1.35.1
+
 ## 2.3.3
 
 ### Patch Changes
