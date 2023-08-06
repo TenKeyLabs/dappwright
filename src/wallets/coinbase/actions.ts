@@ -24,7 +24,7 @@ export async function getStarted(
 
   // Import Wallet
   await page.getByTestId('btn-import-recovery-phrase').click();
-  await page.getByTestId('seed-phrase-input').fill(seed);
+  await page.getByTestId('secret-input').fill(seed);
   await page.getByTestId('btn-import-wallet').click();
   await page.getByTestId('setPassword').fill(password);
   await page.getByTestId('setPasswordVerify').fill(password);
