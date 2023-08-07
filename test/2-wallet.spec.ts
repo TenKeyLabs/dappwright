@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { Dappwright, MetaMaskWallet } from '../src';
 import { clickOnLogo, openProfileDropdown } from '../src/wallets/metamask/actions/helpers';
 import { forCoinbase, forMetaMask } from './helpers/itForWallet';
-import { testWithWallet as test } from './helpers/testWithWallet';
+import { testWithWallet as test } from './helpers/walletTest';
 
 // TODO: Add this to the wallet interface
 const countAccounts = async (wallet: Dappwright): Promise<number> => {
