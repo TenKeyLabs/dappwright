@@ -1,7 +1,7 @@
 import { defineConfig } from '@playwright/test';
-import { CoinbaseWallet, MetaMaskWallet, sessionPath } from './src';
+import { CoinbaseWallet, MetaMaskWallet } from './src';
+
 export default defineConfig({
-  globalSetup: 'test/helpers/globalSetup.ts',
   workers: 1,
   webServer: {
     command: 'yarn test:dapp',

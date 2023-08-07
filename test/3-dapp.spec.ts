@@ -1,6 +1,6 @@
 import { CoinbaseWallet } from '../src';
 import { forCoinbase } from './helpers/itForWallet';
-import { testWithWallet as test } from './helpers/testWithWallet';
+import { testWithWallet as test } from './helpers/walletTest';
 
 test.describe('when interacting with dapps', () => {
   test.beforeEach(async ({ page }) => {

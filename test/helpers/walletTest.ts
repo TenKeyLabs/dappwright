@@ -1,6 +1,6 @@
 import test from '@playwright/test';
 import { BrowserContext } from 'playwright-core';
-import { Dappwright, getWallet, launch, MetaMaskWallet } from '../../src';
+import { bootstrap, Dappwright, getWallet, MetaMaskWallet, OfficialOptions } from '../../src';
 
 let sharedBrowserContext: BrowserContext;
 
@@ -9,16 +9,12 @@ export const testWithWallet = test.extend<{
   wallet: Dappwright;
 }>({
   context: async ({ context: _ }, use, info) => {
-    const projectMetadata = info.project.metadata;
-
     if (!sharedBrowserContext) {
-      const { browserContext, wallet } = await launch('', {
-        wallet: projectMetadata.wallet,
-        version: projectMetadata.version,
+      const projectMetadata = info.project.metadata as OfficialOptions;
+      const [wallet, _, browserContext] = await bootstrap('', {
+        ...projectMetadata,
         headless: info.project.use.headless,
       });
-
-      await wallet.unlock(projectMetadata.password);
 
       // Swap network chain IDs to match 31337
       if (wallet instanceof MetaMaskWallet) {
