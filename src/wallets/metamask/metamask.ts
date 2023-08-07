@@ -17,6 +17,7 @@ import {
   unlock,
 } from './actions';
 import { allowNetworkSwitch as confirmNetworkSwitch } from './actions/allowNetworkSwitch';
+import { countAccounts } from './actions/countAccounts';
 import { hasNetwork } from './actions/hasNetwork';
 import { setup } from './setup';
 import downloader from './setup/downloader';
@@ -50,7 +51,7 @@ export class MetaMaskWallet extends Wallet {
   createAccount = createAccount(this.page);
   confirmNetworkSwitch = confirmNetworkSwitch(this.page);
   confirmTransaction = confirmTransaction(this.page);
-  countAccounts = this.countAccounts(this.page);
+  countAccounts = countAccounts(this.page);
   deleteAccount = deleteAccount(this.page);
   deleteNetwork = deleteNetwork(this.page);
   getTokenBalance = getTokenBalance(this.page);
