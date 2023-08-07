@@ -6,6 +6,12 @@
 
 - [#193](https://github.com/TenKeyLabs/dappwright/pull/193) [`89ee48d`](https://github.com/TenKeyLabs/dappwright/commit/89ee48df8873793e7f55499de95084fb4d61fa8c) Thanks [@osis](https://github.com/osis)! - feat: Adds countAccounts to the wallet interface
 
+### Patch Changes
+
+- [#191](https://github.com/TenKeyLabs/dappwright/pull/191) [`89ee48d`](https://github.com/TenKeyLabs/dappwright/commit/e14b814c6606072150cd184a47cd941f4dbb5865) Thanks [@erin-at-work](https://github.com/erin-at-work)! - fix: Update input name in coinbase wallet onboarding flow
+
+- [#194](https://github.com/TenKeyLabs/dappwright/pull/194) [`9169864`](https://github.com/TenKeyLabs/dappwright/commit/9169864ccc379d298a741510f3686f71f917f88c) Thanks [@osis](https://github.com/osis)! - feat: Adds countAccounts to the wallet interface
+
 ## 2.3.4
 
 ### Patch Changes
