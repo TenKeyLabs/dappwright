@@ -8,6 +8,7 @@ import {
   approve,
   confirmNetworkSwitch,
   confirmTransaction,
+  countAccounts,
   createAccount,
   deleteAccount,
   deleteNetwork,
@@ -45,6 +46,7 @@ export class CoinbaseWallet extends Wallet {
   createAccount = createAccount(this.page);
   confirmNetworkSwitch = confirmNetworkSwitch;
   confirmTransaction = confirmTransaction(this.page);
+  countAccounts = countAccounts(this.page);
   deleteAccount = deleteAccount;
   deleteNetwork = deleteNetwork(this.page);
   getTokenBalance = getTokenBalance(this.page);
