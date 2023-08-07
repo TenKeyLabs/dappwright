@@ -55,8 +55,9 @@ export const lock = (page: Page) => async (): Promise<void> => {
 export const unlock =
   (page: Page) =>
   async (password = 'password1234!!!!'): Promise<void> => {
-    await page.getByTestId('unlock-with-password').fill(password);
-    await page.getByTestId('unlock-wallet-button').click();
+    // last() because it seems to be a rendering issue of some sort
+    await page.getByTestId('unlock-with-password').last().fill(password);
+    await page.getByTestId('unlock-wallet-button').last().click();
 
     // Go back home since wallet returns to last visited page when unlocked.
     await goHome(page);
@@ -195,7 +196,7 @@ export const createAccount = (page: Page) => async (): Promise<void> => {
 
   // Help prompt appears once
   try {
-    await page.getByTestId('add-new-wallet--continue').click();
+    await page.getByTestId('add-new-wallet--continue').click({ timeout: 2000 });
   } catch {
     // Ignore missing help prompt
   }
