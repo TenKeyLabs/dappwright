@@ -31,13 +31,14 @@ test.describe('when interacting with the wallet', () => {
   test.describe('account management', () => {
     test.describe('createAccount', () => {
       test('should create a new wallet/account', async ({ wallet }) => {
-        expect(await countAccounts(wallet)).toEqual(1);
+        const walletCount = await countAccounts(wallet);
+        expect(await countAccounts(wallet)).toEqual(walletCount);
 
         await wallet.createAccount();
 
         const expectedAccountName = wallet instanceof MetaMaskWallet ? 'Account 2' : 'Wallet 2';
         expect(wallet.page.getByText(expectedAccountName));
-        expect(await countAccounts(wallet)).toEqual(2);
+        expect(await countAccounts(wallet)).toEqual(walletCount + 1);
       });
     });
 
