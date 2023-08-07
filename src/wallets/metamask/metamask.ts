@@ -50,6 +50,7 @@ export class MetaMaskWallet extends Wallet {
   createAccount = createAccount(this.page);
   confirmNetworkSwitch = confirmNetworkSwitch(this.page);
   confirmTransaction = confirmTransaction(this.page);
+  countAccounts = this.countAccounts(this.page);
   deleteAccount = deleteAccount(this.page);
   deleteNetwork = deleteNetwork(this.page);
   getTokenBalance = getTokenBalance(this.page);

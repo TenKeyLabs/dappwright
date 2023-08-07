@@ -181,6 +181,13 @@ export const getTokenBalance =
     return currencyAmount ? Number(currencyAmount) : 0;
   };
 
+export const countAccounts = (page: Page) => async (): Promise<number> => {
+  await page.getByTestId('wallet-switcher--dropdown').click();
+  const count = await page.locator('//*[@data-testid="wallet-switcher--dropdown"]/*/*[2]/*').count();
+  await page.getByTestId('wallet-switcher--dropdown').click();
+  return count;
+};
+
 export const createAccount = (page: Page) => async (): Promise<void> => {
   await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
   await page.getByTestId('wallet-switcher--manage').click();
