@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.0
+
+### Minor Changes
+
+- [#193](https://github.com/TenKeyLabs/dappwright/pull/193) [`89ee48d`](https://github.com/TenKeyLabs/dappwright/commit/89ee48df8873793e7f55499de95084fb4d61fa8c) Thanks [@osis](https://github.com/osis)! - feat: Adds countAccounts to the wallet interface
+
 ## 2.3.4
 
 ### Patch Changes
