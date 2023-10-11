@@ -1,8 +1,9 @@
+import fs from 'fs';
 import os from 'os';
 import * as path from 'path';
 import playwright from 'playwright-core';
 
-import { DappwrightLaunchResponse, OfficialOptions } from './types';
+import { DappwrightLaunchResponse, OfficialOptions, ProcessOptions } from './types';
 import { getWallet, getWalletType } from './wallets/wallets';
 
 /**
@@ -10,7 +11,10 @@ import { getWallet, getWalletType } from './wallets/wallets';
  * */
 export const sessionPath = path.resolve(os.tmpdir(), 'dappwright', 'session');
 
-export async function launch(browserName: string, options: OfficialOptions): Promise<DappwrightLaunchResponse> {
+export async function launch(
+  browserName: string,
+  options: OfficialOptions & ProcessOptions,
+): Promise<DappwrightLaunchResponse> {
   const { ...officialOptions } = options;
   const wallet = getWalletType(officialOptions.wallet);
   if (!wallet) throw new Error('Wallet not supported');
@@ -21,13 +25,12 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
 
   if (options.headless != false) browserArgs.push(`--headless=new`);
 
-  const browserContext = await playwright.chromium.launchPersistentContext(
-    path.join(sessionPath, officialOptions.wallet),
-    {
-      headless: false,
-      args: browserArgs,
-    },
-  );
+  const userDataDir = path.join(sessionPath, options.wallet, (options.workerId || 0).toString());
+  fs.rmSync(userDataDir, { recursive: true, force: true });
+  const browserContext = await playwright.chromium.launchPersistentContext(userDataDir, {
+    headless: false,
+    args: browserArgs,
+  });
 
   return {
     wallet: await getWallet(wallet.id, browserContext),

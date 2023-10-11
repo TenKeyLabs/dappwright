@@ -19,6 +19,10 @@ export type OfficialOptions = DappwrightBrowserLaunchArgumentOptions & {
   headless?: boolean;
 };
 
+export type ProcessOptions = {
+  workerId?: number;
+};
+
 export type DappwrightLaunchResponse = {
   wallet: Wallet;
   browserContext: BrowserContext;
