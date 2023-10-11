@@ -22,8 +22,8 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
 
   if (options.headless != false) browserArgs.push(`--headless=new`);
 
-  const parallelIndex = process.env.TEST_PARALLEL_INDEX || '0';
-  const userDataDir = path.join(sessionPath, options.wallet, parallelIndex);
+  const workerIndex = process.env.TEST_WORKER_INDEX || '0';
+  const userDataDir = path.join(sessionPath, options.wallet, workerIndex);
 
   fs.rmSync(userDataDir, { recursive: true, force: true });
 
