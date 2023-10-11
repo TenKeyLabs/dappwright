@@ -1,5 +1,5 @@
 ---
-"@tenkeylabs/dappwright": minor
+'@tenkeylabs/dappwright': minor
 ---
 
-Launch persistent contexts in parallel.
+Add support for parallel testing.
