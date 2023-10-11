@@ -22,9 +22,11 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
 
   if (options.headless != false) browserArgs.push(`--headless=new`);
 
-  const workerId = process.env.TEST_PARALLEL_INDEX || '0';
-  const userDataDir = path.join(sessionPath, options.wallet, workerId);
+  const parallelIndex = process.env.TEST_PARALLEL_INDEX || '0';
+  const userDataDir = path.join(sessionPath, options.wallet, parallelIndex);
+
   fs.rmSync(userDataDir, { recursive: true, force: true });
+
   const browserContext = await playwright.chromium.launchPersistentContext(userDataDir, {
     headless: false,
     args: browserArgs,
