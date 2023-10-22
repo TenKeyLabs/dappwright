@@ -1,6 +1,6 @@
 import { Page } from 'playwright-core';
-import { clickOnButton, getElementByContent, waitForChromeState } from '../../../helpers';
-import { clickOnLogo, openNetworkDropdown } from './helpers';
+import { clickOnButton, waitForChromeState } from '../../../helpers';
+import { openNetworkDropdown } from './helpers';
 
 export const deleteNetwork =
   (page: Page) =>
@@ -8,13 +8,10 @@ export const deleteNetwork =
     await page.bringToFront();
 
     await openNetworkDropdown(page);
-    const network = await getElementByContent(page, name);
-    await network.hover();
 
-    const deleteButton = await page.waitForSelector(`//*[contains(text(), '${name}')]/following-sibling::i`);
-    await deleteButton.click();
+    await page.locator('.multichain-network-list-menu').getByRole('button', { name }).hover();
 
+    await clickOnButton(page, 'Delete network?');
     await clickOnButton(page, 'Delete');
-    await clickOnLogo(page);
     await waitForChromeState(page);
   };

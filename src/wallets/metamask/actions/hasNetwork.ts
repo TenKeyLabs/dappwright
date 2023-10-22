@@ -6,9 +6,12 @@ export const hasNetwork =
   async (name: string): Promise<boolean> => {
     await page.bringToFront();
     await openNetworkDropdown(page);
-    const isNetworkListed = await page.isVisible(
-      `//div[@class="network-dropdown-list"]/li[contains(string(), "${name}")]`,
-    );
-    (await page.waitForSelector('.network-display')).click();
-    return isNetworkListed;
+
+    const hasNetwork = await page
+      .locator('.multichain-network-list-menu')
+      .locator('button', { hasText: name })
+      .isVisible();
+    await page.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
+
+    return hasNetwork;
   };

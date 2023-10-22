@@ -27,8 +27,11 @@ export const addNetwork =
 
     await clickOnButton(page, 'Save');
 
+    await page.locator('button', { hasText: `Switch to ${networkName}` }).click();
     await page.waitForSelector(`//*[text() = '${networkName}']`);
 
+    // This popup is fairly random in terms of timing
+    await page.waitForTimeout(1000);
     const gotItButtonVisible = await page.isVisible(`//button[contains(text(), 'Got it')]`);
     if (gotItButtonVisible) await clickOnButton(page, 'Got it');
   };

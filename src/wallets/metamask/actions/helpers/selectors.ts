@@ -1,22 +1,14 @@
 import { ElementHandle, Page } from 'playwright-core';
 
 export const getSettingsSwitch = (page: Page, text: string): Promise<ElementHandle | null> =>
-  page.waitForSelector(
-    [
-      `//span[contains(.,'${text}')]/parent::div/following-sibling::div/div/div/div`,
-      `//span[contains(.,'${text}')]/parent::div/following-sibling::div/div/label/div`,
-    ].join('|'),
-  );
+  page.waitForSelector([`//span[contains(.,'${text}')]/parent::div/following-sibling::div/label/div`].join('|'));
 
 export const getErrorMessage = async (page: Page): Promise<string | false> => {
   const options: Parameters<Page['waitForSelector']>[1] = { timeout: 1000 };
 
-  const errorElement = await Promise.race([
-    page.waitForSelector(`span.error`, options),
-    page.waitForSelector(`.typography--color-error-1`, options),
-    page.waitForSelector(`.typography--color-error-default`, options),
-    page.waitForSelector(`.form-field__input--error`, options),
-  ]).catch(() => null);
+  const errorElement = await Promise.race([page.waitForSelector(`.mm-box--color-error-default`, options)]).catch(
+    () => null,
+  );
   if (!errorElement) return false;
   return (errorElement as HTMLElement).innerText;
 };

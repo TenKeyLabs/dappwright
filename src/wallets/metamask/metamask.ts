@@ -21,11 +21,11 @@ import { countAccounts } from './actions/countAccounts';
 import { hasNetwork } from './actions/hasNetwork';
 import { setup } from './setup';
 import downloader from './setup/downloader';
-import { clearOnboardingHelp, closePopup, createPassword, importAccount, showTestNets } from './setup/setupActions';
+import { adjustSettings, clearOnboardingHelp, closePopup, createPassword, importAccount } from './setup/setupActions';
 
 export class MetaMaskWallet extends Wallet {
   static id = 'metamask' as WalletIdOptions;
-  static recommendedVersion = '10.25.0';
+  static recommendedVersion = '11.3.0';
   static releasesUrl = 'https://api.github.com/repos/metamask/metamask-extension/releases';
   static homePath = '/home.html';
 
@@ -40,7 +40,7 @@ export class MetaMaskWallet extends Wallet {
     createPassword,
     clearOnboardingHelp,
     closePopup,
-    showTestNets,
+    adjustSettings,
   ];
   setup = setup(this.page, this.defaultSetupSteps);
 
