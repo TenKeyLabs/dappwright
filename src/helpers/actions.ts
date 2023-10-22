@@ -11,8 +11,7 @@ export const clickOnElement = async (page: Page, text: string, type?: string): P
 };
 
 export const clickOnButton = async (page: Page, text: string): Promise<void> => {
-  const button = await getElementByContent(page, text, 'button');
-  await button.click();
+  await page.getByRole('button', { name: text }).click();
 };
 
 /**

@@ -1,27 +1,28 @@
 import { Page } from 'playwright-core';
-import { clickOnButton, clickOnElement, getInputByLabel, typeOnInputField } from '../../../helpers';
+import { clickOnButton } from '../../../helpers';
 import { AddToken } from '../../../types';
+import { clickOnLogo } from './helpers';
 
 export const addToken =
   (page: Page) =>
   async ({ tokenAddress, symbol, decimals = 0 }: AddToken): Promise<void> => {
     await page.bringToFront();
 
-    await clickOnElement(page, 'Import tokens');
-    await page.waitForTimeout(500);
+    await page.getByTestId('import-token-button').click();
     await clickOnButton(page, 'Custom token');
-    await typeOnInputField(page, 'Token contract address', tokenAddress);
+    await page.getByTestId('import-tokens-modal-custom-address').fill(tokenAddress);
 
-    // TODO: handle case when contract is not containing symbol
-    // const symbolInput = await getInputByLabelSelector('Token symbol');
+    await page.waitForTimeout(500);
 
     if (symbol) {
-      await typeOnInputField(page, 'Token symbol', symbol, true);
+      await page.getByTestId('import-tokens-modal-custom-symbol').fill(symbol);
     }
 
-    const decimalsInput = await getInputByLabel(page, 'Token decimal');
-    if (!(await decimalsInput.isDisabled())) await decimalsInput.type(String(decimals));
+    if (decimals) {
+      await page.getByTestId('import-tokens-modal-custom-decimals').fill(decimals.toString());
+    }
 
-    await clickOnButton(page, 'Add custom token');
-    await clickOnButton(page, 'Import tokens');
+    await clickOnButton(page, 'Next');
+    await page.getByTestId('import-tokens-modal-import-button').click();
+    await clickOnLogo(page);
   };

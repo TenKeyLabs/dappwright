@@ -1,16 +1,19 @@
 import { Page } from 'playwright-core';
 
-import { clickOnButton, clickOnElement, typeOnInputField, waitForChromeState } from '../../../helpers';
+import { clickOnButton, typeOnInputField, waitForChromeState } from '../../../helpers';
 import { WalletOptions } from '../../wallets';
-import { clickOnLogo, clickOnSettingsSwitch, openNetworkDropdown } from '../actions/helpers';
+import { clickOnSettingsSwitch, openAccountOptionsMenu } from '../actions/helpers';
 
-export async function showTestNets(metamaskPage: Page): Promise<void> {
-  await openNetworkDropdown(metamaskPage);
+export async function goToSettings(metamaskPage: Page): Promise<void> {
+  await openAccountOptionsMenu(metamaskPage);
+  await metamaskPage.getByTestId('global-menu-settings').click();
+}
 
-  await clickOnElement(metamaskPage, 'Show/hide');
-  await clickOnSettingsSwitch(metamaskPage, 'Advanced gas controls');
+export async function adjustSettings(metamaskPage: Page): Promise<void> {
+  await goToSettings(metamaskPage);
+  await metamaskPage.locator('.tab-bar__tab', { hasText: 'Advanced' }).click();
+
   await clickOnSettingsSwitch(metamaskPage, 'Show test networks');
-  await clickOnLogo(metamaskPage);
   await waitForChromeState(metamaskPage);
 }
 
@@ -38,6 +41,7 @@ export async function importAccount(
   metamaskPage: Page,
   { seed = 'already turtle birth enroll since owner keep patch skirt drift any dinner' }: WalletOptions,
 ): Promise<void> {
+  await metamaskPage.getByTestId('onboarding-terms-checkbox').click();
   await metamaskPage.getByTestId('onboarding-import-wallet').click();
   await metamaskPage.getByTestId('metametrics-i-agree').click();
 
@@ -64,7 +68,7 @@ export const closePopup = async (page: Page): Promise<void> => {
   /* For some reason popup deletes close button and then create new one (react stuff)
    * hacky solution can be found here => https://github.com/puppeteer/puppeteer/issues/3496 */
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  if (await page.locator('.popover-header__button').isVisible()) {
-    await page.$eval('.popover-header__button', (node: HTMLElement) => node.click());
+  if (await page.getByTestId('popover-close').isVisible()) {
+    await page.getByTestId('popover-close').click();
   }
 };

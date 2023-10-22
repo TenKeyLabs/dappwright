@@ -1,18 +1,24 @@
 import { Page } from 'playwright-core';
 
-import { clickOnButton, clickOnElement, typeOnInputField } from '../../../helpers';
-import { getErrorMessage, openProfileDropdown } from './helpers';
+import { clickOnButton, typeOnInputField } from '../../../helpers';
+import { getErrorMessage, openAccountMenu } from './helpers';
 
 export const importPk =
   (page: Page) =>
   async (privateKey: string): Promise<void> => {
     await page.bringToFront();
-    await openProfileDropdown(page);
+    await openAccountMenu(page);
 
-    await clickOnElement(page, 'Import account');
+    await page.getByTestId('multichain-account-menu-popover-action-button').click();
+
+    await clickOnButton(page, 'Import account');
     await typeOnInputField(page, 'your private key', privateKey);
-    await clickOnButton(page, 'Import');
+    await page.getByTestId('import-account-confirm-button').click();
 
     const errorMessage = await getErrorMessage(page);
-    if (errorMessage) throw new SyntaxError(errorMessage);
+    if (errorMessage) {
+      await clickOnButton(page, 'Cancel');
+      await page.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
+      throw new SyntaxError(errorMessage);
+    }
   };

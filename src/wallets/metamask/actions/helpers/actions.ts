@@ -1,5 +1,5 @@
 import { Page } from 'playwright-core';
-import { getAccountMenuButton, getSettingsSwitch } from './selectors';
+import { getSettingsSwitch } from './selectors';
 
 export const clickOnSettingsSwitch = async (page: Page, text: string): Promise<void> => {
   const button = await getSettingsSwitch(page, text);
@@ -7,20 +7,17 @@ export const clickOnSettingsSwitch = async (page: Page, text: string): Promise<v
 };
 
 export const openNetworkDropdown = async (page: Page): Promise<void> => {
-  const networkSwitcher = await page.waitForSelector('.network-display');
-  await networkSwitcher.click();
-  await page.waitForSelector('li.dropdown-menu-item');
+  const networkDropdown = page.getByTestId('network-display');
+  await networkDropdown.waitFor({ state: 'visible' });
+  await networkDropdown.click();
 };
 
-export const openProfileDropdown = async (page: Page): Promise<void> => {
-  const accountSwitcher = await page.waitForSelector('.account-menu__icon');
-  await accountSwitcher.click({ noWaitAfter: true, force: true });
+export const openAccountOptionsMenu = async (page: Page): Promise<void> => {
+  await page.getByTestId('account-options-menu-button').click();
 };
 
-export const openAccountDropdown = async (page: Page): Promise<void> => {
-  const accMenu = await getAccountMenuButton(page);
-  await accMenu.click();
-  await page.waitForSelector('.menu__container.account-options-menu');
+export const openAccountMenu = async (page: Page): Promise<void> => {
+  await page.getByTestId('account-menu-icon').click();
 };
 
 export const clickOnLogo = async (page: Page): Promise<void> => {
