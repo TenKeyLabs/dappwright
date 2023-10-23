@@ -1,3 +1,4 @@
+import fs from 'fs';
 import os from 'os';
 import * as path from 'path';
 import playwright from 'playwright-core';
@@ -21,13 +22,15 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
 
   if (options.headless != false) browserArgs.push(`--headless=new`);
 
-  const browserContext = await playwright.chromium.launchPersistentContext(
-    path.join(sessionPath, officialOptions.wallet),
-    {
-      headless: false,
-      args: browserArgs,
-    },
-  );
+  const workerIndex = process.env.TEST_WORKER_INDEX || '0';
+  const userDataDir = path.join(sessionPath, options.wallet, workerIndex);
+
+  fs.rmSync(userDataDir, { recursive: true, force: true });
+
+  const browserContext = await playwright.chromium.launchPersistentContext(userDataDir, {
+    headless: false,
+    args: browserArgs,
+  });
 
   return {
     wallet: await getWallet(wallet.id, browserContext),
