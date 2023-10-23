@@ -1,13 +1,14 @@
 import { Page } from 'playwright-core';
-import { clickOnButton, clickOnElement, waitForChromeState } from '../../../helpers';
-import { openProfileDropdown } from './helpers';
+import { waitForChromeState } from '../../../helpers';
+import { openAccountMenu } from './helpers';
 
 export const createAccount = (page: Page) => async (): Promise<void> => {
   await page.bringToFront();
-  await openProfileDropdown(page);
+  await openAccountMenu(page);
 
-  // TODO: use different approach? maybe change param to account name
-  await clickOnElement(page, `Create account`);
-  await clickOnButton(page, `Create`);
+  await page.getByTestId('multichain-account-menu-popover-action-button').click();
+  await page.getByTestId('multichain-account-menu-popover-add-account').click();
+  await page.getByRole('button', { name: 'Create' }).click();
+
   await waitForChromeState(page);
 };

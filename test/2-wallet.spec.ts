@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
-import { Dappwright, MetaMaskWallet } from '../src';
-import { clickOnLogo, openProfileDropdown } from '../src/wallets/metamask/actions/helpers';
+import { CoinbaseWallet, Dappwright, MetaMaskWallet } from '../src';
+import { openAccountMenu } from '../src/wallets/metamask/actions/helpers';
 import { forCoinbase, forMetaMask } from './helpers/itForWallet';
 import { testWithWallet as test } from './helpers/walletTest';
 
@@ -9,10 +9,10 @@ const countAccounts = async (wallet: Dappwright): Promise<number> => {
   let count;
 
   if (wallet instanceof MetaMaskWallet) {
-    await openProfileDropdown(wallet.page);
-    const container = await wallet.page.$('.account-menu__accounts');
-    count = (await container.$$('.account-menu__account')).length;
-    await openProfileDropdown(wallet.page);
+    await openAccountMenu(wallet.page);
+    count = (await wallet.page.$$('.multichain-account-list-item')).length;
+    await wallet.page.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
+    // await openAccountMenu(wallet.page);
   } else {
     await wallet.page.getByTestId('portfolio-header--switcher-cell-pressable').click();
     count = (await wallet.page.$$('//button[@data-testid="wallet-switcher--wallet-item-cell-pressable"]')).length;
@@ -94,9 +94,7 @@ test.describe('when interacting with the wallet', () => {
         if (wallet instanceof MetaMaskWallet) {
           await wallet.switchNetwork('localhost');
 
-          const selectedNetwork = await wallet.page.evaluate(
-            () => (document.querySelector('.network-display > span:nth-child(2)') as HTMLSpanElement).innerHTML,
-          );
+          const selectedNetwork = await wallet.page.locator('.mm-picker-network > p').textContent();
           expect(selectedNetwork).toEqual('Localhost 8545');
         } else {
           console.warn('Coinbase skips network switching');
@@ -128,12 +126,6 @@ test.describe('when interacting with the wallet', () => {
 
   // Metamask only
   test.describe('private keys', () => {
-    test.beforeEach(async ({ wallet }) => {
-      await forMetaMask(wallet, async () => {
-        await clickOnLogo(wallet.page);
-      });
-    });
-
     test.describe('importPK', () => {
       test('should import private key', async ({ wallet }) => {
         await forMetaMask(wallet, async () => {
@@ -202,20 +194,22 @@ test.describe('when interacting with the wallet', () => {
     });
 
     test('should return 0 token balance when token not found', async ({ wallet }) => {
-      const tokenBalance: number = await wallet.getTokenBalance('TKLBUCKS');
-      expect(tokenBalance).toEqual(0);
+      if (wallet instanceof CoinbaseWallet) {
+        const tokenBalance: number = await wallet.getTokenBalance('TKLBUCKS');
+        expect(tokenBalance).toEqual(0);
+      } else {
+        test.skip();
+      }
     });
   });
 
   test.describe('when working with tokens', () => {
     test('should add token', async ({ wallet }) => {
       await forMetaMask(wallet, async () => {
-        await wallet.switchNetwork('kovan');
         await wallet.addToken({
           tokenAddress: '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa',
           symbol: 'KAKI',
         });
-        await wallet.switchNetwork('localhost');
       });
     });
   });

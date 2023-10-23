@@ -1,6 +1,6 @@
 {
   "name": "@tenkeylabs/dappwright",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "End-to-End (E2E) testing for dApps using Playwright + MetaMask",
   "source": "src/index.ts",
   "main": "dist/index.js",
@@ -58,7 +58,7 @@
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.1.0",
     "eslint": "^8.27.0",
-    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.25.0",
     "eslint-plugin-prettier": "^5.0.0",
     "ganache": "^7.4.3",

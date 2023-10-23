@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.1
+
+### Patch Changes
+
+- [#228](https://github.com/TenKeyLabs/dappwright/pull/228) [`10862b0`](https://github.com/TenKeyLabs/dappwright/commit/10862b0d45075515cd83d8c5f4acab96718909f3) Thanks [@osis](https://github.com/osis)! - feat: support for MetaMask 11.3
+
 ## 2.4.0
 
 ### Minor Changes
