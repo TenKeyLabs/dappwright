@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.0
+
+### Minor Changes
+
+- [#225](https://github.com/TenKeyLabs/dappwright/pull/225) [`7dc3279`](https://github.com/TenKeyLabs/dappwright/commit/7dc327945090baed94f3dba9111b93752df15bc2) Thanks [@panteo](https://github.com/panteo)! - Add support for parallel testing.
+
 ## 2.4.1
 
 ### Patch Changes
