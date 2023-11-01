@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.2
+
+### Patch Changes
+
+- [#244](https://github.com/TenKeyLabs/dappwright/pull/244) [`f270313`](https://github.com/TenKeyLabs/dappwright/commit/f270313681fe900a1a02811650f015e51d562de3) Thanks [@osis](https://github.com/osis)! - chore: bumps coinbase wallet to 3.42.0
+
 ## 2.5.1
 
 ### Patch Changes
