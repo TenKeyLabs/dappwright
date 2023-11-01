@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.1
+
+### Patch Changes
+
+- [#241](https://github.com/TenKeyLabs/dappwright/pull/241) [`521923a`](https://github.com/TenKeyLabs/dappwright/commit/521923a9e3d8ad2853f4a283467cdfa05713f30a) Thanks [@osis](https://github.com/osis)! - fix: exact text matches for switching networks
+
 ## 2.5.0
 
 ### Minor Changes
