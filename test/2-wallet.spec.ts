@@ -92,10 +92,10 @@ test.describe('when interacting with the wallet', () => {
     test.describe('switchNetwork', () => {
       test('should switch network, localhost', async ({ wallet }) => {
         if (wallet instanceof MetaMaskWallet) {
-          await wallet.switchNetwork('localhost');
+          await wallet.switchNetwork('Goerli');
 
           const selectedNetwork = await wallet.page.locator('.mm-picker-network > p').textContent();
-          expect(selectedNetwork).toEqual('Localhost 8545');
+          expect(selectedNetwork).toEqual('Goerli');
         } else {
           console.warn('Coinbase skips network switching');
         }
@@ -177,7 +177,7 @@ test.describe('when interacting with the wallet', () => {
 
   test.describe('getTokenBalance', () => {
     test.beforeEach(async ({ wallet }) => {
-      if (wallet instanceof MetaMaskWallet) await wallet.switchNetwork('localhost');
+      if (wallet instanceof MetaMaskWallet) await wallet.switchNetwork('Localhost 8545');
     });
 
     test('should return token balance', async ({ wallet }) => {
