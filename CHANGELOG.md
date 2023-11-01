@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.3
+
+### Patch Changes
+
+- [#242](https://github.com/TenKeyLabs/dappwright/pull/242) [`2fb8624`](https://github.com/TenKeyLabs/dappwright/commit/2fb862406e013ab6c37760bf55e253c567870431) Thanks [@osis](https://github.com/osis)! - fix: scope of switch account selector to the menu dialog
+
 ## 2.5.2
 
 ### Patch Changes
