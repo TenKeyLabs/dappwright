@@ -18,6 +18,9 @@ export const testWithWallet = test.extend<{
 
       // Swap network chain IDs to match 31337
       if (wallet instanceof MetaMaskWallet) {
+        const onHomeScreen = await wallet.page.getByTestId('eth-overview__primary-currency').isVisible();
+        if (!onHomeScreen) throw 'Wallet Setup Error: Did not settle on home screen.';
+
         await wallet.addNetwork({
           networkName: 'Localhost 8545',
           rpc: 'http://localhost:8545',
