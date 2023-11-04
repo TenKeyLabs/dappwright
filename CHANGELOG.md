@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.4
+
+### Patch Changes
+
+- [#248](https://github.com/TenKeyLabs/dappwright/pull/248) [`d3e29a0`](https://github.com/TenKeyLabs/dappwright/commit/d3e29a0a6e9de40cd332c4830f1bdbc2093cf330) Thanks [@osis](https://github.com/osis)! - fix: metamask not settling on the homescreen after settings adjustments
+
 ## 2.5.3
 
 ### Patch Changes
