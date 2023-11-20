@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.5
+
+### Patch Changes
+
+- [#260](https://github.com/TenKeyLabs/dappwright/pull/260) [`8f34c0f`](https://github.com/TenKeyLabs/dappwright/commit/8f34c0f270d64ce4655da63a5e73700d93c6c243) Thanks [@osis](https://github.com/osis)! - fixes network confirmation action for metamsk
+
 ## 2.5.4
 
 ### Patch Changes
