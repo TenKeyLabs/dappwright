@@ -16,7 +16,7 @@ import {
   switchNetwork,
   unlock,
 } from './actions';
-import { allowNetworkSwitch as confirmNetworkSwitch } from './actions/allowNetworkSwitch';
+import { confirmNetworkSwitch } from './actions/confirmNetworkSwitch';
 import { countAccounts } from './actions/countAccounts';
 import { hasNetwork } from './actions/hasNetwork';
 import { setup } from './setup';
