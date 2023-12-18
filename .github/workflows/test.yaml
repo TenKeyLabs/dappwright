@@ -53,7 +53,7 @@ jobs:
           (echo "**** Attempt 5" && xvfb-run --auto-servernum yarn run test:ci)
       - name: Upload test results
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: playwright-traces
           path: test-output
