@@ -118,7 +118,7 @@ export const deleteNetwork =
   (page: Page) =>
   async (name: string): Promise<void> => {
     await page.getByTestId('settings-navigation-link').click();
-    await page.getByTestId('network-setting').click();
+    await page.getByTestId('settings-networks-menu').click();
 
     // Search for network then click on the first result
     await page.getByTestId('network-list-search').fill(name);
@@ -132,7 +132,7 @@ export const hasNetwork =
   (page: Page) =>
   async (name: string): Promise<boolean> => {
     await page.getByTestId('settings-navigation-link').click();
-    await page.getByTestId('network-setting').click();
+    await page.getByTestId('settings-networks-menu').click();
     await page.getByTestId('network-list-search').fill(name);
     const networkIsListed = await page.isVisible('//div[@data-testid="list-"][1]//button');
     await goHome(page);
