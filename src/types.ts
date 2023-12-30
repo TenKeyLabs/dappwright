@@ -57,6 +57,7 @@ export type Dappwright = {
   importPK: (pk: string) => Promise<void>;
   lock: () => Promise<void>;
   sign: () => Promise<void>;
+  signin: () => Promise<void>;
   switchAccount: (accountNumber: number) => Promise<void>;
   switchNetwork: (network: string) => Promise<void>;
   unlock: (password?: string) => Promise<void>;
