@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.5.6
+
+### Patch Changes
+
+- [#279](https://github.com/TenKeyLabs/dappwright/pull/279) [`7041e0970b190b4bdeac9c07316f53218116b84a`](https://github.com/TenKeyLabs/dappwright/commit/7041e0970b190b4bdeac9c07316f53218116b84a) Thanks [@osis](https://github.com/osis)! - feat: adds support for signin actions
+
+- [#277](https://github.com/TenKeyLabs/dappwright/pull/277) [`7f9cbd1e4628b6f390ea75b741ed300a13abe423`](https://github.com/TenKeyLabs/dappwright/commit/7f9cbd1e4628b6f390ea75b741ed300a13abe423) Thanks [@osis](https://github.com/osis)! - fix: Coinbase network settings menu selector
+
 ## 2.5.5
 
 ### Patch Changes
