@@ -1,8 +1,8 @@
 # Changelog
 
-## 2.6.1
+## 2.7.0
 
-### Patch Changes
+### Minor Changes
 
 - [#280](https://github.com/TenKeyLabs/dappwright/pull/280) [`9e67323110628660007740e31ecd4940811898ff`](https://github.com/TenKeyLabs/dappwright/commit/9e67323110628660007740e31ecd4940811898ff) Thanks [@osis](https://github.com/osis)! - feat: adds reject action for metamask and coinbase wallet
 
