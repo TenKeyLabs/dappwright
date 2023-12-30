@@ -1,5 +1,5 @@
 import { CoinbaseWallet } from '../src';
-import { forCoinbase } from './helpers/itForWallet';
+import { forCoinbase, forMetaMask } from './helpers/itForWallet';
 import { testWithWallet as test } from './helpers/walletTest';
 
 test.describe('when interacting with dapps', () => {
@@ -9,18 +9,46 @@ test.describe('when interacting with dapps', () => {
   });
 
   test('should be able to connect', async ({ wallet, page }) => {
-    await page.click('.connect-button');
-    await wallet.approve();
+    await forCoinbase(wallet, async () => {
+      await page.click('.connect-button');
+      await wallet.approve();
 
-    await page.waitForSelector('#connected');
+      await page.waitForSelector('#connected');
+    });
+  });
+
+  test('should be able to sign in', async ({ wallet, page }) => {
+    await forMetaMask(wallet, async () => {
+      await page.click('.signin-button');
+      await wallet.signin();
+
+      await page.waitForSelector('#signedIn');
+    });
+  });
+
+  test('should be able to sign in again', async ({ wallet, page }) => {
+    await forMetaMask(wallet, async () => {
+      await page.click('.signin-button');
+      await wallet.signin();
+
+      await page.waitForSelector('#signedIn');
+    });
   });
 
   test('should be able to switch networks', async ({ wallet, page }) => {
-    await forCoinbase(wallet, async () => {
-      await page.click('.switch-network-button');
+    await page.click('.switch-network-button');
 
-      await page.waitForSelector('#switchNetwork');
+    await forMetaMask(wallet, async () => {
+      await wallet.switchNetwork('Goerli');
+      await page.bringToFront();
+      await page.reload();
+      await wallet.page.reload();
+
+      await page.click('.switch-network-button');
+      await wallet.confirmNetworkSwitch();
     });
+
+    await page.waitForSelector('#switchNetwork');
   });
 
   test('should be able to sign messages', async ({ wallet, page }) => {

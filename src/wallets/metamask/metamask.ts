@@ -12,6 +12,7 @@ import {
   importPk,
   lock,
   sign,
+  signin,
   switchAccount,
   switchNetwork,
   unlock,
@@ -59,6 +60,7 @@ export class MetaMaskWallet extends Wallet {
   importPK = importPk(this.page);
   lock = lock(this.page);
   sign = sign(this.page);
+  signin = signin(this.page);
   switchAccount = switchAccount(this.page);
   switchNetwork = switchNetwork(this.page);
   unlock = unlock(this.page);

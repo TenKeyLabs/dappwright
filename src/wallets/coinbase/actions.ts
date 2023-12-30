@@ -47,6 +47,11 @@ export const sign = (page: Page) => async (): Promise<void> => {
   });
 };
 
+export const signin = async (): Promise<void> => {
+  // eslint-disable-next-line no-console
+  console.warn('signin not implemented');
+};
+
 export const lock = (page: Page) => async (): Promise<void> => {
   await page.getByTestId('settings-navigation-link').click();
   await page.getByTestId('lock-wallet-button').click();

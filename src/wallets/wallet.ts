@@ -38,6 +38,7 @@ export default abstract class Wallet implements Dappwright {
   abstract importPK: (pk: string) => Promise<void>;
   abstract lock: () => Promise<void>;
   abstract sign: () => Promise<void>;
+  abstract signin: () => Promise<void>;
   abstract switchAccount: (accountNumber: number) => Promise<void>;
   abstract switchNetwork: (network: string) => Promise<void>;
   abstract unlock: (password?: string) => Promise<void>;
