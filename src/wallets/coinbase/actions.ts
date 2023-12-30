@@ -41,6 +41,15 @@ export const approve = (page: Page) => async (): Promise<void> => {
   });
 };
 
+export const reject = (page: Page) => async (): Promise<void> => {
+  await performPopupAction(page, async (popup: Page) => {
+    const denyButton = popup.getByTestId('deny-authorize-button');
+    const cancelButton = popup.getByTestId('request-cancel-button');
+
+    await denyButton.or(cancelButton).click();
+  });
+};
+
 export const sign = (page: Page) => async (): Promise<void> => {
   await performPopupAction(page, async (popup: Page) => {
     await popup.getByTestId('sign-message').click();

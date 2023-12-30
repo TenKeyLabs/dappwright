@@ -8,6 +8,7 @@ export * from './deleteNetwork';
 export * from './getTokenBalance';
 export * from './importPk';
 export * from './lock';
+export * from './reject';
 export * from './sign';
 export * from './signin';
 export * from './switchAccount';

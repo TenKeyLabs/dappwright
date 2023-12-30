@@ -56,6 +56,7 @@ export type Dappwright = {
   hasNetwork: (name: string) => Promise<boolean>;
   importPK: (pk: string) => Promise<void>;
   lock: () => Promise<void>;
+  reject: () => Promise<void>;
   sign: () => Promise<void>;
   signin: () => Promise<void>;
   switchAccount: (accountNumber: number) => Promise<void>;

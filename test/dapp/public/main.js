@@ -12,10 +12,19 @@ async function start() {
 
   const connectButton = document.querySelector('.connect-button');
   connectButton.addEventListener('click', async function () {
-    accounts = await ethereum.request({
-      method: 'eth_requestAccounts',
-    });
-    counterContract = new ethers.Contract(ContractInfo.address, ContractInfo.abi, provider.getSigner(accounts[0]));
+    try {
+      accounts = await ethereum.request({
+        method: 'eth_requestAccounts',
+      });
+      counterContract = new ethers.Contract(ContractInfo.address, ContractInfo.abi, provider.getSigner(accounts[0]));
+    } catch {
+      const connectRejected = document.createElement('div');
+      connectRejected.id = 'connect-rejected';
+      connectRejected.textContent = 'connect rejected';
+      document.body.appendChild(connectRejected);
+      return;
+    }
+
     const connected = document.createElement('div');
     connected.id = 'connected';
     connected.textContent = 'connected';
@@ -90,10 +99,18 @@ async function start() {
   const transferButton = document.querySelector('.transfer-button');
   transferButton.addEventListener('click', async function () {
     const accounts = await provider.send('eth_requestAccounts', []);
-    await ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [{ to: accounts[0], from: accounts[0], value: '10000000000000000' }],
-    });
+    try {
+      await ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [{ to: accounts[0], from: accounts[0], value: '10000000000000000' }],
+      });
+    } catch {
+      const transferRejected = document.createElement('div');
+      transferRejected.id = 'transfer-rejected';
+      transferRejected.textContent = 'transfer rejected';
+      document.body.appendChild(transferRejected);
+      return;
+    }
     const transfer = document.createElement('div');
     transfer.id = 'transferred';
     transfer.textContent = 'transferred';
