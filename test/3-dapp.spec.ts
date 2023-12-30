@@ -8,6 +8,13 @@ test.describe('when interacting with dapps', () => {
     await page.waitForSelector('#ready');
   });
 
+  test('should be able to reject to connect', async ({ wallet, page }) => {
+    await page.click('.connect-button');
+    await wallet.reject();
+
+    await page.waitForSelector('#connect-rejected');
+  });
+
   test('should be able to connect', async ({ wallet, page }) => {
     await forCoinbase(wallet, async () => {
       await page.click('.connect-button');
@@ -59,11 +66,21 @@ test.describe('when interacting with dapps', () => {
   });
 
   test.describe('when confirming a transaction', () => {
-    test('should be able to confirm without altering gas settings', async ({ wallet, page }) => {
-      if (wallet instanceof CoinbaseWallet && process.env.CI) test.skip(); // this page doesn't load in github actions
-
+    test.beforeEach(async ({ page }) => {
+      await page.reload();
       await page.click('.connect-button');
       await page.waitForSelector('#connected');
+    });
+
+    test('should be able to reject', async ({ wallet, page }) => {
+      await page.click('.transfer-button');
+      await wallet.reject();
+
+      await page.waitForSelector('#transfer-rejected');
+    });
+
+    test('should be able to confirm without altering gas settings', async ({ wallet, page }) => {
+      if (wallet instanceof CoinbaseWallet && process.env.CI) test.skip(); // this page doesn't load in github actions
 
       await page.click('.increase-button');
       await wallet.confirmTransaction();

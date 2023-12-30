@@ -18,6 +18,7 @@ import {
   importPK,
   lock,
   navigateHome,
+  reject,
   sign,
   signin,
   switchAccount,
@@ -54,6 +55,7 @@ export class CoinbaseWallet extends Wallet {
   hasNetwork = hasNetwork(this.page);
   importPK = importPK;
   lock = lock(this.page);
+  reject = reject(this.page);
   sign = sign(this.page);
   signin = signin;
   switchAccount = switchAccount(this.page);

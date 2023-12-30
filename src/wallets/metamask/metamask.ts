@@ -11,6 +11,7 @@ import {
   getTokenBalance,
   importPk,
   lock,
+  reject,
   sign,
   signin,
   switchAccount,
@@ -59,6 +60,7 @@ export class MetaMaskWallet extends Wallet {
   hasNetwork = hasNetwork(this.page);
   importPK = importPk(this.page);
   lock = lock(this.page);
+  reject = reject(this.page);
   sign = sign(this.page);
   signin = signin(this.page);
   switchAccount = switchAccount(this.page);
