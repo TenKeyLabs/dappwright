@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.7.1
+
+### Patch Changes
+
+- [#282](https://github.com/TenKeyLabs/dappwright/pull/282) [`b83d0ea9342989cca00de63014a010ff5b370dbf`](https://github.com/TenKeyLabs/dappwright/commit/b83d0ea9342989cca00de63014a010ff5b370dbf) Thanks [@osis](https://github.com/osis)! - fix: wallet interface includes reject
+
 ## 2.7.0
 
 ### Minor Changes
