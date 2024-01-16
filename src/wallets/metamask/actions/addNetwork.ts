@@ -27,11 +27,24 @@ export const addNetwork =
 
     await clickOnButton(page, 'Save');
 
-    await page.locator('button', { hasText: `Switch to ${networkName}` }).click();
-    await page.waitForSelector(`//*[text() = '${networkName}']`);
+    const switchNetworkClick = (): Promise<void> =>
+      page
+        .locator('button', { hasText: `Switch to ${networkName}` })
+        .click()
+        .then(() => page.getByText(networkName).waitFor());
 
     // This popup is fairly random in terms of timing
-    await page.waitForTimeout(1000);
-    const gotItButtonVisible = await page.isVisible(`//button[contains(text(), 'Got it')]`);
-    if (gotItButtonVisible) await clickOnButton(page, 'Got it');
+    // and can show before switch to network click is gone
+    const gotItClick = (): Promise<void> =>
+      page.waitForTimeout(2000).then(() =>
+        page
+          .locator('button', { hasText: 'Got it' })
+          .isVisible()
+          .then((gotItButtonVisible) => {
+            if (gotItButtonVisible) return clickOnButton(page, 'Got it');
+            return Promise.resolve();
+          }),
+      );
+
+    await Promise.all([switchNetworkClick(), gotItClick()]);
   };
