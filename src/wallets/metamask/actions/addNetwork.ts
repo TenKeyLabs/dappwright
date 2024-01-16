@@ -28,10 +28,7 @@ export const addNetwork =
     await clickOnButton(page, 'Save');
 
     const switchNetworkClick = (): Promise<void> =>
-      page
-        .locator('button', { hasText: `Switch to ${networkName}` })
-        .click()
-        .then(() => page.getByText(networkName).waitFor());
+      page.locator('button', { hasText: `Switch to ${networkName}` }).click();
 
     // This popup is fairly random in terms of timing
     // and can show before switch to network click is gone
