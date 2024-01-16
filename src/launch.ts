@@ -17,8 +17,12 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
   if (!wallet) throw new Error('Wallet not supported');
 
   const extensionPath = await wallet.download(officialOptions);
+  const extensionList = [extensionPath].concat(officialOptions.additionalExtensions || []);
 
-  const browserArgs = [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`];
+  const browserArgs = [
+    `--disable-extensions-except=${extensionList.join(',')}`,
+    `--load-extension=${extensionList.join(',')}`,
+  ];
 
   if (options.headless != false) browserArgs.push(`--headless=new`);
 
