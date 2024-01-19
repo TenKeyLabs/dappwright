@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.7.2
+
+### Patch Changes
+
+- [#291](https://github.com/TenKeyLabs/dappwright/pull/291) [`3027d3f`](https://github.com/TenKeyLabs/dappwright/commit/3027d3fae7f3698bd6b21be9ed892dabba45ef56) Thanks [@IGoRFonin](https://github.com/IGoRFonin)! - fix: 🐛 metamask add network got it popup
+
 ## 2.7.1
 
 ### Patch Changes
