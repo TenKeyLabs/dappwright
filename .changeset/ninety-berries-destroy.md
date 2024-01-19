@@ -1,5 +1,5 @@
 ---
-"@tenkeylabs/dappwright": minor
+'@tenkeylabs/dappwright': minor
 ---
 
-feat: 🎸 add new param for another extensions
+feat: 🎸 adds new parameter to the bootstrap interface that enables additional extensions to be loaded
