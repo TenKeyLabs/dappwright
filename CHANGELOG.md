@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.8.0
+
+### Minor Changes
+
+- [#293](https://github.com/TenKeyLabs/dappwright/pull/293) [`9c255dc`](https://github.com/TenKeyLabs/dappwright/commit/9c255dcbc18c21888442923af814d3c24a1e1fc0) Thanks [@IGoRFonin](https://github.com/IGoRFonin)! - feat: 🎸 adds new parameter to the bootstrap interface that enables additional extensions to be loaded
+
 ## 2.7.2
 
 ### Patch Changes
