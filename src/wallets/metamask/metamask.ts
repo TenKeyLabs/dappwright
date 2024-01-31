@@ -27,7 +27,7 @@ import { adjustSettings, clearOnboardingHelp, closePopup, createPassword, import
 
 export class MetaMaskWallet extends Wallet {
   static id = 'metamask' as WalletIdOptions;
-  static recommendedVersion = '11.3.0';
+  static recommendedVersion = '11.7.5';
   static releasesUrl = 'https://api.github.com/repos/metamask/metamask-extension/releases';
   static homePath = '/home.html';
 

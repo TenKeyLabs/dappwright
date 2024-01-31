@@ -17,7 +17,7 @@ export const addNetwork =
     await page.getByLabel('Network name').fill(networkName);
     await page.getByLabel('New RPC URL').fill(rpc);
     await page.getByLabel('Chain ID').fill(String(chainId));
-    await page.getByLabel('Currency symbol').fill(symbol);
+    await page.getByTestId('network-form-ticker-input').fill(symbol);
 
     const errorMessage = await getErrorMessage(page);
     if (errorMessage) {
