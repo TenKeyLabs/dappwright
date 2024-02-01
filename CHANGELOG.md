@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.8.1
+
+### Minor Changes
+
+- [#303](https://github.com/TenKeyLabs/dappwright/pull/303) [`8bed417`](https://github.com/TenKeyLabs/dappwright/commit/8bed41719b5be9aa0c421b5bd77700e4242de85d) Thanks [@IGoRFonin](https://github.com/IGoRFonin)! - feat: 🎸 update metamask version to 2.7.5
+
 ## 2.8.0
 
 ### Minor Changes
