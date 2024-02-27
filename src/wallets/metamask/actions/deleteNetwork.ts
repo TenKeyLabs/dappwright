@@ -9,7 +9,7 @@ export const deleteNetwork =
 
     await openNetworkDropdown(page);
 
-    await page.locator('.multichain-network-list-menu').getByRole('button', { name }).hover();
+    await page.locator('.multichain-network-list-menu').getByText(name, { exact: true }).hover();
 
     await clickOnButton(page, 'Delete network?');
     await clickOnButton(page, 'Delete');

@@ -7,11 +7,8 @@ export const hasNetwork =
     await page.bringToFront();
     await openNetworkDropdown(page);
 
-    const hasNetwork = await page
-      .locator('.multichain-network-list-menu')
-      .locator('button', { hasText: name })
-      .isVisible();
-    await page.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
+    const hasNetwork = await page.locator('.multichain-network-list-menu').locator('p', { hasText: name }).isVisible();
+    await page.getByRole('dialog').getByRole('button', { name: 'Close' }).first().click();
 
     return hasNetwork;
   };

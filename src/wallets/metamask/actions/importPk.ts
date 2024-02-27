@@ -18,7 +18,7 @@ export const importPk =
     const errorMessage = await getErrorMessage(page);
     if (errorMessage) {
       await clickOnButton(page, 'Cancel');
-      await page.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
+      await page.getByRole('dialog').getByRole('button', { name: 'Close' }).first().click();
       throw new SyntaxError(errorMessage);
     }
   };
