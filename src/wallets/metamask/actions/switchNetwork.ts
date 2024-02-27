@@ -8,7 +8,7 @@ export const switchNetwork =
     await page.bringToFront();
     await openNetworkDropdown(page);
 
-    await page.locator('.multichain-network-list-menu').getByRole('button', { name: network, exact: true }).click();
+    await page.locator('.multichain-network-list-menu').getByText(network, { exact: true }).click();
 
     await waitForChromeState(page);
   };

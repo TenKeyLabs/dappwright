@@ -11,7 +11,7 @@ const countAccounts = async (wallet: Dappwright): Promise<number> => {
   if (wallet instanceof MetaMaskWallet) {
     await openAccountMenu(wallet.page);
     count = (await wallet.page.$$('.multichain-account-list-item')).length;
-    await wallet.page.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
+    await wallet.page.getByRole('dialog').getByRole('button', { name: 'Close' }).first().click();
     // await openAccountMenu(wallet.page);
   } else {
     await wallet.page.getByTestId('portfolio-header--switcher-cell-pressable').click();

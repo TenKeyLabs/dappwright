@@ -8,7 +8,7 @@ export const confirmTransaction =
   async (options?: TransactionOptions): Promise<void> => {
     await performPopupAction(page, async (popup) => {
       if (options) {
-        await popup.getByTestId('edit-gas-fee-button').click();
+        await popup.getByTestId('edit-gas-fee-icon').click();
         await popup.getByTestId('edit-gas-fee-item-custom').click();
 
         if (options.gas) {
