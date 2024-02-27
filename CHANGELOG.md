@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.8.2
+
+### Patch Changes
+
+- [#312](https://github.com/TenKeyLabs/dappwright/pull/312) [`14f38d9`](https://github.com/TenKeyLabs/dappwright/commit/14f38d938fa89790a1ad281a8ff21d97af750557) Thanks [@osis](https://github.com/osis)! - Bumps Coinbase Wallet to 3.54.0
+
+- [#314](https://github.com/TenKeyLabs/dappwright/pull/314) [`16cf86e`](https://github.com/TenKeyLabs/dappwright/commit/16cf86e371080a9d6063d591dca7bee41eb7c168) Thanks [@osis](https://github.com/osis)! - Bumps MetaMask to 11.10.0
+
 ## 2.8.1
 
 ### Minor Changes
