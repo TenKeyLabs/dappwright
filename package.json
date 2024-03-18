@@ -65,7 +65,7 @@
     "microbundle": "^0.15.1",
     "prettier": "^3.0.3",
     "serve-handler": "6.1.5",
-    "solc": "0.8.24",
+    "solc": "0.8.25",
     "ts-node": "10.9.2",
     "typescript": "^5.0",
     "web3": "1.10.0"
