@@ -22,7 +22,7 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
   const browserArgs = [
     `--disable-extensions-except=${extensionList.join(',')}`,
     `--load-extension=${extensionList.join(',')}`,
-    ,'--lang=en-US'
+    '--lang=en-US'
   ];
 
   if (options.headless != false) browserArgs.push(`--headless=new`);
