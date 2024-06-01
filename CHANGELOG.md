@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.8.3
+
+### Patch Changes
+
+- [#339](https://github.com/TenKeyLabs/dappwright/pull/339) [`9253c67`](https://github.com/TenKeyLabs/dappwright/commit/9253c676b82a91bc16f3713b84a466a74bb33914) Thanks [@osis](https://github.com/osis)! - chore: bumps coinbase wallet to 3.70.0
+
+- [#338](https://github.com/TenKeyLabs/dappwright/pull/338) [`7ecd56e`](https://github.com/TenKeyLabs/dappwright/commit/7ecd56e20e8dd8360ceb64c09b6a643742f966f8) Thanks [@osis](https://github.com/osis)! - chore: bumps MetaMask to 11.16.3
+
 ## 2.8.2
 
 ### Patch Changes
