@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.8.4
+
+### Patch Changes
+
+- [#330](https://github.com/TenKeyLabs/dappwright/pull/330) [`e198acb`](https://github.com/TenKeyLabs/dappwright/commit/e198acb6dd5296f7e868ed036b303cf27d6e4e71) Thanks [@lushunming](https://github.com/lushunming)! - adds flag that sets chromium to US-en
+
 ## 2.8.3
 
 ### Patch Changes
