@@ -20,5 +20,5 @@ export const connect = async (popup: Page): Promise<void> => {
 
   // Go through the prompts
   await clickOnButton(popup, 'Next');
-  await clickOnButton(popup, 'Connect');
+  await clickOnButton(popup, 'Confirm');
 };

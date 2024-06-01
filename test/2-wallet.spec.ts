@@ -92,9 +92,9 @@ test.describe('when interacting with the wallet', () => {
     test.describe('switchNetwork', () => {
       test('should switch network, localhost', async ({ wallet }) => {
         if (wallet instanceof MetaMaskWallet) {
-          await wallet.switchNetwork('Goerli');
+          await wallet.switchNetwork('Sepolia');
 
-          const selectedNetwork = wallet.page.getByTestId('network-display').getByText('Goerli');
+          const selectedNetwork = wallet.page.getByTestId('network-display').getByText('Sepolia');
           expect(selectedNetwork).toBeVisible();
         } else {
           console.warn('Coinbase skips network switching');
@@ -187,7 +187,7 @@ test.describe('when interacting with the wallet', () => {
         expect(tokenBalance).toEqual(999.9996);
       });
 
-      // Unable to get local balance from Coinbase wallet. This is Goerli value for now.
+      // Unable to get local balance from Coinbase wallet. This is Sepolia value for now.
       await forCoinbase(wallet, async () => {
         expect(tokenBalance).toEqual(999.999);
       });
