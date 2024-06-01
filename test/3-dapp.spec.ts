@@ -46,7 +46,7 @@ test.describe('when interacting with dapps', () => {
     await page.click('.switch-network-button');
 
     await forMetaMask(wallet, async () => {
-      await wallet.switchNetwork('Goerli');
+      await wallet.switchNetwork('Sepolia');
       await page.bringToFront();
       await page.reload();
       await wallet.page.reload();
