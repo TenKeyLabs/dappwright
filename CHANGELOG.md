@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.8.5
+
+### Patch Changes
+
+- [#347](https://github.com/TenKeyLabs/dappwright/pull/347) [`667c39f`](https://github.com/TenKeyLabs/dappwright/commit/667c39fc943e5fa6db914dc76a70de5f13fab5ab) Thanks [@osis](https://github.com/osis)! - bumps metamask to 11.16.13
+
 ## 2.8.4
 
 ### Patch Changes
