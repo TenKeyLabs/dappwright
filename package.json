@@ -68,7 +68,7 @@
     "solc": "0.8.26",
     "ts-node": "10.9.2",
     "typescript": "^5.0",
-    "web3": "1.10.0"
+    "web3": "4.11.0"
   },
   "peerDependencies": {
     "playwright-core": ">1.0"
