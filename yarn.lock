@@ -1617,11 +1617,11 @@
   integrity sha512-Zwq5OCzuwJC2jwqmpEQt7Ds1DTi6BWSwoGkbb1n9pO3hzb35BoJELx7c0T23iDkBGkh2e7tvOtjF3tr3OaQHDQ==
 
 "@playwright/test@^1.40.1":
-  version "1.44.1"
-  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.44.1.tgz#cc874ec31342479ad99838040e99b5f604299bcb"
-  integrity sha512-1hZ4TNvD5z9VuhNJ/walIjvMVvYkZKf71axoF/uiAqpntQJXpG64dlXhoDXE3OczPuTuvjf/M5KWFg5VAVUS3Q==
+  version "1.47.0"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.47.0.tgz#69fc55b10754147cc20021afbfa05747d4961bf0"
+  integrity sha512-SgAdlSwYVpToI4e/IH19IHHWvoijAYH5hu2MWSXptRypLSnzj51PcGD+rsOXFayde4P9ZLi+loXVwArg6IUkCA==
   dependencies:
-    playwright "1.44.1"
+    playwright "1.47.0"
 
 "@rollup/plugin-alias@^3.1.1":
   version "3.1.9"
@@ -5846,17 +5846,17 @@ pkg-dir@^4.1.0, pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-playwright-core@1.44.1:
-  version "1.44.1"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.44.1.tgz#53ec975503b763af6fc1a7aa995f34bc09ff447c"
-  integrity sha512-wh0JWtYTrhv1+OSsLPgFzGzt67Y7BE/ZS3jEqgGBlp2ppp1ZDj8c+9IARNW4dwf1poq5MgHreEM2KV/GuR4cFA==
+playwright-core@1.47.0:
+  version "1.47.0"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.47.0.tgz#b54ec060fd83e5c2e46b63986b5ebb5e96ace427"
+  integrity sha512-1DyHT8OqkcfCkYUD9zzUTfg7EfTd+6a8MkD/NWOvjo0u/SCNd5YmY/lJwFvUZOxJbWNds+ei7ic2+R/cRz/PDg==
 
-playwright@1.44.1:
-  version "1.44.1"
-  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.44.1.tgz#5634369d777111c1eea9180430b7a184028e7892"
-  integrity sha512-qr/0UJ5CFAtloI3avF95Y0L1xQo6r3LQArLIg/z/PoGJ6xa+EwzrwO5lpNr/09STxdHuUoP2mvuELJS+hLdtgg==
+playwright@1.47.0:
+  version "1.47.0"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.47.0.tgz#fb9b028883fad11362f9ff63ce7ba44bda0bf626"
+  integrity sha512-jOWiRq2pdNAX/mwLiwFYnPHpEZ4rM+fRSQpRHwEwZlP2PUANvL3+aJOF/bvISMhFD30rqMxUB4RJx9aQbfh4Ww==
   dependencies:
-    playwright-core "1.44.1"
+    playwright-core "1.47.0"
   optionalDependencies:
     fsevents "2.3.2"
 
