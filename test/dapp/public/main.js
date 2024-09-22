@@ -37,10 +37,9 @@ async function start() {
         method: 'eth_requestAccounts',
       });
       const from = accounts[0];
-      const msg = `0x${btoa(message, 'utf8').toString('hex')}`;
       await ethereum.request({
         method: 'personal_sign',
-        params: [msg, from],
+        params: [message, from],
       });
       const signedIn = document.createElement('div');
       signedIn.id = 'signedIn';
