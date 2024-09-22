@@ -65,6 +65,31 @@ async function start() {
     personalSign(message);
   });
 
+  const signSiweMessage = document.querySelector('.sign-siwe-message');
+  signSiweMessage.addEventListener('click', async function () {
+    const domain = window.location.host;
+    const address = accounts[0];
+    const statement = 'I accept the Terms of Service: https://test.com/tos';
+    const uri = `https://${domain}`;
+    const version = 1;
+    const chainId = 1;
+    const nonce = 1;
+    const issuedAt = new Date();
+
+    const message = await getSiweMessage({
+      origin: domain,
+      address,
+      statement,
+      uri,
+      version,
+      chainId,
+      nonce,
+      issuedAt,
+    });
+
+    personalSign(message);
+  });
+
   const switchNetworkButton = document.querySelector('.switch-network-button');
   switchNetworkButton.addEventListener('click', async function () {
     await ethereum.request({
