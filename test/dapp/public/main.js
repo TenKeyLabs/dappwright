@@ -51,6 +51,12 @@ async function start() {
     }
   };
 
+  const getSiweMessage = async function ({ origin, address, statement, uri, version, chainId, nonce, issuedAt }) {
+    const prefix = `${origin} wants you to sign in with your Ethereum account:\n${address}\n\n${statement}`;
+    const suffix = `URI: ${uri}\nVersion: ${version}\nChain ID: ${chainId}\nNonce: ${nonce}\nIssued At: ${issuedAt.toISOString()}`;
+    return `${prefix}\n${suffix}`;
+  };
+
   const signinButton = document.querySelector('.signin-button');
   signinButton.addEventListener('click', async function () {
     const domain = window.location.host;
