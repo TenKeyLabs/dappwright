@@ -50,10 +50,19 @@ async function start() {
     }
   };
 
-  const getSiweMessage = async function ({ origin, address, statement, uri, version, chainId, nonce, issuedAt }) {
-    const prefix = `${origin} wants you to sign in with your Ethereum account:\n${address}\n\n${statement}`;
-    const suffix = `URI: ${uri}\nVersion: ${version}\nChain ID: ${chainId}\nNonce: ${nonce}\nIssued At: ${issuedAt.toISOString()}`;
-    return `${prefix}\n${suffix}`;
+  const getSiweMessage = async function ({ origin, account, uri, version, chainId, issuedAt, expirationTime }) {
+    return (
+      `${origin} wants you to sign in with your Ethereum account:\n` +
+      `${account}\n` +
+      '\n' +
+      '\n' +
+      `URI: ${uri}\n` +
+      `Version: ${version}\n` +
+      `Chain ID: ${chainId}\n` +
+      'Nonce: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\n' +
+      `Issued At: ${issuedAt}\n` +
+      `Expiration Time: ${expirationTime}`
+    );
   };
 
   const signinButton = document.querySelector('.signin-button');
@@ -66,24 +75,15 @@ async function start() {
 
   const signSiweMessage = document.querySelector('.sign-siwe-message');
   signSiweMessage.addEventListener('click', async function () {
-    const domain = window.location.host;
-    const address = accounts[0];
-    const statement = 'I accept the Terms of Service: https://test.com/tos';
-    const uri = `https://${domain}`;
-    const version = 1;
-    const chainId = 1;
-    const nonce = 1;
-    const issuedAt = new Date();
-
     const message = await getSiweMessage({
-      origin: domain,
-      address,
-      statement,
-      uri,
-      version,
-      chainId,
-      nonce,
-      issuedAt,
+      origin: window.location.host,
+      uri: window.location.href,
+      address: accounts[0],
+      version: 1,
+      chainId: 1,
+      nonce: 1,
+      issuedAt: new Date().toISOString(),
+      expirationTime: new Date().toISOString(),
     });
 
     personalSign(message);
