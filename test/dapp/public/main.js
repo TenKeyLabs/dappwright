@@ -31,13 +31,13 @@ async function start() {
     document.body.appendChild(connected);
   });
 
-  const siweSign = async function (siweMessage) {
+  const personalSign = async function (message) {
     try {
       accounts = await ethereum.request({
         method: 'eth_requestAccounts',
       });
       const from = accounts[0];
-      const msg = `0x${btoa(siweMessage, 'utf8').toString('hex')}`;
+      const msg = `0x${btoa(message, 'utf8').toString('hex')}`;
       await ethereum.request({
         method: 'personal_sign',
         params: [msg, from],
@@ -55,8 +55,8 @@ async function start() {
   signinButton.addEventListener('click', async function () {
     const domain = window.location.host;
     const from = accounts[0];
-    const siweMessage = `${domain} wants you to sign in with your Ethereum account:\n${from}\n\nI accept the MetaMask Terms of Service: https://community.metamask.io/tos\n\nURI: https://${domain}\nVersion: 1\nChain ID: 1\nNonce: 32891757\nIssued At: 2021-09-30T16:25:24.000Z`;
-    siweSign(siweMessage);
+    const message = `${domain} wants you to sign in with your Ethereum account:\n${from}\n\nI accept the MetaMask Terms of Service: https://community.metamask.io/tos\n\nURI: https://${domain}\nVersion: 1\nChain ID: 1\nNonce: 32891757\nIssued At: 2021-09-30T16:25:24.000Z`;
+    personalSign(message);
   });
 
   const switchNetworkButton = document.querySelector('.switch-network-button');
