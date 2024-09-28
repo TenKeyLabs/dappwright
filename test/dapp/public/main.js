@@ -31,7 +31,7 @@ async function start() {
     document.body.appendChild(connected);
   });
 
-  const personalSign = async function (message) {
+  const personalSign = async function (message, signedMessageId = 'signedIn', signedMessage = 'signed in') {
     try {
       accounts = await ethereum.request({
         method: 'eth_requestAccounts',
@@ -42,8 +42,8 @@ async function start() {
         params: [message, from],
       });
       const signedIn = document.createElement('div');
-      signedIn.id = 'signedIn';
-      signedIn.textContent = 'signed in';
+      signedIn.id = signedMessageId;
+      signedIn.textContent = signedMessage;
       document.body.appendChild(signedIn);
     } catch (err) {
       console.error(err);
@@ -78,7 +78,7 @@ async function start() {
     const message = await getSiweMessage({
       origin: window.location.host,
       uri: window.location.href,
-      address: accounts[0],
+      account: accounts[0],
       version: 1,
       chainId: 1,
       nonce: 1,
@@ -86,7 +86,7 @@ async function start() {
       expirationTime: new Date().toISOString(),
     });
 
-    personalSign(message);
+    personalSign(message, 'siweSigned', 'signed SIWE message');
   });
 
   const switchNetworkButton = document.querySelector('.switch-network-button');
