@@ -33,12 +33,12 @@ test.describe('when interacting with dapps', () => {
     });
   });
 
-  test.only('should sign SIWE complient message', async ({ wallet, page }) => {
+  test('should sign SIWE complient message', async ({ wallet, page }) => {
     await forMetaMask(wallet, async () => {
       await page.click('.sign-siwe-message');
       await wallet.signin();
 
-      await page.waitForSelector('#siwe-signed');
+      await page.waitForSelector('#siweSigned');
     });
   });
 
