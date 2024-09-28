@@ -13,7 +13,7 @@ export const signin = (page: Page) => async (): Promise<void> => {
       await connect(popup);
     }
 
-    await clickOnButton(popup, 'Sign');
+    await clickOnButton(popup, 'Sign-In');
     await waitForChromeState(page);
   });
 };
