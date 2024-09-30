@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.8.6
+
+### Patch Changes
+
+- [`a84b6eb`](https://github.com/TenKeyLabs/dappwright/commit/a84b6eb3f1a220891d1206cb29eef262e4285e42) Thanks [@osis](https://github.com/osis)! - fix: fixes the signIn action for MetaMask to support SIWE-compliant messages
+
 ## 2.8.5
 
 ### Patch Changes
