@@ -31,32 +31,62 @@ async function start() {
     document.body.appendChild(connected);
   });
 
-  const siweSign = async function (siweMessage) {
+  const personalSign = async function (message, signedMessageId = 'signedIn', signedMessage = 'signed in') {
     try {
       accounts = await ethereum.request({
         method: 'eth_requestAccounts',
       });
       const from = accounts[0];
-      const msg = `0x${btoa(siweMessage, 'utf8').toString('hex')}`;
       await ethereum.request({
         method: 'personal_sign',
-        params: [msg, from],
+        params: [message, from],
       });
       const signedIn = document.createElement('div');
-      signedIn.id = 'signedIn';
-      signedIn.textContent = 'signed in';
+      signedIn.id = signedMessageId;
+      signedIn.textContent = signedMessage;
       document.body.appendChild(signedIn);
     } catch (err) {
       console.error(err);
     }
   };
 
+  const getSiweMessage = async function ({ origin, account, uri, version, chainId, issuedAt, expirationTime }) {
+    return (
+      `${origin} wants you to sign in with your Ethereum account:\n` +
+      `${account}\n` +
+      '\n' +
+      '\n' +
+      `URI: ${uri}\n` +
+      `Version: ${version}\n` +
+      `Chain ID: ${chainId}\n` +
+      'Nonce: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\n' +
+      `Issued At: ${issuedAt}\n` +
+      `Expiration Time: ${expirationTime}`
+    );
+  };
+
   const signinButton = document.querySelector('.signin-button');
   signinButton.addEventListener('click', async function () {
     const domain = window.location.host;
     const from = accounts[0];
-    const siweMessage = `${domain} wants you to sign in with your Ethereum account:\n${from}\n\nI accept the MetaMask Terms of Service: https://community.metamask.io/tos\n\nURI: https://${domain}\nVersion: 1\nChain ID: 1\nNonce: 32891757\nIssued At: 2021-09-30T16:25:24.000Z`;
-    siweSign(siweMessage);
+    const message = `${domain} wants you to sign in with your Ethereum account:\n${from}\n\nI accept the MetaMask Terms of Service: https://community.metamask.io/tos\n\nURI: https://${domain}\nVersion: 1\nChain ID: 1\nNonce: 32891757\nIssued At: 2021-09-30T16:25:24.000Z`;
+    personalSign(message);
+  });
+
+  const signSiweMessage = document.querySelector('.sign-siwe-message');
+  signSiweMessage.addEventListener('click', async function () {
+    const message = await getSiweMessage({
+      origin: window.location.host,
+      uri: window.location.href,
+      account: accounts[0],
+      version: 1,
+      chainId: 1,
+      nonce: 1,
+      issuedAt: new Date().toISOString(),
+      expirationTime: new Date().toISOString(),
+    });
+
+    personalSign(message, 'siweSigned', 'signed SIWE message');
   });
 
   const switchNetworkButton = document.querySelector('.switch-network-button');
