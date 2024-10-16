@@ -7083,10 +7083,10 @@ slash@^3.0.0:
   resolved "https://registry.npmjs.org/slash/-/slash-3.0.0.tgz"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
 
-solc@0.8.27:
-  version "0.8.27"
-  resolved "https://registry.yarnpkg.com/solc/-/solc-0.8.27.tgz#cb8e7246cceadad8df65ceccffe640e106106bb4"
-  integrity sha512-BNxMol2tUAbkH7HKlXBcBqrGi2aqgv+uMHz26mJyTtlVgWmBA4ktiw0qVKHfkjf2oaHbwtbtaSeE2dhn/gTAKw==
+solc@0.8.28:
+  version "0.8.28"
+  resolved "https://registry.yarnpkg.com/solc/-/solc-0.8.28.tgz#43f129ce31572625593677cc3ff53eb32100148c"
+  integrity sha512-AFCiJ+b4RosyyNhnfdVH4ZR1+TxiL91iluPjw0EJslIu4LXGM9NYqi2z5y8TqochC4tcH9QsHfwWhOIC9jPDKA==
   dependencies:
     command-exists "^1.2.8"
     commander "^8.1.0"
