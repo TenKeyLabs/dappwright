@@ -1,4 +1,4 @@
-import { ElementHandle, Page } from 'playwright-core';
+import { Locator, Page } from 'playwright-core';
 import { waitForChromeState } from '../../helpers';
 import { AddNetwork, AddToken } from '../../types';
 import { performPopupAction } from '../metamask/actions';
@@ -24,6 +24,7 @@ export async function getStarted(
 
   // Import Wallet
   await page.getByTestId('btn-import-recovery-phrase').click();
+  await page.getByRole('button', { name: 'Acknowledge' }).click();
   await page.getByTestId('secret-input').fill(seed);
   await page.getByTestId('btn-import-wallet').click();
   await page.getByTestId('setPassword').fill(password);
@@ -96,19 +97,19 @@ export const confirmTransaction = (page: Page) => async (): Promise<void> => {
 export const addNetwork =
   (page: Page) =>
   async (options: AddNetwork): Promise<void> => {
-    // Add network flow closes current screen and opens another, direct access is cleaner for now
-    const settingsPage = await page.context().newPage();
-    await settingsPage.goto(`${page.url()}?internalPopUpRequest=true&action=addCustomNetwork`);
-    await settingsPage.getByTestId('custom-network-name-input').fill(options.networkName);
-    await settingsPage.getByTestId('custom-network-rpc-url-input').fill(options.rpc);
-    await settingsPage.getByTestId('custom-network-chain-id-input').fill(options.chainId.toString());
-    await settingsPage.getByTestId('custom-network-currency-symbol-input').fill(options.symbol);
-    await settingsPage.getByTestId('custom-network-save').click();
+    await page.getByTestId('settings-navigation-link').click();
+    await page.getByTestId('network-setting-cell-pressable').click();
+    await page.getByTestId('add-custom-network').click();
+    await page.getByTestId('custom-network-name-input').fill(options.networkName);
+    await page.getByTestId('custom-network-rpc-url-input').fill(options.rpc);
+    await page.getByTestId('custom-network-chain-id-input').fill(options.chainId.toString());
+    await page.getByTestId('custom-network-currency-symbol-input').fill(options.symbol);
+    await page.getByTestId('custom-network-save').click();
 
     // Check for error messages
     let errorNode;
     try {
-      errorNode = await settingsPage.waitForSelector('//span[@data-testid="text-input-error-label"]', {
+      errorNode = await page.waitForSelector('//span[@data-testid="text-input-error-label"]', {
         timeout: 50,
       });
     } catch {
@@ -117,22 +118,17 @@ export const addNetwork =
 
     if (errorNode) {
       const errorMessage = await errorNode.textContent();
-      await settingsPage.close();
       throw new SyntaxError(errorMessage);
     }
 
-    await settingsPage.waitForEvent('close');
-
-    // New network isn't reflected until page is reloaded
-    await page.bringToFront();
-    await page.reload();
+    goHome(page);
   };
 
 export const deleteNetwork =
   (page: Page) =>
   async (name: string): Promise<void> => {
     await page.getByTestId('settings-navigation-link').click();
-    await page.getByTestId('network-setting').click();
+    await page.getByTestId('network-setting-cell-pressable').click();
 
     // Search for network then click on the first result
     await page.getByTestId('network-list-search').fill(name);
@@ -156,39 +152,40 @@ export const hasNetwork =
 export const getTokenBalance =
   (page: Page) =>
   async (tokenSymbol: string): Promise<number> => {
-    const readFromCryptoTab = async (): Promise<ElementHandle<SVGElement | HTMLElement>> => {
+    const tokenValueRegex = new RegExp(String.raw` ${tokenSymbol}`);
+
+    const readFromCryptoTab = async (): Promise<Locator | undefined> => {
       await page.bringToFront();
       await page.getByTestId('portfolio-selector-nav-tabLabel--crypto').click();
-      return await page.waitForSelector(
-        `//button[contains(@data-testid, "asset-item")][contains(@data-testid, "${tokenSymbol}")]`,
-        {
-          timeout: 500,
-        },
-      );
+      const tokenItem = page.getByTestId(/asset-item.*cell-pressable/).filter({
+        hasText: tokenValueRegex,
+      });
+
+      await page.waitForTimeout(500);
+
+      return (await tokenItem.isVisible()) ? tokenItem : null;
     };
 
-    const readFromTestnetTab = async (): Promise<ElementHandle<SVGElement | HTMLElement>> => {
+    const readFromTestnetTab = async (): Promise<Locator | undefined> => {
       await page.getByTestId('portfolio-selector-nav-tabLabel--testnet').click();
-      return await page.waitForSelector(
-        `//button[contains(@data-testid, "asset-item")][contains(@data-testid, "${tokenSymbol}")]`,
-        {
-          timeout: 500,
-        },
-      );
+
+      const tokenItem = page.getByTestId(/asset-item.*cell-pressable/).filter({
+        hasText: tokenValueRegex,
+      });
+
+      await page.waitForTimeout(500);
+
+      return (await tokenItem.isVisible()) ? tokenItem : null;
     };
 
     const readAttempts = [readFromCryptoTab, readFromTestnetTab];
 
-    let button: ElementHandle<SVGElement | HTMLElement>;
+    let button: Locator | undefined;
     for (const readAttempt of readAttempts) {
-      try {
-        button = await readAttempt();
-      } catch {
-        // Failed to read token value
-      }
+      button = await readAttempt();
     }
 
-    if (!button) return 0;
+    if (!button) throw new Error(`Token ${tokenSymbol} not found`);
 
     const text = await button.textContent();
     const currencyAmount = text.replaceAll(/ |,/g, '').split(tokenSymbol)[2];

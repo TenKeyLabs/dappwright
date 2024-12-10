@@ -73,6 +73,7 @@ test.describe('when interacting with dapps', () => {
     test.beforeEach(async ({ page }) => {
       await page.reload();
       await page.click('.connect-button');
+      await page.click('.switch-network-local-test-button');
       await page.waitForSelector('#connected');
     });
 
