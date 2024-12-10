@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.9.1
+
+### Patch Changes
+
+- [#402](https://github.com/TenKeyLabs/dappwright/pull/402) [`096d4b2`](https://github.com/TenKeyLabs/dappwright/commit/096d4b21d2578aae809a1453746a383ff4641ed8) Thanks [@osis](https://github.com/osis)! - chore: bumps Coinbase to 3.96.0 and implements new token balance error handling
+
 ## 2.9.0
 
 ### Minor Changes
