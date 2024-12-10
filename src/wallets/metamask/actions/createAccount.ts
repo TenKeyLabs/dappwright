@@ -8,7 +8,7 @@ export const createAccount = (page: Page) => async (): Promise<void> => {
 
   await page.getByTestId('multichain-account-menu-popover-action-button').click();
   await page.getByTestId('multichain-account-menu-popover-add-account').click();
-  await page.getByRole('button', { name: 'Create' }).click();
+  await page.getByRole('button', { name: 'Add account' }).click();
 
   await waitForChromeState(page);
 };

@@ -27,6 +27,6 @@ export const confirmTransaction =
         await popup.getByRole('button', { name: 'Save' }).click();
       }
 
-      await popup.getByTestId('page-container-footer-next').click();
+      await popup.getByTestId('confirm-footer-button').click();
     });
   };

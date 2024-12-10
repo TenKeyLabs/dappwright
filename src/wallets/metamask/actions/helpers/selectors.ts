@@ -6,9 +6,9 @@ export const getSettingsSwitch = (page: Page, text: string): Promise<ElementHand
 export const getErrorMessage = async (page: Page): Promise<string | false> => {
   const options: Parameters<Page['waitForSelector']>[1] = { timeout: 1000 };
 
-  const errorElement = await Promise.race([page.waitForSelector(`.mm-box--color-error-default`, options)]).catch(
-    () => null,
-  );
+  const errorElement = await Promise.race([
+    page.waitForSelector(`.mm-help-text.mm-box--color-error-default`, options),
+  ]).catch(() => null);
   if (!errorElement) return false;
   return (errorElement as HTMLElement).innerText;
 };

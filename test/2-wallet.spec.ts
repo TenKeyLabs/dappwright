@@ -12,7 +12,6 @@ const countAccounts = async (wallet: Dappwright): Promise<number> => {
     await openAccountMenu(wallet.page);
     count = (await wallet.page.$$('.multichain-account-list-item')).length;
     await wallet.page.getByRole('dialog').getByRole('button', { name: 'Close' }).first().click();
-    // await openAccountMenu(wallet.page);
   } else {
     await wallet.page.getByTestId('portfolio-header--switcher-cell-pressable').click();
     count = (await wallet.page.$$('//button[@data-testid="wallet-switcher--wallet-item-cell-pressable"]')).length;
@@ -177,11 +176,11 @@ test.describe('when interacting with the wallet', () => {
 
   test.describe('getTokenBalance', () => {
     test.beforeEach(async ({ wallet }) => {
-      if (wallet instanceof MetaMaskWallet) await wallet.switchNetwork('Localhost 8545');
+      if (wallet instanceof MetaMaskWallet) await wallet.switchNetwork('GoChain Testnet');
     });
 
     test('should return token balance', async ({ wallet }) => {
-      const tokenBalance: number = await wallet.getTokenBalance('ETH');
+      const tokenBalance: number = await wallet.getTokenBalance('GO');
 
       await forMetaMask(wallet, async () => {
         expect(tokenBalance).toEqual(999.9996);

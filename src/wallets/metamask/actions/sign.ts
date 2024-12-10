@@ -1,7 +1,5 @@
 import { Page } from 'playwright-core';
 
-import { clickOnButton } from '../../../helpers';
-
 import { performPopupAction } from './util';
 
 export const sign = (page: Page) => async (): Promise<void> => {
@@ -9,6 +7,6 @@ export const sign = (page: Page) => async (): Promise<void> => {
     await popup.bringToFront();
     await popup.reload();
 
-    await clickOnButton(popup, 'Sign');
+    await popup.getByTestId('confirm-footer-button').click();
   });
 };

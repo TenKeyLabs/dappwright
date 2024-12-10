@@ -2,33 +2,30 @@ import { Page } from 'playwright-core';
 import { clickOnButton } from '../../../helpers';
 import { AddNetwork } from '../../../types';
 
-import { clickOnLogo, getErrorMessage, openNetworkDropdown } from './helpers';
+import { getErrorMessage, openNetworkDropdown } from './helpers';
+import { switchNetwork } from './switchNetwork';
 
 export const addNetwork =
   (page: Page) =>
   async ({ networkName, rpc, chainId, symbol }: AddNetwork): Promise<void> => {
-    await page.bringToFront();
     await openNetworkDropdown(page);
-    await clickOnButton(page, 'Add network');
+    await clickOnButton(page, 'Add a custom network');
 
-    await page.getByTestId('network-display').click();
-    await page.getByRole('button', { name: 'Add network' }).click();
-    await page.getByTestId('add-network-manually').click();
-    await page.getByLabel('Network name').fill(networkName);
-    await page.getByLabel('New RPC URL').fill(rpc);
-    await page.getByLabel('Chain ID').fill(String(chainId));
+    await page.getByTestId('network-form-network-name').fill(networkName);
+    await page.getByTestId('test-add-rpc-drop-down').click();
+    await clickOnButton(page, 'Add RPC URL');
+    await page.getByTestId('rpc-url-input-test').fill(rpc);
+    await clickOnButton(page, 'Add URL');
+    await page.getByTestId('network-form-chain-id').fill(String(chainId));
     await page.getByTestId('network-form-ticker-input').fill(symbol);
 
     const errorMessage = await getErrorMessage(page);
     if (errorMessage) {
-      await clickOnLogo(page);
+      await page.locator("button[aria-label='Close']").click();
       throw new SyntaxError(errorMessage);
     }
 
     await clickOnButton(page, 'Save');
-
-    const switchNetworkClick = (): Promise<void> =>
-      page.locator('button', { hasText: `Switch to ${networkName}` }).click();
 
     // This popup is fairly random in terms of timing
     // and can show before switch to network click is gone
@@ -43,5 +40,5 @@ export const addNetwork =
           }),
       );
 
-    await Promise.all([switchNetworkClick(), gotItClick()]);
+    await Promise.all([switchNetwork(page)(networkName), gotItClick()]);
   };

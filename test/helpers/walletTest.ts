@@ -22,10 +22,10 @@ export const testWithWallet = test.extend<{
         if (!onHomeScreen) throw 'Wallet Setup Error: Did not settle on home screen.';
 
         await wallet.addNetwork({
-          networkName: 'Localhost 8545',
+          networkName: 'GoChain Testnet',
           rpc: 'http://localhost:8545',
           chainId: 31337,
-          symbol: 'ETH',
+          symbol: 'GO',
         });
       }
 
