@@ -17,7 +17,7 @@ export const signin = (page: Page) => async (): Promise<void> => {
       await connect(popup);
     }
 
-    const signInButton = popup.getByTestId('page-container-footer-next');
+    const signInButton = popup.getByTestId('confirm-footer-button');
     await signInButton.scrollIntoViewIfNeeded();
     await signInButton.click();
 

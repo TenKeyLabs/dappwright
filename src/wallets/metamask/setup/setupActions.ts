@@ -10,7 +10,6 @@ export async function goToSettings(metamaskPage: Page): Promise<void> {
 }
 
 export async function adjustSettings(metamaskPage: Page): Promise<void> {
-  await clickOnButton(metamaskPage, 'Manage in settings');
   await goToSettings(metamaskPage);
   await metamaskPage.locator('.tab-bar__tab', { hasText: 'Advanced' }).click();
 

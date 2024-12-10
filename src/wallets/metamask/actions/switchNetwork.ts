@@ -8,7 +8,8 @@ export const switchNetwork =
     await page.bringToFront();
     await openNetworkDropdown(page);
 
-    await page.locator('.multichain-network-list-menu').getByText(network, { exact: true }).click();
+    const networkListItem = page.locator('.multichain-network-list-item').filter({ has: page.getByTestId(network) });
+    await networkListItem.click();
 
     await waitForChromeState(page);
   };

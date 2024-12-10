@@ -1,6 +1,6 @@
 import { Page } from 'playwright-core';
 
-import { clickOnButton, waitForChromeState } from '../../../helpers';
+import { waitForChromeState } from '../../../helpers';
 import { performPopupAction } from './util';
 
 export const approve = (page: Page) => async (): Promise<void> => {
@@ -16,9 +16,10 @@ export const connect = async (popup: Page): Promise<void> => {
   await popup.bringToFront();
 
   // Select first account
-  await popup.locator('input[type="checkbox"]').first().check();
+  await popup.getByTestId('edit').first().click();
+  await popup.locator('.multichain-account-list-item').first().locator('input[type="checkbox"]').first().check();
+  await popup.getByTestId('connect-more-accounts-button').click();
 
   // Go through the prompts
-  await clickOnButton(popup, 'Next');
-  await clickOnButton(popup, 'Confirm');
+  await popup.getByTestId('confirm-btn').click();
 };

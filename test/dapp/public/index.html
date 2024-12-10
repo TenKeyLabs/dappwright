@@ -1,29 +1,33 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Local wallet test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="ethers-5.7.2.umd.min.js"></script>
-    <style>
-      body {
-        font-family: 'Courier New', monospace;
-      }
-    </style>
-  </head>
-  <body>
-    <button class="connect-button">Connect</button>
-    <button class="sign-siwe-message">Sign SIWE message</button>
-    <button class="signin-button">Sign In</button>
-    <button class="switch-network-button">Switch Network</button>
-    <button class="sign-button">Sign</button>
-    <button class="increase-button">Increase</button>
-    <button class="increase-fees-button">Increase Fees</button>
-    <button class="transfer-button">Transfer</button>
-    <input disabled id="chain-id" />
 
-    <script src="Counter.js"></script>
-    <script src="main.js"></script>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Local wallet test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="ethers-6.13.4.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+
+<body>
+  <button class="connect-button">Connect</button>
+  <button class="sign-siwe-message">Sign SIWE message</button>
+  <button class="signin-button">Sign In</button>
+  <button class="switch-network-live-test-button">Switch Network - Live Test</button>
+  <button class="switch-network-local-test-button">Switch Network - Local Test</button>
+  <button class="sign-button">Sign</button>
+  <button class="increase-button">Increase</button>
+  <button class="increase-fees-button">Increase Fees</button>
+  <button class="transfer-button">Transfer</button>
+  <input disabled id="chain-id" />
+
+  <script src="Counter.js"></script>
+  <script src="main.js"></script>
+</body>
+
 </html>

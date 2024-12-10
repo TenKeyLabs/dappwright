@@ -52,19 +52,14 @@ test.describe('when interacting with dapps', () => {
   });
 
   test('should be able to switch networks', async ({ wallet, page }) => {
-    await page.click('.switch-network-button');
+    await page.click('.switch-network-live-test-button');
 
     await forMetaMask(wallet, async () => {
-      await wallet.switchNetwork('Sepolia');
-      await page.bringToFront();
-      await page.reload();
-      await wallet.page.reload();
-
-      await page.click('.switch-network-button');
       await wallet.confirmNetworkSwitch();
     });
 
     await page.waitForSelector('#switchNetwork');
+    await page.click('.switch-network-local-test-button');
   });
 
   test('should be able to sign messages', async ({ wallet, page }) => {

@@ -8,10 +8,11 @@ export const deleteNetwork =
     await page.bringToFront();
 
     await openNetworkDropdown(page);
+    const networkListItem = page.locator('.multichain-network-list-item').filter({ has: page.getByTestId(name) });
+    await networkListItem.hover();
+    await networkListItem.getByTestId(/network-list-item-options-button.*/).click();
 
-    await page.locator('.multichain-network-list-menu').getByText(name, { exact: true }).hover();
-
-    await clickOnButton(page, 'Delete network?');
+    await clickOnButton(page, 'Delete');
     await clickOnButton(page, 'Delete');
     await waitForChromeState(page);
   };

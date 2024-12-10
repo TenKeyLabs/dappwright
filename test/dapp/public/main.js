@@ -1,5 +1,5 @@
 async function start() {
-  const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+  const provider = new ethers.BrowserProvider(window.ethereum, 'any');
   let counterContract;
   let accounts = await provider.listAccounts();
 
@@ -16,7 +16,7 @@ async function start() {
       accounts = await ethereum.request({
         method: 'eth_requestAccounts',
       });
-      counterContract = new ethers.Contract(ContractInfo.address, ContractInfo.abi, provider.getSigner(accounts[0]));
+      counterContract = new ethers.Contract(ContractInfo.address, ContractInfo.abi, await provider.getSigner(accounts[0]));
     } catch {
       const connectRejected = document.createElement('div');
       connectRejected.id = 'connect-rejected';
@@ -89,11 +89,23 @@ async function start() {
     personalSign(message, 'siweSigned', 'signed SIWE message');
   });
 
-  const switchNetworkButton = document.querySelector('.switch-network-button');
-  switchNetworkButton.addEventListener('click', async function () {
+  const switchToLiveTestNetworkButton = document.querySelector('.switch-network-live-test-button');
+  switchToLiveTestNetworkButton.addEventListener('click', async function () {
+    const chainId = '0xaa36a7';
+
     await ethereum.request({
       method: 'wallet_switchEthereumChain',
-      params: [{ chainId: '0x7A69' }],
+      params: [{ chainId }],
+    });
+  });
+
+  const switchToLocalTestNetworkButton = document.querySelector('.switch-network-local-test-button');
+  switchToLocalTestNetworkButton.addEventListener('click', async function () {
+    const chainId = '0x7A69';
+
+    await ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId }],
     });
   });
 
@@ -118,7 +130,7 @@ async function start() {
   const signButton = document.querySelector('.sign-button');
   signButton.addEventListener('click', async function () {
     const accounts = await provider.send('eth_requestAccounts', []);
-    const signer = provider.getSigner(accounts[0]);
+    const signer = await provider.getSigner(accounts[0]);
     await signer.signMessage('TEST');
     const signed = document.createElement('div');
     signed.id = 'signed';
