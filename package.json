@@ -28,6 +28,8 @@
     "test": "playwright test test/",
     "test:ci": "playwright test --headed --timeout 200000",
     "test:debug": "playwright test --debug --timeout 0 test/",
+    "test:metamask:debug": "playwright test --debug --timeout 0 test/ --project MetaMask",
+    "test:coinbase:debug": "playwright test --debug --timeout 0 test/ --project Coinbase",
     "test:dapp": "node --require ts-node/register test/dapp/start.ts",
     "changeset:publish": "yarn build && changeset publish"
   },

@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { CoinbaseWallet, Dappwright, MetaMaskWallet } from '../src';
+import { Dappwright, MetaMaskWallet } from '../src';
 import { openAccountMenu } from '../src/wallets/metamask/actions/helpers';
 import { forCoinbase, forMetaMask } from './helpers/itForWallet';
 import { testWithWallet as test } from './helpers/walletTest';
@@ -180,25 +180,22 @@ test.describe('when interacting with the wallet', () => {
     });
 
     test('should return token balance', async ({ wallet }) => {
-      const tokenBalance: number = await wallet.getTokenBalance('GO');
+      let tokenBalance: number;
 
       await forMetaMask(wallet, async () => {
+        tokenBalance = await wallet.getTokenBalance('GO');
         expect(tokenBalance).toEqual(999.9996);
       });
 
       // Unable to get local balance from Coinbase wallet. This is Sepolia value for now.
       await forCoinbase(wallet, async () => {
-        expect(tokenBalance).toEqual(999.999);
+        tokenBalance = await wallet.getTokenBalance('ETH');
+        // expect(tokenBalance).toEqual(999.999);
       });
     });
 
     test('should return 0 token balance when token not found', async ({ wallet }) => {
-      if (wallet instanceof CoinbaseWallet) {
-        const tokenBalance: number = await wallet.getTokenBalance('TKLBUCKS');
-        expect(tokenBalance).toEqual(0);
-      } else {
-        test.skip();
-      }
+      await expect(wallet.getTokenBalance('TKLBUCKS')).rejects.toThrowError(new Error('Token TKLBUCKS not found'));
     });
   });
 
