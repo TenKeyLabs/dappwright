@@ -1,11 +1,8 @@
 *DS_Store
 node_modules
-test/server/data.js
 build
 dist
 .vscode/
-/metamask
-.idea
 *.log
 **/Counter.js
-metamaskSession/
+test-results/
