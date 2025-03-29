@@ -28,7 +28,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.47.2-jammy
+      image: mcr.microsoft.com/playwright:v1.51.1-jammy
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -46,11 +46,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          (echo "**** Attempt 1" && xvfb-run --auto-servernum yarn run test:ci) || \
-          (echo "**** Attempt 2" && xvfb-run --auto-servernum yarn run test:ci) || \
-          (echo "**** Attempt 3" && xvfb-run --auto-servernum yarn run test:ci) || \
-          (echo "**** Attempt 4" && xvfb-run --auto-servernum yarn run test:ci) || \
-          (echo "**** Attempt 5" && xvfb-run --auto-servernum yarn run test:ci)
+          xvfb-run --auto-servernum yarn run test:ci
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
