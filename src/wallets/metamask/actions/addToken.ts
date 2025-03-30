@@ -9,6 +9,7 @@ export const addToken =
     await page.bringToFront();
 
     await page.getByTestId('import-token-button').click();
+    await page.getByTestId('importTokens__button').click();
     await clickOnButton(page, 'Custom token');
     await page.getByTestId('import-tokens-modal-custom-address').fill(tokenAddress);
 

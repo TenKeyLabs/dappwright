@@ -6,7 +6,7 @@ export const getTokenBalance =
     await page.bringToFront();
     await page.waitForTimeout(1000);
 
-    const tokenValueRegex = new RegExp(String.raw` ${tokenSymbol} $`);
+    const tokenValueRegex = new RegExp(String.raw`\d ${tokenSymbol}$`);
     const valueElement = page.getByTestId('multichain-token-list-item-value').filter({ hasText: tokenValueRegex });
 
     if (!(await valueElement.isVisible())) {
