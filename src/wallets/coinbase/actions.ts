@@ -121,7 +121,8 @@ export const addNetwork =
       throw new SyntaxError(errorMessage);
     }
 
-    goHome(page);
+    await waitForChromeState(page);
+    await goHome(page);
   };
 
 export const deleteNetwork =

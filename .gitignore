@@ -6,3 +6,4 @@ dist
 *.log
 **/Counter.js
 test-results/
+playwright-report/

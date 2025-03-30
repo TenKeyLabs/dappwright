@@ -2,7 +2,14 @@ import { defineConfig } from '@playwright/test';
 import { CoinbaseWallet, MetaMaskWallet } from './src';
 
 export default defineConfig({
-  workers: 1,
+  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 1 : 0,
+  use: {
+    trace: process.env.CI ? 'retain-on-first-failure' : 'on',
+    headless: false,
+  },
+  maxFailures: process.env.CI ? 0 : 1,
+  reporter: [['list'], ['html', { open: 'on-failure' }]],
   webServer: {
     command: 'yarn test:dapp',
     url: 'http://localhost:8080',

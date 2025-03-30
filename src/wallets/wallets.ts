@@ -32,16 +32,17 @@ export const getWallet = async (id: WalletIdOptions, browserContext: BrowserCont
     try {
       // Wait for the wallet to pop up
       page = await browserContext.waitForEvent('page', { timeout: 2000 });
+      await browserContext.pages()[0].close();
       return new wallet(page);
     } catch {
       // Open the wallet manually if tab doesn't pop up
-      page = await browserContext.newPage();
+      page = browserContext.pages()[0];
       await page.goto(`chrome-extension://${EXTENSION_ID}${wallet.homePath}`);
     }
 
     return new wallet(page);
   }
 
-  const page = browserContext.pages()[1];
+  const page = browserContext.pages()[0];
   return new wallet(page);
 };

@@ -1,42 +1,36 @@
-import test from '@playwright/test';
+import { test as base } from '@playwright/test';
 import { BrowserContext } from 'playwright-core';
-import { bootstrap, Dappwright, getWallet, MetaMaskWallet, OfficialOptions } from '../../src';
+import { bootstrap, Dappwright, getWallet, OfficialOptions } from '../../src';
 
-let sharedBrowserContext: BrowserContext;
-
-export const testWithWallet = test.extend<{
-  context: BrowserContext;
-  wallet: Dappwright;
-}>({
-  context: async ({ context: _ }, use, info) => {
-    if (!sharedBrowserContext) {
+export const testWithWallet = base.extend<
+  {
+    wallet: Dappwright;
+    context: BrowserContext;
+  },
+  {
+    walletContext: BrowserContext;
+  }
+>({
+  walletContext: [
+    // eslint-disable-next-line no-empty-pattern
+    async ({}, use, info) => {
       const projectMetadata = info.project.metadata as OfficialOptions;
-      const [wallet, _, browserContext] = await bootstrap('', {
+      const [__, ___, browserContext] = await bootstrap('', {
         ...projectMetadata,
         headless: info.project.use.headless,
       });
 
-      // Swap network chain IDs to match 31337
-      if (wallet instanceof MetaMaskWallet) {
-        const onHomeScreen = await wallet.page.getByTestId('eth-overview__primary-currency').isVisible();
-        if (!onHomeScreen) throw 'Wallet Setup Error: Did not settle on home screen.';
-
-        await wallet.addNetwork({
-          networkName: 'GoChain Testnet',
-          rpc: 'http://localhost:8545',
-          chainId: 31337,
-          symbol: 'GO',
-        });
-      }
-
-      sharedBrowserContext = browserContext;
-    }
-
-    await use(sharedBrowserContext);
+      await use(browserContext);
+      await browserContext.close();
+    },
+    { scope: 'worker' },
+  ],
+  context: async ({ walletContext }, use) => {
+    await use(walletContext);
   },
-  wallet: async ({ context }, use, info) => {
+  wallet: async ({ walletContext }, use, info) => {
     const projectMetadata = info.project.metadata;
-    const wallet = await getWallet(projectMetadata.wallet, context);
+    const wallet = await getWallet(projectMetadata.wallet, walletContext);
     await use(wallet);
   },
 });
