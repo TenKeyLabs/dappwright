@@ -21,7 +21,7 @@ export const addNetwork =
 
     const errorMessage = await getErrorMessage(page);
     if (errorMessage) {
-      await page.locator("button[aria-label='Close']").click();
+      await page.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
       throw new SyntaxError(errorMessage);
     }
 

@@ -15,11 +15,6 @@ export const connect = async (popup: Page): Promise<void> => {
   await popup.waitForLoadState();
   await popup.bringToFront();
 
-  // Select first account
-  await popup.getByTestId('edit').first().click();
-  await popup.locator('.multichain-account-list-item').first().locator('input[type="checkbox"]').first().check();
-  await popup.getByTestId('connect-more-accounts-button').click();
-
   // Go through the prompts
   await popup.getByTestId('confirm-btn').click();
 };

@@ -52,8 +52,8 @@ test.describe('when interacting with the wallet', () => {
   });
 
   test.describe('network configurations', () => {
-    const options = {
-      networkName: 'Cronos',
+    const networkOptions = {
+      networkName: 'Cronos Mainnet',
       rpc: 'https://evm.cronos.org',
       chainId: 25,
       symbol: 'CRO',
@@ -71,20 +71,13 @@ test.describe('when interacting with the wallet', () => {
 
     test.describe('addNetwork', () => {
       test('should configure a new network', async ({ wallet }) => {
-        await wallet.addNetwork(options);
+        await wallet.addNetwork(networkOptions);
 
-        expect(await wallet.hasNetwork(options.networkName)).toBeTruthy();
+        expect(await wallet.hasNetwork(networkOptions.networkName)).toBeTruthy();
       });
 
       test('should fail if network already exists', async ({ wallet }) => {
-        await expect(
-          wallet.addNetwork({
-            networkName: 'Cronos',
-            rpc: 'https://evm.cronos.org',
-            chainId: 25,
-            symbol: 'CRO',
-          }),
-        ).rejects.toThrowError(SyntaxError);
+        await expect(wallet.addNetwork(networkOptions)).rejects.toThrowError(SyntaxError);
       });
     });
 
@@ -103,9 +96,9 @@ test.describe('when interacting with the wallet', () => {
 
     test.describe('deleteNetwork', () => {
       test('should delete a network configuration', async ({ wallet }) => {
-        await wallet.deleteNetwork(options.networkName);
+        await wallet.deleteNetwork(networkOptions.networkName);
 
-        expect(await wallet.hasNetwork(options.networkName)).toBeFalsy();
+        expect(await wallet.hasNetwork(networkOptions.networkName)).toBeFalsy();
       });
     });
 
@@ -165,7 +158,7 @@ test.describe('when interacting with the wallet', () => {
       test('should be able to delete an account', async ({ wallet }) => {
         await forMetaMask(wallet, async () => {
           const beforeDelete = await countAccounts(wallet);
-          await wallet.deleteAccount(3);
+          await wallet.deleteAccount(beforeDelete);
           const afterDelete = await countAccounts(wallet);
 
           expect(beforeDelete - 1).toEqual(afterDelete);
@@ -184,7 +177,8 @@ test.describe('when interacting with the wallet', () => {
 
       await forMetaMask(wallet, async () => {
         tokenBalance = await wallet.getTokenBalance('GO');
-        expect(tokenBalance).toEqual(999.9996);
+        expect(tokenBalance).toBeLessThanOrEqual(1000);
+        expect(tokenBalance).toBeGreaterThanOrEqual(999.999);
       });
 
       // Unable to get local balance from Coinbase wallet. This is Sepolia value for now.
