@@ -1,4 +1,3 @@
-import { expect } from '@playwright/test';
 import { Dappwright } from '../../src';
 import { CoinbaseWallet } from '../../src/wallets/coinbase/coinbase';
 import { MetaMaskWallet } from '../../src/wallets/metamask/metamask';
@@ -13,7 +12,6 @@ const conditionalCallback = (
     return callback();
   } else {
     return new Promise<void>((resolve) => {
-      console.warn(expect.getState().currentTestName);
       resolve();
     });
   }

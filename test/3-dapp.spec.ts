@@ -1,11 +1,28 @@
-import { CoinbaseWallet } from '../src';
+import { CoinbaseWallet, MetaMaskWallet } from '../src';
 import { forCoinbase, forMetaMask } from './helpers/itForWallet';
 import { testWithWallet as test } from './helpers/walletTest';
+
+// Adding manually only needed for Metamask since Coinbase does this automatically
+test.beforeAll(async ({ wallet }) => {
+  if (wallet instanceof MetaMaskWallet) {
+    try {
+      await wallet.addNetwork({
+        networkName: 'GoChain Testnet',
+        rpc: 'http://localhost:8545',
+        chainId: 31337,
+        symbol: 'GO',
+      });
+    } catch (_) {
+      // Gracefully fail when running serially (ie. ci)
+    }
+  }
+});
 
 test.describe('when interacting with dapps', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:8080');
     await page.waitForSelector('#ready');
+    await page.waitForTimeout(1000); // Coinbase wallet needs a bit more time to load
   });
 
   test('should be able to reject to connect', async ({ wallet, page }) => {
@@ -71,10 +88,9 @@ test.describe('when interacting with dapps', () => {
 
   test.describe('when confirming a transaction', () => {
     test.beforeEach(async ({ page }) => {
-      await page.reload();
       await page.click('.connect-button');
-      await page.click('.switch-network-local-test-button');
       await page.waitForSelector('#connected');
+      await page.click('.switch-network-local-test-button');
     });
 
     test('should be able to reject', async ({ wallet, page }) => {

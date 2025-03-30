@@ -16,7 +16,11 @@ async function start() {
       accounts = await ethereum.request({
         method: 'eth_requestAccounts',
       });
-      counterContract = new ethers.Contract(ContractInfo.address, ContractInfo.abi, await provider.getSigner(accounts[0]));
+      counterContract = new ethers.Contract(
+        ContractInfo.address,
+        ContractInfo.abi,
+        await provider.getSigner(accounts[0]),
+      );
     } catch {
       const connectRejected = document.createElement('div');
       connectRejected.id = 'connect-rejected';

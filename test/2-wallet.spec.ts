@@ -21,6 +21,18 @@ const countAccounts = async (wallet: Dappwright): Promise<number> => {
   return count;
 };
 
+// Adding manually only needed for Metamask since Coinbase does this automatically
+test.beforeAll(async ({ wallet }) => {
+  if (wallet instanceof MetaMaskWallet) {
+    await wallet.addNetwork({
+      networkName: 'GoChain Testnet',
+      rpc: 'http://localhost:8545',
+      chainId: 31337,
+      symbol: 'GO',
+    });
+  }
+});
+
 test.describe('when interacting with the wallet', () => {
   test('should lock and unlock', async ({ wallet }) => {
     await wallet.lock();
