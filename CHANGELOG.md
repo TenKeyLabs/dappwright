@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.9.2
+
+### Patch Changes
+
+- [#429](https://github.com/TenKeyLabs/dappwright/pull/429) [`9ba53a5`](https://github.com/TenKeyLabs/dappwright/commit/9ba53a5c65865a6fb8fb039a398de4a111d8581a) Thanks [@osis](https://github.com/osis)! - parallel test & tracing support
+
+  - chore(coinbase): wait for chrome state to settle after adding a network
+  - chore: use the first page as the main page for extension navigation so no blank pages are lingering
+
+- [#428](https://github.com/TenKeyLabs/dappwright/pull/428) [`4ae4ed8`](https://github.com/TenKeyLabs/dappwright/commit/4ae4ed832e56703121109fe265ca3ad0fc48dbf3) Thanks [@osis](https://github.com/osis)! - bumps metamask to 12.14.2
+  - chore(metamask): updates regex for matching token balances
+  - fix(metamask): getErrorMessage now returns the error message instead of a locator
+
 ## 2.9.1
 
 ### Patch Changes
