@@ -1,7 +1,7 @@
 import { BrowserContext, Page } from 'playwright-core';
+import { EXTENSION_ID } from '../downloader/downloader';
 import { CoinbaseWallet } from './coinbase/coinbase';
 import { MetaMaskWallet } from './metamask/metamask';
-import { EXTENSION_ID } from './metamask/setup/downloader';
 
 export type Step<Options> = (page: Page, options?: Options) => void;
 export type WalletIdOptions = 'metamask' | 'coinbase';

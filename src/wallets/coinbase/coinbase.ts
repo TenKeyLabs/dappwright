@@ -1,5 +1,5 @@
+import downloader from '../../downloader/downloader';
 import { setup } from '../metamask/setup';
-import downloader from '../metamask/setup/downloader';
 import Wallet from '../wallet';
 import { Step, WalletIdOptions, WalletOptions } from '../wallets';
 import {
