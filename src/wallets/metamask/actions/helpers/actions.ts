@@ -13,7 +13,9 @@ export const openNetworkDropdown = async (page: Page): Promise<void> => {
 };
 
 export const openAccountOptionsMenu = async (page: Page): Promise<void> => {
-  await page.getByTestId('account-options-menu-button').click();
+  const accountOptionsMenuButton = page.getByTestId('account-options-menu-button');
+  await accountOptionsMenuButton.scrollIntoViewIfNeeded();
+  await accountOptionsMenuButton.click();
 };
 
 export const openAccountMenu = async (page: Page): Promise<void> => {
