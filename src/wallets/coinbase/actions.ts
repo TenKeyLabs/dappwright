@@ -201,35 +201,42 @@ export const countAccounts = (page: Page) => async (): Promise<number> => {
   return count;
 };
 
-export const createAccount = (page: Page) => async (): Promise<void> => {
-  await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
-  await page.getByTestId('wallet-switcher--manage').click();
-  await page.getByTestId('manage-wallets-account-item--action-cell-pressable').click();
+export const createAccount =
+  (page: Page) =>
+  async (name?: string): Promise<void> => {
+    if (name) {
+      // eslint-disable-next-line no-console
+      console.warn('parameter "name" is not supported for Coinbase');
+    }
 
-  // Help prompt appears once
-  try {
-    await page.getByTestId('add-new-wallet--continue').click({ timeout: 2000 });
-  } catch {
-    // Ignore missing help prompt
-  }
+    await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
+    await page.getByTestId('wallet-switcher--manage').click();
+    await page.getByTestId('manage-wallets-account-item--action-cell-pressable').click();
 
-  await waitForChromeState(page);
-};
+    // Help prompt appears once
+    try {
+      await page.getByTestId('add-new-wallet--continue').click({ timeout: 2000 });
+    } catch {
+      // Ignore missing help prompt
+    }
+
+    await waitForChromeState(page);
+  };
 
 export const switchAccount =
   (page: Page) =>
-  async (i: number): Promise<void> => {
+  async (name: string): Promise<void> => {
     await page.getByTestId('portfolio-header--switcher-cell-pressable').click();
-    await (
-      await page.waitForSelector(`(//button[@data-testid="wallet-switcher--wallet-item-cell-pressable"])[${i}]`)
-    ).click();
+
+    const nameRegex = new RegExp(`${name} \\$`);
+    await page.getByRole('button', { name: nameRegex }).click();
   };
 
 //
 // Unimplemented actions
 //
 
-export const deleteAccount = async (_i: number): Promise<void> => {
+export const deleteAccount = async (_: string): Promise<void> => {
   // eslint-disable-next-line no-console
   console.warn('deleteAccount not implemented - Coinbase does not support importing/removing additional private keys');
 };
