@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.9.3
+
+### Patch Changes
+
+- [#432](https://github.com/TenKeyLabs/dappwright/pull/432) [`186dcf0`](https://github.com/TenKeyLabs/dappwright/pull/432/commits/186dcf07ca990bc958cd02e1d05019714de0f7b1) Thanks [@osis](https://github.com/osis)! - chore: downloader supports multiple workers
+- [#431](https://github.com/TenKeyLabs/dappwright/pull/431) [`813eb68`](https://github.com/TenKeyLabs/dappwright/commit/813eb68a9694d92475e97b764bbcb35942c394ca) Thanks [@osis](https://github.com/osis)! - chore(coinbase): bump to 3.109.0
+
 ## 2.9.2
 
 ### Patch Changes
