@@ -16,37 +16,33 @@ $ yarn add @tenkeylabs/dappwright
 ```typescript
   # test.spec.ts
 
-  import { BrowserContext, expect, test as baseTest } from "@playwright/test";
-  import dappwright, { Dappwright, MetaMaskWallet } from "@tenkeylabs/dappwright";
+  import { test as base } from '@playwright/test';
+  import { BrowserContext } from 'playwright-core';
+  import { bootstrap, Dappwright, getWallet, OfficialOptions } from '@tenkeylabs/dappwright';
 
-  export const test = baseTest.extend<{
-    context: BrowserContext;
-    wallet: Dappwright;
-  }>({
-    context: async ({}, use) => {
-      // Launch context with extension
-      const [wallet, _, context] = await dappwright.bootstrap("", {
-        wallet: "metamask",
-        version: MetaMaskWallet.recommendedVersion,
-        seed: "test test test test test test test test test test test junk", // Hardhat's default https://hardhat.org/hardhat-network/docs/reference#accounts
-        headless: false,
-      });
+  export const testWithWallet = base.extend<{ wallet: Dappwright }, { walletContext: BrowserContext }>({
+    walletContext: [
+      async ({}, use, info) => {
+        // Launch context with extension
+        const [wallet, _, context] = await dappwright.bootstrap("", {
+          wallet: "metamask",
+          version: MetaMaskWallet.recommendedVersion,
+          seed: "test test test test test test test test test test test junk", // Hardhat's default https://hardhat.org/hardhat-network/docs/reference#accounts
+          headless: false,
+        });
 
-      // Add Hardhat as a custom network
-      await wallet.addNetwork({
-        networkName: "Hardhat",
-        rpc: "http://localhost:8546",
-        chainId: 31337,
-        symbol: "ETH",
-      });
-
-      await use(context);
+        await use(context);
+        await context.close();
+      },
+      { scope: 'worker' },
+    ],
+    context: async ({ walletContext }, use) => {
+      await use(walletContext);
     },
-
-    wallet: async ({ context }, use) => {
-      const metamask = await dappwright.getWallet("metamask", context);
-
-      await use(metamask);
+    wallet: async ({ walletContext }, use, info) => {
+      const projectMetadata = info.project.metadata;
+      const wallet = await getWallet(projectMetadata.wallet, walletContext);
+      await use(wallet);
     },
   });
 
