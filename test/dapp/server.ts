@@ -17,7 +17,8 @@ export function getCounterContract(): { address: string } | null {
   return counterContract;
 }
 
-export async function start(): Promise<Contract> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function start(): Promise<Contract<any>> {
   const provider = await waitForGanache();
   await startTestServer();
   return await deployContract(provider);
@@ -39,7 +40,8 @@ export async function waitForGanache(): Promise<Provider> {
   return chainNode.provider;
 }
 
-async function deployContract(provider: Provider): Promise<Contract> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function deployContract(provider: Provider): Promise<Contract<any>> {
   console.log('Deploying test contract...');
   const web3 = new Web3(provider as unknown as Web3['currentProvider']);
   const compiledContracts = compileContracts();
@@ -50,7 +52,7 @@ async function deployContract(provider: Provider): Promise<Contract> {
   const accounts = await web3.eth.getAccounts();
   const counterContract = await counterContractDef
     .deploy({ data: counterContractInfo.evm.bytecode.object })
-    .send({ from: accounts[0], gas: 4000000 });
+    .send({ from: accounts[0], gas: String(4000000) });
   console.log('Contract deployed at', counterContract.options.address);
 
   // export contract spec
