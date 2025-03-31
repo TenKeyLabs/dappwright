@@ -1,3 +1,4 @@
+import downloader from '../../downloader/downloader';
 import Wallet from '../wallet';
 import { Step, WalletIdOptions, WalletOptions } from '../wallets';
 import {
@@ -22,7 +23,6 @@ import { confirmNetworkSwitch } from './actions/confirmNetworkSwitch';
 import { countAccounts } from './actions/countAccounts';
 import { hasNetwork } from './actions/hasNetwork';
 import { setup } from './setup';
-import downloader from './setup/downloader';
 import {
   adjustSettings,
   clearOnboardingHelp,

@@ -2,7 +2,6 @@ import { defineConfig } from '@playwright/test';
 import { CoinbaseWallet, MetaMaskWallet } from './src';
 
 export default defineConfig({
-  workers: process.env.CI ? 1 : undefined,
   retries: process.env.CI ? 1 : 0,
   use: {
     trace: process.env.CI ? 'retain-on-first-failure' : 'on',
