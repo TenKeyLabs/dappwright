@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.9.4
+
+### Patch Changes
+
+- [#437](https://github.com/TenKeyLabs/dappwright/pull/437) [`ebf5315`](https://github.com/TenKeyLabs/dappwright/commit/ebf5315c018cdb6624e058d92bb74657d3cfed24) Thanks [@osis](https://github.com/osis)! - fix(metamask): scroll account menu button into view before clicking
+
 ## 2.9.3
 
 ### Patch Changes
