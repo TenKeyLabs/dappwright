@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import crypto from 'crypto';
 import { Dappwright, MetaMaskWallet } from '../src';
 import { openAccountMenu } from '../src/wallets/metamask/actions/helpers';
 import { forCoinbase, forMetaMask } from './helpers/itForWallet';
@@ -42,12 +43,14 @@ test.describe('when interacting with the wallet', () => {
   test.describe('account management', () => {
     test.describe('createAccount', () => {
       test('should create a new wallet/account', async ({ wallet }) => {
+        const accountName = crypto.randomBytes(20).toString('hex');
         const walletCount = await countAccounts(wallet);
+
         expect(await countAccounts(wallet)).toEqual(walletCount);
 
-        await wallet.createAccount();
+        await wallet.createAccount(accountName);
 
-        const expectedAccountName = wallet instanceof MetaMaskWallet ? 'Account 2' : 'Wallet 2';
+        const expectedAccountName = wallet instanceof MetaMaskWallet ? accountName : 'Address 2';
         expect(wallet.page.getByText(expectedAccountName));
         expect(await countAccounts(wallet)).toEqual(walletCount + 1);
       });
@@ -55,10 +58,10 @@ test.describe('when interacting with the wallet', () => {
 
     test.describe('switchAccount', () => {
       test('should switch accounts', async ({ wallet }) => {
-        await wallet.switchAccount(1);
+        const accountName: string = wallet instanceof MetaMaskWallet ? 'Account 1' : 'Address 1';
+        await wallet.switchAccount(accountName);
 
-        const expectedAccountName = wallet instanceof MetaMaskWallet ? 'Account 1' : 'Wallet 1';
-        expect(wallet.page.getByText(expectedAccountName));
+        expect(wallet.page.getByText(accountName));
       });
     });
   });
@@ -166,15 +169,13 @@ test.describe('when interacting with the wallet', () => {
       });
     });
 
-    test.describe('deleteAccount', () => {
-      test('should be able to delete an account', async ({ wallet }) => {
-        await forMetaMask(wallet, async () => {
-          const beforeDelete = await countAccounts(wallet);
-          await wallet.deleteAccount(beforeDelete);
-          const afterDelete = await countAccounts(wallet);
+    test('should be able to delete an imported account', async ({ wallet }) => {
+      await forMetaMask(wallet, async () => {
+        const beforeDelete = await countAccounts(wallet);
+        await wallet.deleteAccount(`Account ${beforeDelete}`);
+        const afterDelete = await countAccounts(wallet);
 
-          expect(beforeDelete - 1).toEqual(afterDelete);
-        });
+        expect(beforeDelete - 1).toEqual(afterDelete);
       });
     });
   });

@@ -27,11 +27,11 @@ export default abstract class Wallet implements Dappwright {
   abstract addNetwork: (options: AddNetwork) => Promise<void>;
   abstract addToken: (options: AddToken) => Promise<void>;
   abstract approve: () => Promise<void>;
-  abstract createAccount: () => Promise<void>;
+  abstract createAccount: (name?: string) => Promise<void>;
   abstract confirmNetworkSwitch: () => Promise<void>;
   abstract confirmTransaction: (options?: TransactionOptions) => Promise<void>;
   abstract countAccounts: () => Promise<number>;
-  abstract deleteAccount: (accountNumber: number) => Promise<void>;
+  abstract deleteAccount: (name: string) => Promise<void>;
   abstract deleteNetwork: (name: string) => Promise<void>;
   abstract getTokenBalance: (tokenSymbol: string) => Promise<number>;
   abstract hasNetwork: (name: string) => Promise<boolean>;
@@ -40,7 +40,7 @@ export default abstract class Wallet implements Dappwright {
   abstract reject: () => Promise<void>;
   abstract sign: () => Promise<void>;
   abstract signin: () => Promise<void>;
-  abstract switchAccount: (accountNumber: number) => Promise<void>;
+  abstract switchAccount: (name: string) => Promise<void>;
   abstract switchNetwork: (network: string) => Promise<void>;
   abstract unlock: (password?: string) => Promise<void>;
 }
