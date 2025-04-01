@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.10.0
+
+### Minor Changes
+
+- [#440](https://github.com/TenKeyLabs/dappwright/pull/440) [`9fa6543`](https://github.com/TenKeyLabs/dappwright/commit/9fa6543b39d13ea16ed2dc2729493fc57f2268b6) Thanks [@osis](https://github.com/osis)! - feat: support for full names when creating/switching/deleting accounts
+
 ## 2.9.4
 
 ### Patch Changes
