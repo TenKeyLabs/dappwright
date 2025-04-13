@@ -33,6 +33,7 @@ export default defineConfig({
         seed: 'pioneer casual canoe gorilla embrace width fiction bounce spy exhibit another dog',
         password: 'password1234!@#$',
       },
+      dependencies: ["MetaMask"],
     },
   ],
 });
