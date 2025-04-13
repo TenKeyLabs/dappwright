@@ -10,6 +10,16 @@ updates:
     directory: /
     target-branch: main
     schedule:
-      interval: weekly
+      interval: monthly
     commit-message:
       prefix: 'chore:'
+    groups:
+      major:
+        patterns: ["*"]
+        update-types:
+          - weekly
+      minor-patch:
+        patterns: ["*"]
+        update-types:
+          - minor
+          - patch
