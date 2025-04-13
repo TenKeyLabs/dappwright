@@ -11,7 +11,7 @@ export const importPk =
 
     await page.getByTestId('multichain-account-menu-popover-action-button').click();
 
-    await clickOnButton(page, 'Import account');
+    await page.getByTestId('multichain-account-menu-popover-add-imported-account').click();
     await typeOnInputField(page, 'your private key', privateKey);
     await page.getByTestId('import-account-confirm-button').click();
 
