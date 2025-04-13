@@ -4,7 +4,6 @@ import { bootstrap, Dappwright, getWallet, OfficialOptions } from '../../src';
 
 export const testWithWallet = base.extend<{ wallet: Dappwright }, { walletContext: BrowserContext }>({
   walletContext: [
-    // eslint-disable-next-line no-empty-pattern
     async ({}, use, info) => {
       const projectMetadata = info.project.metadata as OfficialOptions;
       const [_, __, browserContext] = await bootstrap('', {
