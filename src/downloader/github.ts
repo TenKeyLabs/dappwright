@@ -46,7 +46,6 @@ export const getGithubRelease = (releasesUrl: string, version: string): Promise<
   });
 
 export const downloadGithubRelease = (name: string, url: string, location: string): Promise<string> =>
-  // eslint-disable-next-line no-async-promise-executor
   new Promise(async (resolve) => {
     if (!fs.existsSync(location)) {
       fs.mkdirSync(location, { recursive: true });
