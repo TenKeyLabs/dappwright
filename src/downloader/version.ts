@@ -20,7 +20,7 @@ export const printVersion = (walletId: WalletIdOptions, version: string, recomme
       `Seems you are running an older version (${version}) of ${walletId} than recommended by the Dappwright team.
       Use it at your own risk or set the recommended version "${recommendedVersion}".`,
     );
-  else console.log(`Running tests on ${walletId} version ${version}`);
+  else console.log(`Using ${walletId} v${version}`);
 
   console.log(''); // new line
 };

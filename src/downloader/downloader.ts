@@ -23,31 +23,36 @@ export default (walletId: WalletIdOptions, releasesUrl: string, recommendedVersi
     const { version } = options;
     const downloadPath = downloadDir(walletId, version);
 
-    if (process.env.TEST_PARALLEL_INDEX !== '0') {
+    if (!version) {
       // eslint-disable-next-line no-console
-      console.info('Waiting for primary worker to download extension...');
-      while (!fs.existsSync(downloadPath) || isEmpty(downloadPath)) {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-      }
+      console.info(`Running tests on local ${walletId} build`);
       return downloadPath;
     }
 
-    if (version) {
+    if (process.env.TEST_PARALLEL_INDEX === '0') {
       printVersion(walletId, version, recommendedVersion);
-      await download(version, releasesUrl, downloadPath);
+      await download(walletId, version, releasesUrl, downloadPath);
     } else {
-      // eslint-disable-next-line no-console
-      console.info(`Running tests on local ${walletId} build`);
+      while (!fs.existsSync(downloadPath) || isEmpty(downloadPath)) {
+        // eslint-disable-next-line no-console
+        console.info(`Waiting for primary worker to download ${walletId}...`);
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
     }
 
     return downloadPath;
   };
 
-const download = async (version: string, releasesUrl: string, downloadPath: string): Promise<void> => {
+const download = async (
+  walletId: WalletIdOptions,
+  version: string,
+  releasesUrl: string,
+  downloadPath: string,
+): Promise<void> => {
   if (version !== 'latest' && fs.existsSync(downloadPath) && !isEmpty(downloadPath)) return;
 
   // eslint-disable-next-line no-console
-  console.info('Downloading extension...');
+  console.info(`Downloading ${walletId}...`);
 
   const { filename, downloadUrl } = await getGithubRelease(releasesUrl, `v${version}`);
 
