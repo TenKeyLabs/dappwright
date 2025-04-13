@@ -66,6 +66,7 @@
     "ganache": "^7.4.3",
     "microbundle": "^0.15.1",
     "prettier": "^3.0.3",
+    "rimraf": "^5.0.9",
     "serve-handler": "6.1.6",
     "solc": "0.8.29",
     "ts-node": "10.9.2",
