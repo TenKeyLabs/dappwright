@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.10.1
+
+### Patch Changes
+
+- [#444](https://github.com/TenKeyLabs/dappwright/pull/444) [`918c779`](https://github.com/TenKeyLabs/dappwright/commit/918c779be0156871270afb92e6967f1ff09ea293) Thanks [@osis](https://github.com/osis)! - chore: bumps metamask to 12.16.0
+
+- [#446](https://github.com/TenKeyLabs/dappwright/pull/446) [`3c0a444`](https://github.com/TenKeyLabs/dappwright/commit/3c0a444e70b0e6411c7df75febe4a76bf4dfbdab) Thanks [@osis](https://github.com/osis)! - chore: clearer worker downloader logging
+
 ## 2.10.0
 
 ### Minor Changes
