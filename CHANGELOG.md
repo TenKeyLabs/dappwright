@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.10.2
+
+### Patch Changes
+
+- [#449](https://github.com/TenKeyLabs/dappwright/pull/449) [`a3560a8`](https://github.com/TenKeyLabs/dappwright/commit/a3560a8977ea204df0789885e6b6ee567727f5aa) Thanks [@osis](https://github.com/osis)! - fix(metamask): race condition can lead to acquiring dormant page context
+
 ## 2.10.1
 
 ### Patch Changes
