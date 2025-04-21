@@ -17,7 +17,7 @@ updates:
       major:
         patterns: ["*"]
         update-types:
-          - weekly
+          - major
       minor-patch:
         patterns: ["*"]
         update-types:
