@@ -13,11 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 18
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           cache: yarn
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -33,11 +33,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 18
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           cache: yarn
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
