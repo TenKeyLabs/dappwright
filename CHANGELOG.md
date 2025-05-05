@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.11.0
+
+### Minor Changes
+
+- [#459](https://github.com/TenKeyLabs/dappwright/pull/459) [`f70ebd4`](https://github.com/TenKeyLabs/dappwright/commit/f70ebd474e43429c47d75bf024ef55a68e6803d2) Thanks [@osis](https://github.com/osis)! - chore: bumps supported node version to >= 20
+
 ## 2.10.2
 
 ### Patch Changes
