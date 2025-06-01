@@ -68,7 +68,7 @@
     "prettier": "^3.0.3",
     "rimraf": "^6.0.1",
     "serve-handler": "6.1.6",
-    "solc": "0.8.29",
+    "solc": "0.8.30",
     "ts-node": "10.9.2",
     "typescript": "^5.0",
     "web3": "4.16.0"
