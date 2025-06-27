@@ -3,7 +3,10 @@ import StreamZip from 'node-stream-zip';
 import os from 'os';
 import path from 'path';
 import { WalletIdOptions } from '../wallets/wallets';
-import { EXTENSION_PUB_KEY } from './downloader';
+
+// Extension public key constant - moved here to avoid circular dependency
+export const EXTENSION_PUB_KEY =
+  'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnpiOcYGaEp02v5On5luCk/4g9j+ujgWeGlpZVibaSz6kUlyiZvcVNIIUXR568uv5NrEi5+j9+HbzshLALhCn9S43E7Ha6Xkdxs3kOEPBu8FRNwFh2S7ivVr6ixnl2FCGwfkP1S1r7k665eC1/xYdJKGCc8UByfSw24Rtl5odUqZX1SaE6CsQEMymCFcWhpE3fV+LZ6RWWJ63Zm1ac5KmKzXdj7wZzN3onI0Csc8riBZ0AujkThJmCR8tZt2PkVUDX9exa0XkJb79pe0Ken5Bt2jylJhmQB7R3N1pVNhNQt17Sytnwz6zG2YsB2XNd/1VYJe52cPNJc7zvhQJpHjh5QIDAQAB';
 
 export const downloadDir = (walletId: WalletIdOptions, version: string): string => {
   return path.resolve(os.tmpdir(), 'dappwright', walletId, version.replace(/\./g, '_'));

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { DownloadError } from './config';
+import { AtomicFileOperations } from './worker-monitor';
 
 export interface LockOptions {
   /** Directory where lock files are stored */
@@ -66,19 +67,18 @@ export class DownloadLock {
         timestamp: Date.now(),
       });
 
-      // Use exclusive flag to ensure atomic operation
-      fs.writeFileSync(this.lockPath, lockContent, { flag: 'wx' });
-      this.isLocked = true;
+      // Use atomic create marker to ensure exclusive access
+      const acquired = await AtomicFileOperations.atomicCreateMarker(this.lockPath, lockContent);
       
-      // Update status to downloading
-      await this.updateStatus('downloading');
-      
-      return true;
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
-        // Lock already exists - another worker has it
-        return false;
+      if (acquired) {
+        this.isLocked = true;
+        // Update status to downloading
+        await this.updateStatus('downloading');
+        return true;
       }
+      
+      return false;
+    } catch (error) {
       throw new DownloadError(`Failed to acquire lock: ${error instanceof Error ? error.message : String(error)}`, 'NETWORK', error instanceof Error ? error : undefined);
     }
   }
@@ -217,7 +217,7 @@ export class DownloadLock {
 }
 
 /**
- * Utility function to check if download is complete and valid
+ * Enhanced download completion check with cache validation
  */
 export const isDownloadComplete = (downloadPath: string): boolean => {
   try {
@@ -230,10 +230,81 @@ export const isDownloadComplete = (downloadPath: string): boolean => {
       return false;
     }
     
-    // Check if directory has content (not empty)
+    // Check if directory has content and manifest.json
     const files = fs.readdirSync(downloadPath);
-    return files.length > 0;
+    if (files.length === 0) {
+      return false;
+    }
+    
+    // Check for manifest.json specifically
+    return files.includes('manifest.json');
   } catch {
+    return false;
+  }
+};
+
+/**
+ * Validate and clean cache directory
+ */
+export const validateAndCleanCache = async (cacheDir: string): Promise<void> => {
+  try {
+    if (!fs.existsSync(cacheDir)) {
+      return;
+    }
+    
+    const entries = fs.readdirSync(cacheDir);
+    
+    for (const entry of entries) {
+      const entryPath = path.join(cacheDir, entry);
+      const stats = fs.statSync(entryPath);
+      
+      if (stats.isDirectory()) {
+        // Check if directory is complete
+        const isComplete = isDownloadComplete(entryPath);
+        
+        if (!isComplete) {
+          // eslint-disable-next-line no-console
+          console.warn(`Removing incomplete cache directory: ${entryPath}`);
+          fs.rmSync(entryPath, { recursive: true, force: true });
+        }
+      }
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn(`Cache validation failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+};
+
+/**
+ * Advanced cache integrity check
+ */
+export const validateCacheIntegrity = async (downloadPath: string): Promise<boolean> => {
+  try {
+    // Check if basic structure exists
+    if (!isDownloadComplete(downloadPath)) {
+      return false;
+    }
+    
+    // Additional integrity checks
+    const manifestPath = path.join(downloadPath, 'manifest.json');
+    const manifestContent = fs.readFileSync(manifestPath, 'utf-8');
+    const manifest = JSON.parse(manifestContent);
+    
+    // Validate manifest has required fields
+    if (!manifest.name || !manifest.version) {
+      return false;
+    }
+    
+    // Check for expected extension files
+    const expectedFiles = ['background.js', 'content-script.js'];
+    const hasExpectedFiles = expectedFiles.some(file => 
+      fs.existsSync(path.join(downloadPath, file))
+    );
+    
+    return hasExpectedFiles;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn(`Cache integrity check failed: ${error instanceof Error ? error.message : String(error)}`);
     return false;
   }
 };
