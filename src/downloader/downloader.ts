@@ -5,6 +5,8 @@ import { WalletIdOptions } from '../wallets/wallets';
 import { downloadDir, editExtensionPubKey, extractZip, isEmpty } from './file';
 import { downloadGithubRelease, getGithubRelease } from './github';
 import { printVersion } from './version';
+import { DownloadLock, isDownloadComplete } from './lockfile';
+import { DownloadError } from './config';
 
 // Overrides for consistent navigation experience across wallets extensions
 export const EXTENSION_ID = 'gadekpdjmpjjnnemgnhkbjgnjpdaakgh';
@@ -29,18 +31,90 @@ export default (walletId: WalletIdOptions, releasesUrl: string, recommendedVersi
       return downloadPath;
     }
 
-    if (process.env.TEST_PARALLEL_INDEX === '0') {
-      printVersion(walletId, version, recommendedVersion);
-      await download(walletId, version, releasesUrl, downloadPath);
-    } else {
-      while (!fs.existsSync(downloadPath) || isEmpty(downloadPath)) {
+    const lock = new DownloadLock(walletId, version);
+    
+    try {
+      // Try to acquire lock for primary worker role
+      const isLockAcquired = await lock.acquire();
+      
+      if (isLockAcquired) {
+        // We are the primary worker
         // eslint-disable-next-line no-console
-        console.info(`Waiting for primary worker to download ${walletId}...`);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        console.info(`Primary worker: Downloading ${walletId} v${version}...`);
+        printVersion(walletId, version, recommendedVersion);
+        
+        try {
+          await download(walletId, version, releasesUrl, downloadPath);
+          await lock.updateStatus('completed');
+          // eslint-disable-next-line no-console
+          console.info(`Primary worker: Successfully downloaded ${walletId} v${version}`);
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          await lock.updateStatus('failed', errorMessage);
+          // eslint-disable-next-line no-console
+          console.error(`Primary worker: Download failed for ${walletId} v${version}: ${errorMessage}`);
+          throw error;
+        } finally {
+          await lock.release();
+        }
+      } else {
+        // We are a secondary worker - wait for primary to complete
+        // eslint-disable-next-line no-console
+        console.info(`Secondary worker: Waiting for primary worker to download ${walletId} v${version}...`);
+        
+        try {
+          await lock.waitForCompletion();
+          // eslint-disable-next-line no-console
+          console.info(`Secondary worker: Primary worker completed download of ${walletId} v${version}`);
+        } catch (error) {
+          if (error instanceof DownloadError && error.code === 'TIMEOUT') {
+            // Primary worker timed out or crashed, try to become primary
+            // eslint-disable-next-line no-console
+            console.warn(`Secondary worker: Primary worker timed out, attempting to become primary for ${walletId} v${version}...`);
+            
+            const fallbackLock = new DownloadLock(walletId, version);
+            const fallbackLockAcquired = await fallbackLock.acquire();
+            
+            if (fallbackLockAcquired) {
+              try {
+                printVersion(walletId, version, recommendedVersion);
+                await download(walletId, version, releasesUrl, downloadPath);
+                await fallbackLock.updateStatus('completed');
+                // eslint-disable-next-line no-console
+                console.info(`Fallback primary worker: Successfully downloaded ${walletId} v${version}`);
+              } catch (downloadError) {
+                const errorMessage = downloadError instanceof Error ? downloadError.message : String(downloadError);
+                await fallbackLock.updateStatus('failed', errorMessage);
+                throw downloadError;
+              } finally {
+                await fallbackLock.release();
+              }
+            } else {
+              throw new DownloadError(`Failed to acquire fallback lock for ${walletId} v${version}`, 'TIMEOUT');
+            }
+          } else {
+            throw error;
+          }
+        }
       }
+      
+      // Final validation that download is complete
+      if (!isDownloadComplete(downloadPath)) {
+        throw new DownloadError(`Download validation failed: ${downloadPath} is not complete`, 'NETWORK');
+      }
+      
+      return downloadPath;
+    } catch (error) {
+      if (error instanceof DownloadError) {
+        throw error;
+      }
+      
+      throw new DownloadError(
+        `Download coordination failed: ${error instanceof Error ? error.message : String(error)}`,
+        'NETWORK',
+        error instanceof Error ? error : undefined
+      );
     }
-
-    return downloadPath;
   };
 
 const download = async (
@@ -49,18 +123,63 @@ const download = async (
   releasesUrl: string,
   downloadPath: string,
 ): Promise<void> => {
-  if (version !== 'latest' && fs.existsSync(downloadPath) && !isEmpty(downloadPath)) return;
+  // Skip download if already exists and is complete
+  if (version !== 'latest' && isDownloadComplete(downloadPath)) {
+    // eslint-disable-next-line no-console
+    console.info(`${walletId} v${version} already downloaded and complete`);
+    return;
+  }
 
-  // eslint-disable-next-line no-console
-  console.info(`Downloading ${walletId}...`);
+  try {
+    // eslint-disable-next-line no-console
+    console.info(`Fetching ${walletId} release info...`);
+    const { filename, downloadUrl } = await getGithubRelease(releasesUrl, `v${version}`);
 
-  const { filename, downloadUrl } = await getGithubRelease(releasesUrl, `v${version}`);
+    // eslint-disable-next-line no-console
+    console.info(`Downloading ${walletId} v${version} from ${downloadUrl}...`);
+    
+    // Clean up any partial downloads
+    if (fs.existsSync(downloadPath)) {
+      fs.rmSync(downloadPath, { recursive: true, force: true });
+    }
 
-  if (!fs.existsSync(downloadPath) || isEmpty(downloadPath)) {
     const walletFolder = downloadPath.split('/').slice(0, -1).join('/');
     const zipData = await downloadGithubRelease(filename, downloadUrl, walletFolder);
+    
+    // eslint-disable-next-line no-console
+    console.info(`Extracting ${walletId} v${version}...`);
     await extractZip(zipData, downloadPath);
 
+    // eslint-disable-next-line no-console
+    console.info(`Configuring ${walletId} extension...`);
     editExtensionPubKey(downloadPath);
+    
+    // Final validation
+    if (!isDownloadComplete(downloadPath)) {
+      throw new DownloadError('Download completed but validation failed', 'NETWORK');
+    }
+    
+    // eslint-disable-next-line no-console
+    console.info(`${walletId} v${version} download and setup complete`);
+  } catch (error) {
+    // Clean up failed download
+    if (fs.existsSync(downloadPath)) {
+      try {
+        fs.rmSync(downloadPath, { recursive: true, force: true });
+      } catch (cleanupError) {
+        // eslint-disable-next-line no-console
+        console.warn(`Failed to cleanup partial download: ${cleanupError instanceof Error ? cleanupError.message : String(cleanupError)}`);
+      }
+    }
+    
+    if (error instanceof DownloadError) {
+      throw error;
+    }
+    
+    throw new DownloadError(
+      `Download failed: ${error instanceof Error ? error.message : String(error)}`,
+      'NETWORK',
+      error instanceof Error ? error : undefined
+    );
   }
 };
