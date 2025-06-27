@@ -29,17 +29,8 @@ export default (walletId: WalletIdOptions, releasesUrl: string, recommendedVersi
       return downloadPath;
     }
 
-    if (process.env.TEST_PARALLEL_INDEX === '0') {
-      printVersion(walletId, version, recommendedVersion);
-      await download(walletId, version, releasesUrl, downloadPath);
-    } else {
-      while (!fs.existsSync(downloadPath) || isEmpty(downloadPath)) {
-        // eslint-disable-next-line no-console
-        console.info(`Waiting for primary worker to download ${walletId}...`);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-      }
-    }
-
+    printVersion(walletId, version, recommendedVersion);
+    await download(walletId, version, releasesUrl, downloadPath);
     return downloadPath;
   };
 
