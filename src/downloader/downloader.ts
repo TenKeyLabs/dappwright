@@ -18,6 +18,9 @@ export type Path =
       extract: string;
     };
 
+const SECONDARY_WORKER_TIMEOUT_MS = 300000; // 5 minutes max wait
+const SECONDARY_WORKER_POLL_INTERVAL_MS = 2000; // Check every 2 seconds
+
 export default (walletId: WalletIdOptions, releasesUrl: string, recommendedVersion: string) =>
   async (options: OfficialOptions): Promise<string> => {
     const { version } = options;
@@ -29,10 +32,36 @@ export default (walletId: WalletIdOptions, releasesUrl: string, recommendedVersi
       return downloadPath;
     }
 
-    printVersion(walletId, version, recommendedVersion);
-    await download(walletId, version, releasesUrl, downloadPath);
+    if (process.env.TEST_PARALLEL_INDEX === '0') {
+      // Primary worker downloads
+      printVersion(walletId, version, recommendedVersion);
+      await download(walletId, version, releasesUrl, downloadPath);
+    } else {
+      // Secondary workers wait for primary to complete
+      await waitForPrimaryDownload(walletId, downloadPath);
+    }
+
     return downloadPath;
   };
+
+const waitForPrimaryDownload = async (walletId: WalletIdOptions, downloadPath: string): Promise<void> => {
+  const startTime = Date.now();
+  
+  // eslint-disable-next-line no-console
+  console.info(`Waiting for primary worker to download ${walletId}...`);
+  
+  while (Date.now() - startTime < SECONDARY_WORKER_TIMEOUT_MS) {
+    if (fs.existsSync(downloadPath) && !isEmpty(downloadPath)) {
+      // eslint-disable-next-line no-console
+      console.info(`${walletId} download completed by primary worker`);
+      return;
+    }
+    
+    await new Promise((resolve) => setTimeout(resolve, SECONDARY_WORKER_POLL_INTERVAL_MS));
+  }
+  
+  throw new Error(`Timeout waiting for primary worker to download ${walletId} after ${SECONDARY_WORKER_TIMEOUT_MS}ms`);
+};
 
 const download = async (
   walletId: WalletIdOptions,
