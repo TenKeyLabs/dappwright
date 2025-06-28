@@ -27,6 +27,7 @@ import {
   adjustSettings,
   clearOnboardingHelp,
   closePopup,
+  closeSolanaPopup,
   createPassword,
   goToSettings,
   importAccount,
@@ -34,7 +35,7 @@ import {
 
 export class MetaMaskWallet extends Wallet {
   static id = 'metamask' as WalletIdOptions;
-  static recommendedVersion = '12.18.0';
+  static recommendedVersion = '12.17.3';
   static releasesUrl = 'https://api.github.com/repos/metamask/metamask-extension/releases';
   static homePath = '/home.html';
 
@@ -48,6 +49,7 @@ export class MetaMaskWallet extends Wallet {
     importAccount,
     createPassword,
     clearOnboardingHelp,
+    closeSolanaPopup,
     closePopup,
     goToSettings,
     adjustSettings,
