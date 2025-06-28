@@ -66,6 +66,15 @@ export async function clearOnboardingHelp(metamaskPage: Page): Promise<void> {
   await metamaskPage.getByTestId('pin-extension-done').click();
 }
 
+export const closeSolanaPopup = async (page: Page): Promise<void> => {
+  /* For some reason popup deletes close button and then create new one (react stuff)
+   * hacky solution can be found here => https://github.com/puppeteer/puppeteer/issues/3496 */
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  if (await page.getByTestId('not-now-button').isVisible()) {
+    await page.getByTestId('not-now-button').click();
+  }
+};
+
 export const closePopup = async (page: Page): Promise<void> => {
   /* For some reason popup deletes close button and then create new one (react stuff)
    * hacky solution can be found here => https://github.com/puppeteer/puppeteer/issues/3496 */

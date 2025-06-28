@@ -1,5 +1,5 @@
 import { Page } from 'playwright-core';
-import { closePopup } from '../setup/setupActions';
+import { closePopup, closeSolanaPopup } from '../setup/setupActions';
 
 export const unlock =
   (page: Page) =>
@@ -10,4 +10,5 @@ export const unlock =
     await page.getByTestId('unlock-submit').click();
 
     await closePopup(page);
+    await closeSolanaPopup(page);
   };
