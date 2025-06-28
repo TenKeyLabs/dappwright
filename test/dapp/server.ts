@@ -11,7 +11,7 @@ import { compileContracts } from './contract';
 const counterContract: { address: string } | null = null;
 
 let httpServer: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
-let chainNode: Server<'ethereum'>;
+let chainNode: Server;
 
 export function getCounterContract(): { address: string } | null {
   return counterContract;
@@ -35,7 +35,12 @@ export async function stop(): Promise<void> {
 
 export async function waitForGanache(): Promise<Provider> {
   console.log('Starting ganache...');
-  chainNode = ganache.server({ chain: { chainId: 31337 }, wallet: { seed: 'asd123' }, logging: { quiet: true } });
+  chainNode = ganache.server({
+    chain: { chainId: 31337 },
+    wallet: { seed: 'asd123' },
+    logging: { quiet: true },
+    flavor: 'ethereum',
+  });
   await chainNode.listen(8545);
   return chainNode.provider;
 }
