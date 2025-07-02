@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.11.1
+
+### Patch Changes
+
+- [#471](https://github.com/TenKeyLabs/dappwright/pull/471) [`fa554e4`](https://github.com/TenKeyLabs/dappwright/commit/fa554e4f8473228364e788a03bded3156c9b0cc2) Thanks [@osis](https://github.com/osis)! - chore(metamask): opt to click close buttons instead of the metamask logo to return home
+
 ## 2.11.0
 
 ### Minor Changes
@@ -44,7 +50,6 @@
 ### Patch Changes
 
 - [#429](https://github.com/TenKeyLabs/dappwright/pull/429) [`9ba53a5`](https://github.com/TenKeyLabs/dappwright/commit/9ba53a5c65865a6fb8fb039a398de4a111d8581a) Thanks [@osis](https://github.com/osis)! - parallel test & tracing support
-
   - chore(coinbase): wait for chrome state to settle after adding a network
   - chore: use the first page as the main page for extension navigation so no blank pages are lingering
 
