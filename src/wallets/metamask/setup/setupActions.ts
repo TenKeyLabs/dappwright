@@ -2,7 +2,7 @@ import { Page } from 'playwright-core';
 
 import { clickOnButton, typeOnInputField, waitForChromeState } from '../../../helpers';
 import { WalletOptions } from '../../wallets';
-import { clickOnLogo, clickOnSettingsSwitch, openAccountOptionsMenu } from '../actions/helpers';
+import { clickOnSettingsSwitch, openAccountOptionsMenu } from '../actions/helpers';
 
 export async function goToSettings(metamaskPage: Page): Promise<void> {
   await openAccountOptionsMenu(metamaskPage);
@@ -14,7 +14,7 @@ export async function adjustSettings(metamaskPage: Page): Promise<void> {
   await metamaskPage.locator('.tab-bar__tab', { hasText: 'Advanced' }).click();
 
   await clickOnSettingsSwitch(metamaskPage, 'Show test networks');
-  await clickOnLogo(metamaskPage);
+  await metamaskPage.getByRole('button', { name: 'Close' }).click();
 
   await waitForChromeState(metamaskPage);
 }
