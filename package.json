@@ -26,10 +26,10 @@
     "lint": "eslint",
     "lint:fix": "yarn run lint --fix",
     "test": "playwright test",
-    "test:ci": "playwright test --headed --timeout 60000",
+    "test:ci": "playwright test",
     "test:debug": "playwright test --debug --timeout 0 test/",
-    "test:metamask:debug": "playwright test --debug --timeout 0 --project metamask",
-    "test:coinbase:debug": "playwright test --debug --timeout 0 --project coinbase",
+    "test:metamask:debug": "playwright test --project Metamask --debug --timeout 0",
+    "test:coinbase:debug": "playwright test --project Coinbase --debug --timeout 0",
     "test:dapp": "node --require ts-node/register test/dapp/start.ts",
     "changeset:publish": "yarn build && changeset publish"
   },
