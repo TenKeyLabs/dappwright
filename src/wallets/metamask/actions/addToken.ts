@@ -1,7 +1,6 @@
 import { Page } from 'playwright-core';
 import { clickOnButton } from '../../../helpers';
 import { AddToken } from '../../../types';
-import { clickOnLogo } from './helpers';
 
 export const addToken =
   (page: Page) =>
@@ -25,5 +24,4 @@ export const addToken =
 
     await clickOnButton(page, 'Next');
     await page.getByTestId('import-tokens-modal-import-button').click();
-    await clickOnLogo(page);
   };

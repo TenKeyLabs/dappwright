@@ -21,8 +21,3 @@ export const openAccountOptionsMenu = async (page: Page): Promise<void> => {
 export const openAccountMenu = async (page: Page): Promise<void> => {
   await page.getByTestId('account-menu-icon').click();
 };
-
-export const clickOnLogo = async (page: Page): Promise<void> => {
-  const header = await page.waitForSelector('.app-header__logo-container');
-  await header.click();
-};
