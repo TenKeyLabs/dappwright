@@ -5,10 +5,26 @@ import { request } from './request';
 
 type GithubRelease = { downloadUrl: string; filename: string; tag: string };
 
+type GithubResponse =
+  | {
+      message?: string;
+    }
+  | [GithubReleaseResponse];
+
+/* eslint-disable @typescript-eslint/naming-convention */
+type GithubReleaseResponse = {
+  tag_name: string;
+  assets: { name: string; browser_download_url: string }[];
+  draft: boolean;
+};
+/* eslint-enable @typescript-eslint/naming-convention */
+
 export const getGithubRelease = (releasesUrl: string, version: string): Promise<GithubRelease> =>
   new Promise((resolve, reject) => {
+    const tagRegex = RegExp(`v?${version}$`, 'img');
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const options = { headers: { 'User-Agent': 'Mozilla/5.0' } };
+
     if (process.env.GITHUB_TOKEN) options.headers['Authorization'] = `Bearer ${process.env.GITHUB_TOKEN}`;
     const request = get(releasesUrl, options, (response) => {
       let body = '';
@@ -17,14 +33,16 @@ export const getGithubRelease = (releasesUrl: string, version: string): Promise<
       });
 
       response.on('end', () => {
-        const data = JSON.parse(body);
-        if (data.message)
+        const data = JSON.parse(body) as GithubResponse;
+        if (!Array.isArray(data)) {
           return reject(
             `There was a problem connecting to github API to get the extension release (URL: ${releasesUrl}). Error: ${data.message}`,
           );
+        }
+
         for (const result of data) {
           if (result.draft) continue;
-          if (version === 'latest' || result.name.includes(version) || result.tag_name.includes(version)) {
+          if (version === 'latest' || tagRegex.test(result.tag_name)) {
             for (const asset of result.assets) {
               if (asset.name.includes('chrome'))
                 resolve({

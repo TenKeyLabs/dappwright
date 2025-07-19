@@ -54,7 +54,7 @@ const download = async (
   // eslint-disable-next-line no-console
   console.info(`Downloading ${walletId}...`);
 
-  const { filename, downloadUrl } = await getGithubRelease(releasesUrl, `v${version}`);
+  const { filename, downloadUrl } = await getGithubRelease(releasesUrl, version);
 
   if (!fs.existsSync(downloadPath) || isEmpty(downloadPath)) {
     const walletFolder = downloadPath.split('/').slice(0, -1).join('/');
