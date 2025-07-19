@@ -7,7 +7,7 @@ export const addToken =
   async ({ tokenAddress, symbol, decimals = 0 }: AddToken): Promise<void> => {
     await page.bringToFront();
 
-    await page.getByTestId('import-token-button').click();
+    await page.getByTestId('asset-list-control-bar-action-button').click();
     await page.getByTestId('importTokens__button').click();
     await clickOnButton(page, 'Custom token');
     await page.getByTestId('import-tokens-modal-custom-address').fill(tokenAddress);
@@ -18,9 +18,7 @@ export const addToken =
       await page.getByTestId('import-tokens-modal-custom-symbol').fill(symbol);
     }
 
-    if (decimals) {
-      await page.getByTestId('import-tokens-modal-custom-decimals').fill(decimals.toString());
-    }
+    await page.getByTestId('import-tokens-modal-custom-decimals').fill(decimals.toString());
 
     await clickOnButton(page, 'Next');
     await page.getByTestId('import-tokens-modal-import-button').click();

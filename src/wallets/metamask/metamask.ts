@@ -25,16 +25,16 @@ import { hasNetwork } from './actions/hasNetwork';
 import { setup } from './setup';
 import {
   adjustSettings,
-  clearOnboardingHelp,
   closePopup,
   createPassword,
+  doOnboarding,
   goToSettings,
   importAccount,
 } from './setup/setupActions';
 
 export class MetaMaskWallet extends Wallet {
   static id = 'metamask' as WalletIdOptions;
-  static recommendedVersion = '12.16.0';
+  static recommendedVersion = '12.23.0';
   static releasesUrl = 'https://api.github.com/repos/metamask/metamask-extension/releases';
   static homePath = '/home.html';
 
@@ -47,7 +47,7 @@ export class MetaMaskWallet extends Wallet {
   defaultSetupSteps: Step<WalletOptions>[] = [
     importAccount,
     createPassword,
-    clearOnboardingHelp,
+    doOnboarding,
     closePopup,
     goToSettings,
     adjustSettings,

@@ -172,7 +172,7 @@ test.describe('when interacting with the wallet', () => {
     test('should be able to delete an imported account', async ({ wallet }) => {
       await forMetaMask(wallet, async () => {
         const beforeDelete = await countAccounts(wallet);
-        await wallet.deleteAccount(`Account ${beforeDelete}`);
+        await wallet.deleteAccount(`Account ${beforeDelete - 1}`);
         const afterDelete = await countAccounts(wallet);
 
         expect(beforeDelete - 1).toEqual(afterDelete);
