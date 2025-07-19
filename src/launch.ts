@@ -4,7 +4,7 @@ import * as path from 'path';
 import playwright from 'playwright-core';
 
 import { DappwrightLaunchResponse, OfficialOptions } from './types';
-import { getWallet, getWalletType } from './wallets/wallets';
+import { closeWalletSetupPopup, getWallet, getWalletType } from './wallets/wallets';
 
 /**
  * Launch Playwright chromium instance with wallet plugin installed
@@ -36,6 +36,8 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
     headless: false,
     args: browserArgs,
   });
+
+  closeWalletSetupPopup(wallet.id, browserContext);
 
   return {
     wallet: await getWallet(wallet.id, browserContext),
