@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.11.2
+
+### Patch Changes
+
+- [#474](https://github.com/TenKeyLabs/dappwright/pull/474) [`80e7586`](https://github.com/TenKeyLabs/dappwright/commit/80e7586a033fa75875f5bd897b290745cc61a015) Thanks [@osis](https://github.com/osis)! - chore: adjusts the matching for downloaded versions more explicit
+
+- [#477](https://github.com/TenKeyLabs/dappwright/pull/477) [`b86e542`](https://github.com/TenKeyLabs/dappwright/commit/b86e542310a9453311bb43df475bf84cfaadc20c) Thanks [@osis](https://github.com/osis)! - chore: bumps metamask to 12.23.0
+
+- [#475](https://github.com/TenKeyLabs/dappwright/pull/475) [`8ddcca0`](https://github.com/TenKeyLabs/dappwright/commit/8ddcca0a211e04ea31bf946ac5397d7bb5d8b441) Thanks [@osis](https://github.com/osis)! - chore: bumps coinbase to v3.123.0
+
+- [#476](https://github.com/TenKeyLabs/dappwright/pull/476) [`d7d8c58`](https://github.com/TenKeyLabs/dappwright/commit/d7d8c58b2938a9c9a253b86684e38ccb1dbb5cd6) Thanks [@osis](https://github.com/osis)! - fix: moves multi-tab listener before first getWallet call
+
 ## 2.11.1
 
 ### Patch Changes
