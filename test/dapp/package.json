@@ -1,0 +1,23 @@
+{
+  "name": "dappwright-test-dapp",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node --require ts-node/register start.ts"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "web3": "4.16.0",
+    "web3-eth-contract": "^4.7.2",
+    "solc": "0.8.30"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "ganache": "^7.4.3",
+    "serve-handler": "6.1.6",
+    "ts-node": "10.9.2",
+    "typescript": "^5.0"
+  }
+}

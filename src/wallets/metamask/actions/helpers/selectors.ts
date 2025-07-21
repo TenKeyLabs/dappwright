@@ -11,6 +11,3 @@ export const getErrorMessage = async (page: Page): Promise<string | undefined> =
     return undefined;
   }
 };
-
-export const getAccountMenuButton = (page: Page): Promise<ElementHandle | null> =>
-  page.waitForSelector(`button.menu-bar__account-options`);
