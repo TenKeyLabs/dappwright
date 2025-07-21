@@ -31,6 +31,10 @@
     "test:metamask:debug": "playwright test --project Metamask --debug --timeout 0",
     "test:coinbase:debug": "playwright test --project Coinbase --debug --timeout 0",
     "test:dapp": "node --require ts-node/register test/dapp/start.ts",
+    "test:unit": "vitest",
+    "test:unit:watch": "vitest --watch",
+    "test:unit:run": "vitest run",
+    "test:unit:coverage": "vitest run --coverage",
     "changeset:publish": "yarn build && changeset publish"
   },
   "repository": {
@@ -56,14 +60,17 @@
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.26.0",
     "@playwright/test": "^1.51.0",
-    "@types/jest": "^30.0.0",
+    "@types/node": "^22.10.2",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
     "@typescript-eslint/parser": "^8.29.0",
+    "@vitest/coverage-v8": "^2.1.8",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.0",
     "ganache": "^7.4.3",
+    "globals": "^16.3.0",
+    "knip": "^5.62.0",
     "microbundle": "^0.15.1",
     "prettier": "^3.0.3",
     "rimraf": "^6.0.1",
@@ -71,7 +78,9 @@
     "solc": "0.8.30",
     "ts-node": "10.9.2",
     "typescript": "^5.0",
-    "web3": "4.16.0"
+    "vitest": "^2.1.8",
+    "web3": "4.16.0",
+    "web3-eth-contract": "^4.7.2"
   },
   "peerDependencies": {
     "playwright-core": ">1.0"

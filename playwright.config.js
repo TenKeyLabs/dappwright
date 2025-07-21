@@ -2,6 +2,7 @@ import { defineConfig } from '@playwright/test';
 import { CoinbaseWallet, MetaMaskWallet } from './src';
 
 export default defineConfig({
+  testIgnore: '**/*.test.ts',
   retries: process.env.CI ? 1 : 0,
   timeout: process.env.CI ? 120000 : 60000,
   use: {

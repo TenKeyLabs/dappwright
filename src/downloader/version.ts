@@ -6,6 +6,7 @@ export const printVersion = (walletId: WalletIdOptions, version: string, recomme
   if (version === 'latest')
     console.warn(
       '\x1b[33m%s\x1b[0m',
+      // eslint-disable-next-line max-len
       `It is not recommended to run ${walletId} with "latest" version. Use it at your own risk or set to the recommended version "${recommendedVersion}".`,
     );
   else if (isNewerVersion(recommendedVersion, version))

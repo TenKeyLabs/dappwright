@@ -1,4 +1,4 @@
-name: Test
+name: Tests
 
 on:
   pull_request:
@@ -25,7 +25,7 @@ jobs:
       - name: Lint
         run: yarn run lint
 
-  test:
+  integration:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.53.2-jammy
@@ -53,3 +53,22 @@ jobs:
         with:
           name: playwright-traces
           path: test-results
+
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          cache: yarn
+          node-version: 20
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Test
+        run: |
+          yarn test:unit

@@ -61,6 +61,7 @@ module.exports = defineConfig([
       'prefer-const': 'error',
       'no-consecutive-blank-lines': 0,
       'no-console': 'error',
+      'max-len': ['error', { code: 120, ignoreUrls: true, ignoreStrings: true, ignoreComments: true }],
 
       // // Naming convention rules
       '@typescript-eslint/naming-convention': [
