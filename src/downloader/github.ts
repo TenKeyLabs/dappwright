@@ -36,6 +36,7 @@ export const getGithubRelease = (releasesUrl: string, version: string): Promise<
         const data = JSON.parse(body) as GithubResponse;
         if (!Array.isArray(data)) {
           return reject(
+            // eslint-disable-next-line max-len
             `There was a problem connecting to github API to get the extension release (URL: ${releasesUrl}). Error: ${data.message}`,
           );
         }

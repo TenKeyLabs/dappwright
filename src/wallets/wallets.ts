@@ -1,5 +1,5 @@
 import { BrowserContext, Page } from 'playwright-core';
-import { EXTENSION_ID } from '../downloader/downloader';
+import { EXTENSION_ID } from '../downloader/constants';
 import { CoinbaseWallet } from './coinbase/coinbase';
 import { MetaMaskWallet } from './metamask/metamask';
 

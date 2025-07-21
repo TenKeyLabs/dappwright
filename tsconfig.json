@@ -3,12 +3,25 @@
     "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
-    "lib": ["es2021", "dom"],
-    "typeRoots": ["./node_modules/@types", "./types"],
+    "lib": [
+      "es2021",
+      "dom"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
     "declaration": true,
     "esModuleInterop": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*", "test/**/*"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*",
+    "test/**/*",
+    "vitest.setup.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

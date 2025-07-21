@@ -1,66 +1,238 @@
 import fs from 'fs';
+import path from 'path';
 
 import { OfficialOptions } from '../types';
 import { WalletIdOptions } from '../wallets/wallets';
-import { downloadDir, editExtensionPubKey, extractZip, isEmpty } from './file';
+import { DOWNLOAD_CONFIG, DOWNLOAD_STATE_FILES } from './constants';
+import { downloadDir, editExtensionPubKey, extractZip } from './file';
 import { downloadGithubRelease, getGithubRelease } from './github';
 import { printVersion } from './version';
 
-// Overrides for consistent navigation experience across wallets extensions
-export const EXTENSION_ID = 'gadekpdjmpjjnnemgnhkbjgnjpdaakgh';
-export const EXTENSION_PUB_KEY =
-  'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnpiOcYGaEp02v5On5luCk/4g9j+ujgWeGlpZVibaSz6kUlyiZvcVNIIUXR568uv5NrEi5+j9+HbzshLALhCn9S43E7Ha6Xkdxs3kOEPBu8FRNwFh2S7ivVr6ixnl2FCGwfkP1S1r7k665eC1/xYdJKGCc8UByfSw24Rtl5odUqZX1SaE6CsQEMymCFcWhpE3fV+LZ6RWWJ63Zm1ac5KmKzXdj7wZzN3onI0Csc8riBZ0AujkThJmCR8tZt2PkVUDX9exa0XkJb79pe0Ken5Bt2jylJhmQB7R3N1pVNhNQt17Sytnwz6zG2YsB2XNd/1VYJe52cPNJc7zvhQJpHjh5QIDAQAB';
+export interface DownloadResult {
+  path: string;
+  wasDownloaded: boolean;
+}
 
-export type Path =
-  | string
-  | {
-      download: string;
-      extract: string;
-    };
+// Re-export constants for backward compatibility
 
-export default (walletId: WalletIdOptions, releasesUrl: string, recommendedVersion: string) =>
-  async (options: OfficialOptions): Promise<string> => {
+/**
+ * Download state file paths for a given directory
+ */
+interface DownloadStatePaths {
+  readonly rootDir: string;
+  readonly downloadingFile: string;
+  readonly successFile: string;
+  readonly errorFile: string;
+}
+
+/**
+ * Main download function - creates and coordinates wallet extension downloads
+ *
+ * @param walletId - The wallet identifier
+ * @param releasesUrl - GitHub releases URL for the wallet
+ * @param recommendedVersion - The recommended version to suggest
+ * @returns Function that handles the download process
+ */
+const createWalletDownloader = (walletId: WalletIdOptions, releasesUrl: string, recommendedVersion: string) => {
+  return async (options: OfficialOptions): Promise<string> => {
     const { version } = options;
-    const downloadPath = downloadDir(walletId, version);
-
-    if (!version) {
-      // eslint-disable-next-line no-console
-      console.info(`Running tests on local ${walletId} build`);
-      return downloadPath;
-    }
-
-    if (process.env.TEST_PARALLEL_INDEX === '0') {
-      printVersion(walletId, version, recommendedVersion);
-      await download(walletId, version, releasesUrl, downloadPath);
-    } else {
-      while (!fs.existsSync(downloadPath) || isEmpty(downloadPath)) {
-        // eslint-disable-next-line no-console
-        console.info(`Waiting for primary worker to download ${walletId}...`);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-      }
-    }
-
-    return downloadPath;
+    const result = await downloadWalletExtension(walletId, version, releasesUrl, recommendedVersion);
+    return result.path;
   };
+};
 
-const download = async (
+async function downloadWalletExtension(
   walletId: WalletIdOptions,
   version: string,
   releasesUrl: string,
-  downloadPath: string,
-): Promise<void> => {
-  if (version !== 'latest' && fs.existsSync(downloadPath) && !isEmpty(downloadPath)) return;
+  recommendedVersion: string,
+): Promise<DownloadResult> {
+  const paths = createDownloadStatePaths(downloadDir(walletId, version));
 
-  // eslint-disable-next-line no-console
-  console.info(`Downloading ${walletId}...`);
-
-  const { filename, downloadUrl } = await getGithubRelease(releasesUrl, version);
-
-  if (!fs.existsSync(downloadPath) || isEmpty(downloadPath)) {
-    const walletFolder = downloadPath.split('/').slice(0, -1).join('/');
-    const zipData = await downloadGithubRelease(filename, downloadUrl, walletFolder);
-    await extractZip(zipData, downloadPath);
-
-    editExtensionPubKey(downloadPath);
+  if (!version) {
+    // eslint-disable-next-line no-console
+    console.info(`Running tests on local ${walletId} build`);
+    return { path: paths.rootDir, wasDownloaded: false };
   }
-};
+
+  if (isPrimaryWorker() && !isDownloadComplete(paths)) {
+    printVersion(walletId, version, recommendedVersion);
+    await performDownload(walletId, version, releasesUrl, paths);
+    return { path: paths.rootDir, wasDownloaded: true };
+  } else {
+    await waitForDownloadCompletion(walletId, paths);
+    return { path: paths.rootDir, wasDownloaded: false };
+  }
+}
+
+/**
+ * Perform the actual download process
+ */
+async function performDownload(
+  walletId: WalletIdOptions,
+  version: string,
+  releasesUrl: string,
+  paths: DownloadStatePaths,
+): Promise<void> {
+  prepareRootDir(paths);
+  markDownloadStarted(paths);
+
+  try {
+    // eslint-disable-next-line no-console
+    console.info(`Downloading ${walletId} ${version}...`);
+
+    const releaseInfo = await getGithubRelease(releasesUrl, version);
+    const walletFolder = path.dirname(paths.rootDir);
+    const zipPath = await downloadGithubRelease(releaseInfo.filename, releaseInfo.downloadUrl, walletFolder);
+
+    await extractZip(zipPath, paths.rootDir);
+    editExtensionPubKey(paths.rootDir);
+
+    markDownloadSuccess(paths);
+  } catch (error) {
+    handleDownloadError(paths, error);
+    throw error;
+  } finally {
+    cleanupDownloadingFlag(paths);
+  }
+}
+
+/**
+ * Create download state paths for a given directory
+ */
+function createDownloadStatePaths(downloadPath: string): DownloadStatePaths {
+  return {
+    rootDir: downloadPath,
+    downloadingFile: path.join(downloadPath, DOWNLOAD_STATE_FILES.downloading),
+    successFile: path.join(downloadPath, DOWNLOAD_STATE_FILES.success),
+    errorFile: path.join(downloadPath, DOWNLOAD_STATE_FILES.error),
+  };
+}
+
+/**
+ * Check if download completed successfully
+ */
+function isDownloadComplete(paths: DownloadStatePaths): boolean {
+  return fs.existsSync(paths.successFile);
+}
+
+/**
+ * Check if download failed
+ */
+function hasDownloadError(paths: DownloadStatePaths): boolean {
+  return fs.existsSync(paths.errorFile);
+}
+
+/**
+ * Get error message from failed download
+ */
+function getErrorMessage(paths: DownloadStatePaths): string | null {
+  if (!hasDownloadError(paths)) {
+    return null;
+  }
+
+  try {
+    return fs.readFileSync(paths.errorFile, 'utf-8');
+  } catch {
+    return 'Unknown error occurred during download';
+  }
+}
+
+/**
+ * Ensure the root directory exists
+ */
+function ensureRootDirExists(rootDir: string): void {
+  if (!fs.existsSync(rootDir)) {
+    fs.mkdirSync(rootDir, { recursive: true });
+  }
+}
+
+/**
+ * Mark download as starting
+ */
+function markDownloadStarted(paths: DownloadStatePaths): void {
+  ensureRootDirExists(paths.rootDir);
+  fs.writeFileSync(paths.downloadingFile, '');
+}
+
+/**
+ * Mark download as successful and cleanup temporary files
+ */
+function markDownloadSuccess(paths: DownloadStatePaths): void {
+  fs.writeFileSync(paths.successFile, '');
+  deleteFileIfExists(paths.errorFile);
+}
+
+/**
+ * Mark download as failed with error message
+ */
+function markDownloadError(paths: DownloadStatePaths, errorMessage: string): void {
+  ensureRootDirExists(paths.rootDir);
+  fs.writeFileSync(paths.errorFile, errorMessage);
+}
+
+/**
+ * Clean up the downloading flag file
+ */
+function cleanupDownloadingFlag(paths: DownloadStatePaths): void {
+  deleteFileIfExists(paths.downloadingFile);
+}
+
+/**
+ * Prepare root directory for download by cleaning and creating it
+ */
+function prepareRootDir(paths: DownloadStatePaths): void {
+  if (fs.existsSync(paths.rootDir)) {
+    fs.rmSync(paths.rootDir, { recursive: true, force: true });
+  }
+  fs.mkdirSync(paths.rootDir, { recursive: true });
+}
+
+/**
+ * Utility function to safely delete a file if it exists
+ */
+function deleteFileIfExists(filePath: string): void {
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
+}
+
+/**
+ * Utility function for sleeping/waiting
+ */
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Check if this is the primary worker responsible for downloading
+ */
+function isPrimaryWorker(): boolean {
+  return process.env.TEST_PARALLEL_INDEX === '0';
+}
+
+/**
+ * Wait for the primary worker to complete the download
+ */
+async function waitForDownloadCompletion(walletId: WalletIdOptions, paths: DownloadStatePaths): Promise<void> {
+  while (!isDownloadComplete(paths)) {
+    if (hasDownloadError(paths)) {
+      const errorMessage = getErrorMessage(paths) || 'Unknown error';
+      throw new Error(`Primary worker failed to download ${walletId}: ${errorMessage}`);
+    }
+
+    // eslint-disable-next-line no-console
+    console.info(`Waiting for primary worker to download ${walletId}...`);
+    await sleep(DOWNLOAD_CONFIG.pollIntervalMs);
+  }
+}
+
+/**
+ * Handle download errors by logging and marking the error state
+ */
+function handleDownloadError(paths: DownloadStatePaths, error: unknown): void {
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  markDownloadError(paths, errorMessage);
+}
+
+export default createWalletDownloader;
