@@ -8,10 +8,10 @@ import { downloadDir, editExtensionPubKey, extractZip } from './file';
 import { downloadGithubRelease, getGithubRelease } from './github';
 import { printVersion } from './version';
 
-export interface DownloadResult {
+type DownloadResult = {
   path: string;
   wasDownloaded: boolean;
-}
+};
 
 // Re-export constants for backward compatibility
 

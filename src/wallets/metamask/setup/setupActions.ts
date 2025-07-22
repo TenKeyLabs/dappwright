@@ -1,6 +1,6 @@
 import { Page } from 'playwright-core';
 
-import { clickOnButton, waitForChromeState } from '../../../helpers';
+import { waitForChromeState } from '../../../helpers';
 import { WalletOptions } from '../../wallets';
 import { clickOnSettingsSwitch, openAccountOptionsMenu } from '../actions/helpers';
 
@@ -17,26 +17,6 @@ export async function adjustSettings(metamaskPage: Page): Promise<void> {
   await metamaskPage.getByRole('button', { name: 'Close' }).click();
 
   await waitForChromeState(metamaskPage);
-}
-
-export async function importWallet(metamaskPage: Page): Promise<void> {
-  await metamaskPage.getByTestId('onboarding-import-wallet').click();
-  await metamaskPage.getByTestId('import-srp-confirm').click();
-  await metamaskPage.getByTestId('create-password-new').fill('sdfsdf');
-  await metamaskPage.getByTestId('create-password-confirm').click();
-  await metamaskPage.getByTestId('create-password-confirm').fill('sdfsdfs');
-  await metamaskPage.getByTestId('create-password-new').dblclick();
-  await metamaskPage.getByTestId('create-password-new').fill('10keylabs');
-  await metamaskPage.getByTestId('create-password-new').press('Tab');
-  await metamaskPage.getByTestId('create-password-confirm').fill('10keylabs');
-  await metamaskPage.getByTestId('create-password-import').click();
-  await metamaskPage.getByTestId('onboarding-complete-done').click();
-  await metamaskPage.getByTestId('pin-extension-next').click();
-  await metamaskPage.getByTestId('pin-extension-done').click();
-}
-
-export async function noThanksTelemetry(metamaskPage: Page): Promise<void> {
-  await clickOnButton(metamaskPage, 'No thanks');
 }
 
 export async function importAccount(

@@ -1,0 +1,7 @@
+{
+  "project": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "!test/dapp/**/*"
+  ]
+}

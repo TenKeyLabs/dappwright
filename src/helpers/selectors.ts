@@ -24,17 +24,3 @@ export const getInputByLabel = (
     ].join('|'),
     { timeout },
   );
-
-export const getInputByLabelSelector = (text: string, excludeSpan = false): string =>
-  [
-    `//label[contains(.,'${text}')]/following-sibling::textarea`,
-    `//label[contains(.,'${text}')]/following-sibling::*//input`,
-    `//h6[contains(.,'${text}')]/parent::node()/parent::node()/following-sibling::input`,
-    `//h6[contains(.,'${text}')]/parent::node()/parent::node()/following-sibling::*//input`,
-    ...(!excludeSpan
-      ? [
-          `//span[contains(.,'${text}')]/parent::node()/parent::node()/following-sibling::*//input`,
-          `//span[contains(.,'${text}')]/following-sibling::*//input`,
-        ]
-      : []),
-  ].join('|');
