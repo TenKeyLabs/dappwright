@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.11.3
+
+### Patch Changes
+
+- [#479](https://github.com/TenKeyLabs/dappwright/pull/479) [`1bc09ab`](https://github.com/TenKeyLabs/dappwright/commit/1bc09ab22dbe8eea50363762de1e5ebb5c2f9998) Thanks [@osis](https://github.com/osis)! - chore: downloader state files with tests
+
 ## 2.11.2
 
 ### Patch Changes
