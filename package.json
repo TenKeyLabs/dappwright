@@ -21,8 +21,8 @@
   },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "microbundle --tsconfig tsconfig.build.json --external os,https,zlib,stream",
-    "dev": "microbundle --tsconfig tsconfig.build.json --external os,https,zlib,stream watch",
+    "build": "microbundle --tsconfig tsconfig.build.json --external os,https,zlib,stream,util,events,path",
+    "dev": "microbundle --tsconfig tsconfig.build.json --external os,https,zlib,stream,util,events,path watch",
     "lint": "yarn run lint:code && yarn run lint:unused",
     "lint:fix": "yarn run lint:code --fix",
     "lint:code": "eslint",
