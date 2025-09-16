@@ -28,7 +28,7 @@
     "lint:code": "eslint",
     "lint:unused": "knip",
     "test": "playwright test",
-    "test:ci": "playwright test",
+    "test:ci": "xvfb-run playwright test",
     "test:debug": "playwright test --debug --timeout 0 test/",
     "test:metamask:debug": "playwright test --project Metamask --debug --timeout 0",
     "test:coinbase:debug": "playwright test --project Coinbase --debug --timeout 0",
