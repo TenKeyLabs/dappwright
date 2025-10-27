@@ -1,6 +1,6 @@
-import { Page } from 'playwright-core';
-import { AddNetwork, AddToken, Dappwright, OfficialOptions, TransactionOptions } from '../types';
-import { Step, WalletIdOptions, WalletOptions } from './wallets';
+import type { Page } from 'playwright-core';
+import type { AddNetwork, AddToken, Dappwright, OfficialOptions, TransactionOptions, UpdateNetworkRpc } from '../types';
+import type { Step, WalletIdOptions, WalletOptions } from './wallets';
 
 export default abstract class Wallet implements Dappwright {
   version: string;
@@ -43,4 +43,5 @@ export default abstract class Wallet implements Dappwright {
   abstract switchAccount: (name: string) => Promise<void>;
   abstract switchNetwork: (network: string) => Promise<void>;
   abstract unlock: (password?: string) => Promise<void>;
+  abstract updateNetworkRpc: (options: UpdateNetworkRpc) => Promise<void>;
 }
