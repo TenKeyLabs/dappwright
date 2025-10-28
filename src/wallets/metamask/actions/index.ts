@@ -14,4 +14,5 @@ export * from './signin';
 export * from './switchAccount';
 export * from './switchNetwork';
 export * from './unlock';
+export * from './updateNetworkRpc';
 export * from './util';

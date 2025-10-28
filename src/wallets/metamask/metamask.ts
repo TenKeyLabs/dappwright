@@ -1,6 +1,6 @@
 import downloader from '../../downloader/downloader';
 import Wallet from '../wallet';
-import { Step, WalletIdOptions, WalletOptions } from '../wallets';
+import type { Step, WalletIdOptions, WalletOptions } from '../wallets';
 import {
   addNetwork,
   addToken,
@@ -18,6 +18,7 @@ import {
   switchAccount,
   switchNetwork,
   unlock,
+  updateNetworkRpc,
 } from './actions';
 import { confirmNetworkSwitch } from './actions/confirmNetworkSwitch';
 import { countAccounts } from './actions/countAccounts';
@@ -74,4 +75,5 @@ export class MetaMaskWallet extends Wallet {
   switchAccount = switchAccount(this.page);
   switchNetwork = switchNetwork(this.page);
   unlock = unlock(this.page);
+  updateNetworkRpc = updateNetworkRpc(this.page);
 }

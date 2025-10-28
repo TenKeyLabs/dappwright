@@ -1,6 +1,6 @@
-import { BrowserContext, Page } from 'playwright-core';
-import Wallet from './wallets/wallet';
-import { WalletIdOptions } from './wallets/wallets';
+import type { BrowserContext, Page } from 'playwright-core';
+import type Wallet from './wallets/wallet';
+import type { WalletIdOptions } from './wallets/wallets';
 export { CoinbaseWallet } from './wallets/coinbase/coinbase';
 export { MetaMaskWallet } from './wallets/metamask/metamask';
 
@@ -30,6 +30,11 @@ export type AddNetwork = {
   rpc: string;
   chainId: number;
   symbol: string;
+};
+
+export type UpdateNetworkRpc = {
+  chainId: number;
+  rpc: string;
 };
 
 export type AddToken = {
@@ -63,6 +68,7 @@ export type Dappwright = {
   switchAccount: (name: string) => Promise<void>;
   switchNetwork: (network: string) => Promise<void>;
   unlock: (password?: string) => Promise<void>;
+  updateNetworkRpc: (options: UpdateNetworkRpc) => Promise<void>;
 
   page: Page;
 };

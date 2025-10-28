@@ -24,6 +24,7 @@ import {
   switchAccount,
   switchNetwork,
   unlock,
+  updateNetworkRpc,
 } from './actions';
 
 export class CoinbaseWallet extends Wallet {
@@ -61,4 +62,5 @@ export class CoinbaseWallet extends Wallet {
   switchAccount = switchAccount(this.page);
   switchNetwork = switchNetwork;
   unlock = unlock(this.page);
+  updateNetworkRpc = updateNetworkRpc;
 }
