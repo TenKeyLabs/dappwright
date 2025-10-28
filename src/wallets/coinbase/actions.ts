@@ -262,7 +262,7 @@ export const confirmNetworkSwitch = async (): Promise<void> => {
   console.warn('confirmNetorkSwitch not implemented');
 };
 
-export const updateNetworkRpc = async (): Promise<void> => {
+export const updateNetworkRpc = () => async (): Promise<void> => {
   // eslint-disable-next-line no-console
   console.warn('updateNetworkRpc not implemented - Coinbase uses different network management');
 };
