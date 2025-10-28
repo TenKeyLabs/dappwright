@@ -7,6 +7,7 @@ import { openNetworkDropdown } from './helpers';
 export const updateNetworkRpc =
   (page: Page) =>
   async ({ chainId, rpc }: UpdateNetworkRpc): Promise<void> => {
+    await page.bringToFront();
     await openNetworkDropdown(page);
     await clickOnButton(page, 'Add a custom network');
 
