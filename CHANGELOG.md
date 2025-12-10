@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.12.0
+
+### Minor Changes
+
+- [#500](https://github.com/TenKeyLabs/dappwright/pull/500) [`2d177c3`](https://github.com/TenKeyLabs/dappwright/commit/2d177c35a553de36e10632f4a4a8e427bad77db0) Thanks [@arthurgeron](https://github.com/arthurgeron)! - Add `updateNetworkRpc` method to update RPC URLs for existing networks in MetaMask
+
 ## 2.11.4
 
 ### Patch Changes
