@@ -24,6 +24,23 @@ jobs:
 
       - name: Lint
         run: yarn run lint
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v6
+        with:
+          cache: yarn
+          node-version: 20
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn run build
 
   integration:
     runs-on: ubuntu-latest
