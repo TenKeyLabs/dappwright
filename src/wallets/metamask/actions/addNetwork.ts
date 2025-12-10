@@ -1,5 +1,5 @@
 import { Page } from 'playwright-core';
-import { clickOnButton } from '../../../helpers';
+import { clickOnButton, clickOnElement, waitForChromeState } from '../../../helpers';
 import { AddNetwork } from '../../../types';
 
 import { getErrorMessage, openNetworkDropdown } from './helpers';
@@ -9,7 +9,8 @@ export const addNetwork =
   (page: Page) =>
   async ({ networkName, rpc, chainId, symbol }: AddNetwork): Promise<void> => {
     await openNetworkDropdown(page);
-    await clickOnButton(page, 'Add a custom network');
+    await clickOnElement(page, 'Custom');
+    await clickOnButton(page, 'Add custom network');
 
     await page.getByTestId('network-form-network-name').fill(networkName);
     await page.getByTestId('test-add-rpc-drop-down').click();
@@ -26,6 +27,7 @@ export const addNetwork =
     }
 
     await clickOnButton(page, 'Save');
+    await page.getByTestId('modal-header-close-button').click();
 
     // This popup is fairly random in terms of timing
     // and can show before switch to network click is gone
@@ -40,5 +42,6 @@ export const addNetwork =
           }),
       );
 
+    await waitForChromeState(page);
     await Promise.all([switchNetwork(page)(networkName), gotItClick()]);
   };

@@ -14,7 +14,7 @@ export const getTokenBalance =
     }
 
     const valueText = await valueElement.textContent();
-    const balance = valueText.split(' ')[0];
+    const balance = valueText.split(' ')[0].replace(/,/, '');
 
     return parseFloat(balance);
   };
