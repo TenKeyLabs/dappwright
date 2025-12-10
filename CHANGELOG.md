@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.11.4
+
+### Patch Changes
+
+- [#508](https://github.com/TenKeyLabs/dappwright/pull/508) [`b625cce`](https://github.com/TenKeyLabs/dappwright/commit/b625ccea310109730d57b2c491a3a33c4ece3da8) Thanks [@osis](https://github.com/osis)! - fix: larger pagination window for github releases
+
+- [#509](https://github.com/TenKeyLabs/dappwright/pull/509) [`026382d`](https://github.com/TenKeyLabs/dappwright/commit/026382de2cf356a2394d8c156145545195610304) Thanks [@osis](https://github.com/osis)! - chore: bumps Metamask to 12.23.1
+
 ## 2.11.3
 
 ### Patch Changes
