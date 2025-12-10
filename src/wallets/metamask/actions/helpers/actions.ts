@@ -7,7 +7,7 @@ export const clickOnSettingsSwitch = async (page: Page, text: string): Promise<v
 };
 
 export const openNetworkDropdown = async (page: Page): Promise<void> => {
-  const networkDropdown = page.getByTestId('network-display');
+  const networkDropdown = page.getByTestId('sort-by-networks');
   await networkDropdown.waitFor({ state: 'visible' });
   await networkDropdown.click();
 };
