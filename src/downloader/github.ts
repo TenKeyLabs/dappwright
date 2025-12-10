@@ -26,7 +26,9 @@ export const getGithubRelease = (releasesUrl: string, version: string): Promise<
     const options = { headers: { 'User-Agent': 'Mozilla/5.0' } };
 
     if (process.env.GITHUB_TOKEN) options.headers['Authorization'] = `Bearer ${process.env.GITHUB_TOKEN}`;
-    const request = get(releasesUrl, options, (response) => {
+    const url = new URL(releasesUrl);
+    url.searchParams.set('per_page', '100');
+    const request = get(url.toString(), options, (response) => {
       let body = '';
       response.on('data', (chunk) => {
         body += chunk;
