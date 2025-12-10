@@ -1,6 +1,6 @@
 import { Locator, Page } from 'playwright-core';
 import { waitForChromeState } from '../../helpers';
-import { AddNetwork, AddToken } from '../../types';
+import { AddNetwork, AddToken, UpdateNetworkRpc } from '../../types';
 import { performPopupAction } from '../metamask/actions';
 import { WalletOptions } from '../wallets';
 
@@ -262,7 +262,7 @@ export const confirmNetworkSwitch = async (): Promise<void> => {
   console.warn('confirmNetorkSwitch not implemented');
 };
 
-export const updateNetworkRpc = () => async (): Promise<void> => {
+export const updateNetworkRpc = async (_: UpdateNetworkRpc): Promise<void> => {
   // eslint-disable-next-line no-console
   console.warn('updateNetworkRpc not implemented - Coinbase uses different network management');
 };
