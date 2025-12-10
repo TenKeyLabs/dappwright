@@ -14,6 +14,7 @@ For additional information read root [readme](../README.md)
   - [unlock](#unlock)
   - [switchNetwork](#switchNetwork)
   - [addNetwork](#addNetwork)
+  - [updateNetworkRpc](#updateNetworkRpc)
   - [addToken](#addToken)
   - [confirmTransaction](#confirmTransaction)
   - [sign](#sign)
@@ -132,6 +133,25 @@ interface AddNetwork {
 ```
 
 it adds a custom network to MetaMask.
+
+<a name="updateNetworkRpc"></a>
+
+## `metamask.updateNetworkRpc(options: UpdateNetworkRpc): Promise<void>`
+
+```typescript
+interface UpdateNetworkRpc {
+  chainId: number;
+  rpc: string;
+}
+```
+
+updates the RPC URL for an existing network in MetaMask. This method leverages MetaMask's error flow to locate and modify pre-existing networks (e.g., Ethereum Mainnet).
+
+### Example
+
+```typescript
+await metamask.updateNetworkRpc({ chainId: 1, rpc: 'https://custom-eth-rpc.com' });
+```
 
 <a name="addToken"></a>
 

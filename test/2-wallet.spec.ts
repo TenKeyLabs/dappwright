@@ -117,6 +117,17 @@ test.describe('when interacting with the wallet', () => {
       });
     });
 
+    test.describe('updateNetworkRpc', () => {
+      test('should update RPC URL for an existing network', async ({ wallet }) => {
+        await forMetaMask(wallet, async () => {
+          await wallet.updateNetworkRpc({
+            chainId: 31337,
+            rpc: 'http://127.0.0.1:8545',
+          });
+        });
+      });
+    });
+
     // TODO: Come back to this since metamask doesn't consider this to be an error anymore but blocks
     // test('should fail to add network with wrong chain ID', async ({ wallet }) => {
     //   await expect(
