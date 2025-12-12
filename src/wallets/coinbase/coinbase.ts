@@ -12,12 +12,10 @@ import {
   createAccount,
   deleteAccount,
   deleteNetwork,
-  getStarted,
   getTokenBalance,
   hasNetwork,
-  importPK,
+  importPk,
   lock,
-  navigateHome,
   reject,
   sign,
   signin,
@@ -26,6 +24,7 @@ import {
   unlock,
   updateNetworkRpc,
 } from './actions';
+import { getStarted, navigateHome } from './setup';
 
 export class CoinbaseWallet extends Wallet {
   static id = 'coinbase' as WalletIdOptions;
@@ -54,7 +53,7 @@ export class CoinbaseWallet extends Wallet {
   deleteNetwork = deleteNetwork(this.page);
   getTokenBalance = getTokenBalance(this.page);
   hasNetwork = hasNetwork(this.page);
-  importPK = importPK;
+  importPK = importPk;
   lock = lock(this.page);
   reject = reject(this.page);
   sign = sign(this.page);
