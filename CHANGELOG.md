@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.0
+
+### Minor Changes
+
+- [#514](https://github.com/TenKeyLabs/dappwright/pull/514) [`0ff83e0`](https://github.com/TenKeyLabs/dappwright/commit/0ff83e0ab342f4fa35512054b8f5350b87230f30) Thanks [@osis](https://github.com/osis)! - metamask 13 with sidepanel support
+
 ## 2.12.0
 
 ### Minor Changes
