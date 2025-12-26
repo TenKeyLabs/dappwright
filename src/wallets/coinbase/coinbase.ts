@@ -1,5 +1,5 @@
 import downloader from '../../downloader/downloader';
-import { setup } from '../metamask/setup';
+import { performSetup } from '../../helpers';
 import Wallet from '../wallet';
 import { Step, WalletIdOptions, WalletOptions } from '../wallets';
 import {
@@ -17,7 +17,6 @@ import {
   hasNetwork,
   importPK,
   lock,
-  navigateHome,
   reject,
   sign,
   signin,
@@ -26,6 +25,7 @@ import {
   unlock,
   updateNetworkRpc,
 } from './actions';
+import { navigateHome } from './actions/helpers';
 
 export class CoinbaseWallet extends Wallet {
   static id = 'coinbase' as WalletIdOptions;
@@ -40,7 +40,7 @@ export class CoinbaseWallet extends Wallet {
 
   // Setup
   defaultSetupSteps: Step<WalletOptions>[] = [getStarted, navigateHome];
-  setup = setup(this.page, this.defaultSetupSteps);
+  setup = performSetup(this.page, this.defaultSetupSteps);
 
   // Actions
   addNetwork = addNetwork(this.page);

@@ -1,11 +1,11 @@
 import { expect } from '@playwright/test';
 import crypto from 'crypto';
 import { Dappwright, MetaMaskWallet } from '../src';
-import { openAccountMenu } from '../src/wallets/metamask/actions/helpers';
 import {
   accountList as metaMaskAccountList,
   clickBackButton as metaMaskClickBackButton,
-} from '../src/wallets/metamask/actions/util';
+  openAccountMenu,
+} from '../src/wallets/metamask/actions/helpers';
 import { forCoinbase, forMetaMask } from './helpers/itForWallet';
 import { testWithWallet as test } from './helpers/walletTest';
 

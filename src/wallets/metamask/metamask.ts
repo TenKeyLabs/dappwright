@@ -1,15 +1,19 @@
 import downloader from '../../downloader/downloader';
+import { performSetup } from '../../helpers';
 import Wallet from '../wallet';
 import type { Step, WalletIdOptions, WalletOptions } from '../wallets';
 import {
   addNetwork,
   addToken,
   approve,
+  confirmNetworkSwitch,
   confirmTransaction,
+  countAccounts,
   createAccount,
   deleteAccount,
   deleteNetwork,
   getTokenBalance,
+  hasNetwork,
   importPk,
   lock,
   reject,
@@ -20,18 +24,7 @@ import {
   unlock,
   updateNetworkRpc,
 } from './actions';
-import { confirmNetworkSwitch } from './actions/confirmNetworkSwitch';
-import { countAccounts } from './actions/countAccounts';
-import { hasNetwork } from './actions/hasNetwork';
-import { setup } from './setup';
-import {
-  adjustSettings,
-  closePopup,
-  createPassword,
-  doOnboarding,
-  goToSettings,
-  importAccount,
-} from './setup/setupActions';
+import { adjustSettings, closePopup, createPassword, doOnboarding, importAccount } from './setup/setupActions';
 
 export class MetaMaskWallet extends Wallet {
   static id = 'metamask' as WalletIdOptions;
@@ -45,15 +38,8 @@ export class MetaMaskWallet extends Wallet {
   static download = downloader(this.id, this.releasesUrl, this.recommendedVersion);
 
   // Setup
-  defaultSetupSteps: Step<WalletOptions>[] = [
-    importAccount,
-    createPassword,
-    doOnboarding,
-    closePopup,
-    goToSettings,
-    adjustSettings,
-  ];
-  setup = setup(this.page, this.defaultSetupSteps);
+  defaultSetupSteps: Step<WalletOptions>[] = [importAccount, createPassword, doOnboarding, closePopup, adjustSettings];
+  setup = performSetup(this.page, this.defaultSetupSteps);
 
   // Actions
   addNetwork = addNetwork(this.page);

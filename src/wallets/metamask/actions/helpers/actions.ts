@@ -1,6 +1,11 @@
 import { Page } from 'playwright-core';
 import { getSettingsSwitch } from './selectors';
 
+export async function goToSettings(metamaskPage: Page): Promise<void> {
+  await openAccountOptionsMenu(metamaskPage);
+  await metamaskPage.getByTestId('global-menu-settings').click();
+}
+
 export const clickOnSettingsSwitch = async (page: Page, text: string): Promise<void> => {
   const button = await getSettingsSwitch(page, text);
   await button.click();
@@ -26,4 +31,8 @@ export const openAccountOptionsMenu = async (page: Page): Promise<void> => {
 
 export const openAccountMenu = async (page: Page): Promise<void> => {
   await page.getByTestId('account-menu-icon').click();
+};
+
+export const clickBackButton = async (page: Page): Promise<void> => {
+  await page.getByRole('button', { name: 'Back' }).click();
 };
