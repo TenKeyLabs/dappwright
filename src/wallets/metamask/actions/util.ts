@@ -1,12 +1,27 @@
 import { Locator, Page } from 'playwright-core';
 
-export const accountSyncTimeout = 120000;
-
 export const performPopupAction = async (page: Page, action: (popup: Page) => Promise<void>): Promise<void> => {
   const popup = await page.context().waitForEvent('page'); // Wait for the popup to show up
 
   await action(popup);
   if (!popup.isClosed()) await popup.waitForEvent('close');
+};
+
+export const performSidepanelAction = async (page: Page, action: (popup: Page) => Promise<void>): Promise<void> => {
+  const sidepanel = page
+    .context()
+    .pages()
+    .find((p) => p.url().includes('sidepanel.html'));
+
+  if (!sidepanel) {
+    page
+      .context()
+      .pages()
+      .forEach((p) => console.log(p.url()));
+    throw new Error('Sidebar page not found');
+  }
+
+  await action(sidepanel);
 };
 
 export const accountList = (page: Page): Locator => {
@@ -27,5 +42,5 @@ export const networkListItem = (page: Page, name: string): Locator => {
 };
 
 export const clickBackButton = async (page: Page): Promise<void> => {
-  return page.getByRole('button', { name: 'Back' }).click();
+  await page.getByRole('button', { name: 'Back' }).click();
 };

@@ -1,12 +1,11 @@
 import { Page } from 'playwright-core';
 import { TransactionOptions } from '../../../types';
-
-import { performPopupAction } from './util';
+import { performSidepanelAction } from './util';
 
 export const confirmTransaction =
   (page: Page) =>
   async (options?: TransactionOptions): Promise<void> => {
-    await performPopupAction(page, async (popup) => {
+    await performSidepanelAction(page, async (popup) => {
       if (options) {
         await popup.getByTestId('edit-gas-fee-icon').click();
         await popup.getByTestId('edit-gas-fee-item-custom').click();

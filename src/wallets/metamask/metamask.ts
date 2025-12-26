@@ -35,7 +35,7 @@ import {
 
 export class MetaMaskWallet extends Wallet {
   static id = 'metamask' as WalletIdOptions;
-  static recommendedVersion = '13.12.2';
+  static recommendedVersion = '13.13.1';
   static releasesUrl = 'https://api.github.com/repos/metamask/metamask-extension/releases';
   static homePath = '/home.html';
 

@@ -40,7 +40,14 @@ export async function createPassword(metamaskPage: Page, { password = 'password1
 export async function doOnboarding(metamaskPage: Page): Promise<void> {
   await metamaskPage.getByTestId('metametrics-checkbox').click();
   await metamaskPage.getByTestId('metametrics-i-agree').click();
+  await metamaskPage.getByTestId('manage-default-settings').click();
+  await metamaskPage.getByTestId('category-item-General').click();
+  await metamaskPage.getByTestId('backup-and-sync-toggle-container').click();
+  await metamaskPage.getByTestId('category-back-button').click();
+  await metamaskPage.getByTestId('privacy-settings-back-button').click();
   await metamaskPage.getByTestId('onboarding-complete-done').click();
+  await waitForChromeState(metamaskPage);
+  await metamaskPage.goto(metamaskPage.url().split('#')[0]);
 }
 
 export const closePopup = async (page: Page): Promise<void> => {
