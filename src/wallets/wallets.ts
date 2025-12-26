@@ -6,7 +6,7 @@ import { MetaMaskWallet } from './metamask/metamask';
 export type WalletTypes = typeof CoinbaseWallet | typeof MetaMaskWallet;
 const WALLETS: WalletTypes[] = [CoinbaseWallet, MetaMaskWallet];
 
-export type Step<Options> = (page: Page, options?: Options) => void;
+export type Step<Options> = (page: Page, options?: Options) => Promise<void>;
 export type WalletIdOptions = 'metamask' | 'coinbase';
 export type WalletOptions = {
   seed?: string;

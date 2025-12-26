@@ -2,23 +2,7 @@ import { Page } from 'playwright-core';
 
 import { waitForChromeState } from '../../../helpers';
 import { WalletOptions } from '../../wallets';
-import { clickOnSettingsSwitch, openAccountOptionsMenu } from '../actions/helpers';
-
-export async function goToSettings(metamaskPage: Page): Promise<void> {
-  await openAccountOptionsMenu(metamaskPage);
-  await metamaskPage.getByTestId('global-menu-settings').click();
-}
-
-export async function adjustSettings(metamaskPage: Page): Promise<void> {
-  // await goToSettings(metamaskPage);
-  await metamaskPage.locator('.tab-bar__tab', { hasText: 'Advanced' }).click();
-
-  await clickOnSettingsSwitch(metamaskPage, 'Show test networks');
-  await metamaskPage.getByRole('button', { name: 'Close' }).click();
-
-  await waitForChromeState(metamaskPage);
-  await metamaskPage.reload({ waitUntil: 'domcontentloaded' });
-}
+import { clickOnSettingsSwitch, goToSettings } from '../actions/helpers';
 
 export async function importAccount(
   metamaskPage: Page,
@@ -58,3 +42,15 @@ export const closePopup = async (page: Page): Promise<void> => {
     await page.getByTestId('popover-close').click();
   }
 };
+
+export async function adjustSettings(metamaskPage: Page): Promise<void> {
+  await goToSettings(metamaskPage);
+
+  await metamaskPage.locator('.tab-bar__tab', { hasText: 'Advanced' }).click();
+
+  await clickOnSettingsSwitch(metamaskPage, 'Show test networks');
+  await metamaskPage.getByRole('button', { name: 'Close' }).click();
+
+  await waitForChromeState(metamaskPage);
+  await metamaskPage.reload({ waitUntil: 'domcontentloaded' });
+}
