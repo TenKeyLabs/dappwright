@@ -16,15 +16,15 @@ $ yarn add @tenkeylabs/dappwright
 ```typescript
   # test.spec.ts
 
-  import { test as base } from '@playwright/test';
+  import { test as base, expect } from '@playwright/test';
   import { BrowserContext } from 'playwright-core';
-  import { bootstrap, Dappwright, getWallet, OfficialOptions } from '@tenkeylabs/dappwright';
+  import { bootstrap, Dappwright, getWallet, MetaMaskWallet } from '@tenkeylabs/dappwright';
 
-  export const testWithWallet = base.extend<{ wallet: Dappwright }, { walletContext: BrowserContext }>({
+  export const test = base.extend<{ wallet: Dappwright }, { walletContext: BrowserContext }>({
     walletContext: [
-      async ({}, use, info) => {
+      async ({}, use) => {
         // Launch context with extension
-        const [wallet, _, context] = await dappwright.bootstrap("", {
+        const [wallet, _, context] = await bootstrap("", {
           wallet: "metamask",
           version: MetaMaskWallet.recommendedVersion,
           seed: "test test test test test test test test test test test junk", // Hardhat's default https://hardhat.org/hardhat-network/docs/reference#accounts
@@ -39,9 +39,8 @@ $ yarn add @tenkeylabs/dappwright
     context: async ({ walletContext }, use) => {
       await use(walletContext);
     },
-    wallet: async ({ walletContext }, use, info) => {
-      const projectMetadata = info.project.metadata;
-      const wallet = await getWallet(projectMetadata.wallet, walletContext);
+    wallet: async ({ walletContext }, use) => {
+      const wallet = await getWallet("metamask", walletContext);
       await use(wallet);
     },
   });
@@ -55,12 +54,12 @@ $ yarn add @tenkeylabs/dappwright
     await wallet.approve();
 
     const connectStatus = page.getByTestId("connect-status");
-    expect(connectStatus).toHaveValue("connected");
+    await expect(connectStatus).toHaveValue("connected");
 
     await page.click("#switch-network-button");
 
     const networkStatus = page.getByTestId("network-status");
-    expect(networkStatus).toHaveValue("31337");
+    await expect(networkStatus).toHaveValue("31337");
   });
 ```
 
