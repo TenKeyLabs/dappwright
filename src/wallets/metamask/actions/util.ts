@@ -14,11 +14,11 @@ export const performSidepanelAction = async (page: Page, action: (popup: Page) =
     .find((p) => p.url().includes('sidepanel.html'));
 
   if (!sidepanel) {
-    page
+    const pageUrls = page
       .context()
       .pages()
-      .forEach((p) => console.log(p.url()));
-    throw new Error('Sidebar page not found');
+      .flatMap((p) => p.url());
+    throw new Error('Sidepanel page not found. Current pages:\n' + pageUrls.join('\n- '));
   }
 
   await action(sidepanel);
