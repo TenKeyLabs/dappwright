@@ -21,8 +21,8 @@
   },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "microbundle --tsconfig tsconfig.build.json --external os,https,zlib,stream,util,events,path",
-    "dev": "microbundle --tsconfig tsconfig.build.json --external os,https,zlib,stream,util,events,path watch",
+    "build": "microbundle --target node --tsconfig tsconfig.build.json --external os,https,zlib,stream,util,events,path,fs,module,fsevents,crypto,assert,process,tty,constants,readline,v8,node:module,@playwright/test",
+    "dev": "microbundle --target node --tsconfig tsconfig.build.json --external os,https,zlib,stream,util,events,path,fs,module,fsevents,crypto,assert,process,tty,constants,readline,v8,node:module,@playwright/test watch",
     "lint": "yarn run lint:code && yarn run lint:unused",
     "lint:fix": "yarn run lint:code --fix",
     "lint:code": "eslint",
