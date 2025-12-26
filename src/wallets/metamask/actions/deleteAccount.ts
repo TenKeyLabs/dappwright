@@ -1,7 +1,8 @@
 import { Page } from 'playwright-core';
 
-import { clickOnButton, clickOnElement, waitForChromeState } from '../../../helpers';
+import { waitForChromeState } from '../../../helpers';
 import { openAccountMenu } from './helpers';
+import { accountListItem } from './util';
 
 export const deleteAccount =
   (page: Page) =>
@@ -9,9 +10,10 @@ export const deleteAccount =
     await page.bringToFront();
     await openAccountMenu(page);
 
-    await page.getByRole('button', { name: `${name} Options` }).click();
-    await clickOnElement(page, 'Remove account');
-    await clickOnButton(page, 'Remove');
+    await accountListItem(page, name).getByTestId('multichain-account-cell-end-accessory').click();
+    await page.getByLabel('Account details').click();
+    await page.getByTestId('account-details-row-remove-account').click();
+    await page.getByRole('button', { name: 'Remove', exact: true }).click();
 
     await waitForChromeState(page);
   };

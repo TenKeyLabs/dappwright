@@ -2,13 +2,14 @@ import type { Page } from 'playwright-core';
 import { clickOnButton } from '../../../helpers';
 import type { UpdateNetworkRpc } from '../../../types';
 
-import { openNetworkDropdown } from './helpers';
+import { openNetworkSettings } from './helpers';
 
 export const updateNetworkRpc =
   (page: Page) =>
   async ({ chainId, rpc }: UpdateNetworkRpc): Promise<void> => {
     await page.bringToFront();
-    await openNetworkDropdown(page);
+    await openNetworkSettings(page);
+
     await clickOnButton(page, 'Add a custom network');
 
     await page.getByTestId('network-form-chain-id').fill(String(chainId));

@@ -32,6 +32,9 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
 
   fs.rmSync(userDataDir, { recursive: true, force: true });
 
+  // Access to the extension side panel
+  process.env.PW_CHROMIUM_ATTACH_TO_OTHER = '1';
+
   const browserContext = await playwright.chromium.launchPersistentContext(userDataDir, {
     headless: false,
     args: browserArgs,

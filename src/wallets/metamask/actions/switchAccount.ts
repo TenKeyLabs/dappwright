@@ -1,5 +1,6 @@
 import { Page } from 'playwright-core';
 import { openAccountMenu } from './helpers';
+import { accountListItem } from './util';
 
 export const switchAccount =
   (page: Page) =>
@@ -7,5 +8,5 @@ export const switchAccount =
     await page.bringToFront();
     await openAccountMenu(page);
 
-    await page.getByRole('dialog').getByRole('button', { name, exact: true }).click();
+    await accountListItem(page, name).click();
   };

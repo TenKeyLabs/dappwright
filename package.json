@@ -29,7 +29,7 @@
     "lint:unused": "knip",
     "test": "playwright test",
     "test:ci": "playwright test",
-    "test:debug": "playwright test --debug --timeout 0 test/",
+    "test:debug": "playwright test --debug --timeout 0",
     "test:metamask:debug": "playwright test --project Metamask --debug --timeout 0",
     "test:coinbase:debug": "playwright test --project Coinbase --debug --timeout 0",
     "test:unit": "vitest",

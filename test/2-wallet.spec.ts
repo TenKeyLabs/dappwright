@@ -2,17 +2,21 @@ import { expect } from '@playwright/test';
 import crypto from 'crypto';
 import { Dappwright, MetaMaskWallet } from '../src';
 import { openAccountMenu } from '../src/wallets/metamask/actions/helpers';
+import {
+  accountList as metaMaskAccountList,
+  clickBackButton as metaMaskClickBackButton,
+} from '../src/wallets/metamask/actions/util';
 import { forCoinbase, forMetaMask } from './helpers/itForWallet';
 import { testWithWallet as test } from './helpers/walletTest';
 
 // TODO: Add this to the wallet interface
 const countAccounts = async (wallet: Dappwright): Promise<number> => {
-  let count;
+  let count: number;
 
   if (wallet instanceof MetaMaskWallet) {
     await openAccountMenu(wallet.page);
-    count = (await wallet.page.$$('.multichain-account-list-item')).length;
-    await wallet.page.getByRole('dialog').getByRole('button', { name: 'Close' }).first().click();
+    count = await metaMaskAccountList(wallet.page).count();
+    await metaMaskClickBackButton(wallet.page);
   } else {
     await wallet.page.getByTestId('portfolio-header--switcher-cell-pressable').click();
     count = (await wallet.page.$$('//button[@data-testid="wallet-switcher--wallet-item-cell-pressable"]')).length;
@@ -38,32 +42,6 @@ test.describe('when interacting with the wallet', () => {
   test('should lock and unlock', async ({ wallet }) => {
     await wallet.lock();
     await wallet.unlock('password1234!@#$');
-  });
-
-  test.describe('account management', () => {
-    test.describe('createAccount', () => {
-      test('should create a new wallet/account', async ({ wallet }) => {
-        const accountName = crypto.randomBytes(20).toString('hex');
-        const walletCount = await countAccounts(wallet);
-
-        expect(await countAccounts(wallet)).toEqual(walletCount);
-
-        await wallet.createAccount(accountName);
-
-        const expectedAccountName = wallet instanceof MetaMaskWallet ? accountName : 'Address 2';
-        expect(wallet.page.getByText(expectedAccountName));
-        expect(await countAccounts(wallet)).toEqual(walletCount + 1);
-      });
-    });
-
-    test.describe('switchAccount', () => {
-      test('should switch accounts', async ({ wallet }) => {
-        const accountName: string = wallet instanceof MetaMaskWallet ? 'Account 1' : 'Address 1';
-        await wallet.switchAccount(accountName);
-
-        expect(wallet.page.getByText(accountName));
-      });
-    });
   });
 
   test.describe('network configurations', () => {
@@ -101,7 +79,7 @@ test.describe('when interacting with the wallet', () => {
         if (wallet instanceof MetaMaskWallet) {
           await wallet.switchNetwork('Sepolia');
 
-          const selectedNetwork = wallet.page.getByTestId('network-display').getByText('Sepolia');
+          const selectedNetwork = wallet.page.getByTestId('sort-by-networks').getByText('Sepolia');
           expect(selectedNetwork).toBeVisible();
         } else {
           console.warn('Coinbase skips network switching');
@@ -147,11 +125,11 @@ test.describe('when interacting with the wallet', () => {
     test.describe('importPK', () => {
       test('should import private key', async ({ wallet }) => {
         await forMetaMask(wallet, async () => {
-          const beforeImport = await countAccounts(wallet);
+          const beforeCount = await countAccounts(wallet);
           await wallet.importPK('4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b10');
-          const afterImport = await countAccounts(wallet);
+          const afterCount = await countAccounts(wallet);
 
-          expect(beforeImport + 1).toEqual(afterImport);
+          expect(afterCount).toEqual(beforeCount + 1);
         });
       });
 
@@ -182,11 +160,11 @@ test.describe('when interacting with the wallet', () => {
 
     test('should be able to delete an imported account', async ({ wallet }) => {
       await forMetaMask(wallet, async () => {
-        const beforeDelete = await countAccounts(wallet);
-        await wallet.deleteAccount(`Account ${beforeDelete - 1}`);
-        const afterDelete = await countAccounts(wallet);
+        const beforeCount = await countAccounts(wallet);
+        await wallet.deleteAccount(`Imported Account 1`);
+        const afterCount = await countAccounts(wallet);
 
-        expect(beforeDelete - 1).toEqual(afterDelete);
+        expect(afterCount).toEqual(beforeCount - 1);
       });
     });
   });
@@ -224,6 +202,33 @@ test.describe('when interacting with the wallet', () => {
           tokenAddress: '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa',
           symbol: 'KAKI',
         });
+      });
+    });
+  });
+
+  // Metamask has a long "Syncing..." cycle on setup, keeping this low to avoid timeouts.
+  test.describe('account management', () => {
+    test.describe('createAccount', () => {
+      test('should create a new wallet/account', async ({ wallet }) => {
+        const accountName = crypto.randomBytes(20).toString('hex');
+        const walletCount = await countAccounts(wallet);
+
+        expect(await countAccounts(wallet)).toEqual(walletCount);
+
+        await wallet.createAccount(accountName);
+
+        const expectedAccountName = wallet instanceof MetaMaskWallet ? accountName : 'Address 2';
+        expect(wallet.page.getByText(expectedAccountName));
+        expect(await countAccounts(wallet)).toEqual(walletCount + 1);
+      });
+    });
+
+    test.describe('switchAccount', () => {
+      test('should switch accounts', async ({ wallet }) => {
+        const accountName: string = wallet instanceof MetaMaskWallet ? 'Account 1' : 'Address 1';
+        await wallet.switchAccount(accountName);
+
+        expect(wallet.page.getByText(accountName));
       });
     });
   });

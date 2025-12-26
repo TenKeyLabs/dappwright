@@ -1,9 +1,8 @@
 import { Page } from 'playwright-core';
-
-import { performPopupAction } from './util';
+import { performSidepanelAction } from './util';
 
 export const reject = (page: Page) => async (): Promise<void> => {
-  await performPopupAction(page, async (popup) => {
+  await performSidepanelAction(page, async (popup) => {
     const cancelButton = popup.getByTestId('confirm-footer-cancel-button');
     const rejectButton = popup.getByTestId('cancel-btn');
 
