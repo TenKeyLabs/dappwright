@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.1
+
+### Patch Changes
+
+- [#519](https://github.com/TenKeyLabs/dappwright/pull/519) [`6b82b06`](https://github.com/TenKeyLabs/dappwright/commit/6b82b066b7efc23b714b01ffe83089a63e0b1f79) Thanks [@osis](https://github.com/osis)! - fix: increased timeout for error message selector
+
 ## 2.13.0
 
 ### Minor Changes
