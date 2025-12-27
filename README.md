@@ -2,6 +2,11 @@
 
 E2E testing for dApps using Playwright + MetaMask & Coinbase Wallet
 
+<p float="left">
+  <img src="https://github.com/user-attachments/assets/e3da5de5-4665-4774-bf1a-5565b52ce175" width="49%" />
+  <img src="https://github.com/user-attachments/assets/cc95ca6b-b3d9-4f5c-bac1-40d9477a679f" width="49%" />
+</p>
+
 ## Installation
 
 ```
