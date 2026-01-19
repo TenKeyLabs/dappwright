@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.13.2
+
+### Patch Changes
+
+- [#526](https://github.com/TenKeyLabs/dappwright/pull/526) [`686fc20`](https://github.com/TenKeyLabs/dappwright/commit/686fc2030183ea0987e7a6625e35a80b60adf92e) Thanks [@osis](https://github.com/osis)! - fix: additional support for handling newer metamask popups
+
+- [#527](https://github.com/TenKeyLabs/dappwright/pull/527) [`918a50e`](https://github.com/TenKeyLabs/dappwright/commit/918a50e46192c1259505fc2951748e26a1c68d2d) Thanks [@osis](https://github.com/osis)! - chore: bumps Coinbase wallet from v3.123.0 to v3.136.0
+
 ## 2.13.1
 
 ### Patch Changes
