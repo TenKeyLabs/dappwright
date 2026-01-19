@@ -29,7 +29,7 @@ import { navigateHome } from './actions/helpers';
 
 export class CoinbaseWallet extends Wallet {
   static id = 'coinbase' as WalletIdOptions;
-  static recommendedVersion = '3.123.0';
+  static recommendedVersion = '3.136.0';
   static releasesUrl = 'https://api.github.com/repos/TenKeyLabs/coinbase-wallet-archive/releases';
   static homePath = '/index.html';
 
