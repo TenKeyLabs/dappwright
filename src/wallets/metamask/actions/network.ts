@@ -1,6 +1,7 @@
 import { Page } from 'playwright-core';
 import { clickOnButton, clickOnElement, performSidepanelAction, waitForChromeState } from '../../../helpers';
 import { AddNetwork, UpdateNetworkRpc } from '../../../types';
+import { closePopup } from '../setup/setupActions';
 import { getErrorMessage, networkListItem, openNetworkDropdown, openNetworkSettings } from './helpers';
 
 export const switchNetwork =
@@ -40,19 +41,10 @@ export const addNetwork =
 
     // This popup is fairly random in terms of timing
     // and can show before switch to network click is gone
-    const gotItClick = (): Promise<void> =>
-      page.waitForTimeout(2000).then(() =>
-        page
-          .locator('button', { hasText: 'Got it' })
-          .isVisible()
-          .then((gotItButtonVisible) => {
-            if (gotItButtonVisible) return clickOnButton(page, 'Got it');
-            return Promise.resolve();
-          }),
-      );
+    await closePopup(page);
 
     await waitForChromeState(page);
-    await Promise.all([switchNetwork(page)(networkName), gotItClick()]);
+    await switchNetwork(page)(networkName);
   };
 
 export const deleteNetwork =

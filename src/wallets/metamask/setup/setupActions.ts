@@ -41,6 +41,10 @@ export const closePopup = async (page: Page): Promise<void> => {
   if (await page.getByTestId('popover-close').isVisible()) {
     await page.getByTestId('popover-close').click();
   }
+  const notNowButton = page.getByRole('button', { name: 'Not now' });
+  if (await notNowButton.isVisible()) {
+    await notNowButton.click();
+  }
 };
 
 export async function adjustSettings(metamaskPage: Page): Promise<void> {
