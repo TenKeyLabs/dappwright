@@ -1,5 +1,5 @@
 import { Page } from 'playwright-core';
-import { clickOnButton, clickOnElement, performSidepanelAction, waitForChromeState } from '../../../helpers';
+import { clickOnButton, clickOnElement, performPopupAction, waitForChromeState } from '../../../helpers';
 import { AddNetwork, UpdateNetworkRpc } from '../../../types';
 import { closePopup } from '../setup/setupActions';
 import { getErrorMessage, networkListItem, openNetworkDropdown, openNetworkSettings } from './helpers';
@@ -76,8 +76,8 @@ export const hasNetwork =
   };
 
 export const confirmNetworkSwitch = (page: Page) => async (): Promise<void> => {
-  await performSidepanelAction(page, async (sidepanel) => {
-    await sidepanel.getByTestId('page-container-footer-next').click();
+  await performPopupAction(page, async (popup) => {
+    await popup.getByTestId('page-container-footer-next').click();
     await waitForChromeState(page);
   });
 };

@@ -1,5 +1,5 @@
 import { Page } from 'playwright-core';
-import { performSidepanelAction, waitForChromeState } from '../../../helpers';
+import { performPopupAction, waitForChromeState } from '../../../helpers';
 import { closePopup } from '../setup/setupActions';
 import { openAccountOptionsMenu } from './helpers';
 import { clickConfirm } from './transaction';
@@ -23,15 +23,15 @@ export const unlock =
   };
 
 export const signin = (page: Page) => async (): Promise<void> => {
-  await performSidepanelAction(page, async (sidepanel) => {
-    await sidepanel.waitForURL(/(connect)|(signature-request)/);
+  await performPopupAction(page, async (popup) => {
+    await popup.waitForURL(/(connect)|(signature-request)/);
 
-    const signinTextVisible = await sidepanel.getByText(/Connect this website/).isVisible();
+    const signinTextVisible = await popup.getByText(/Connect this website/).isVisible();
     if (signinTextVisible) {
-      await clickConfirm(sidepanel);
+      await clickConfirm(popup);
     }
 
-    const signInButton = sidepanel.getByTestId('confirm-footer-button');
+    const signInButton = popup.getByTestId('confirm-footer-button');
     await signInButton.scrollIntoViewIfNeeded();
     await signInButton.click();
 
