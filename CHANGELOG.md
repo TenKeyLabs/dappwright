@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- [#536](https://github.com/TenKeyLabs/dappwright/pull/536) [`9a5104d`](https://github.com/TenKeyLabs/dappwright/commit/9a5104d97e9fc08d1f1c665733f3c66af93888f0) Thanks [@osis](https://github.com/osis)! - fix: boostrap steps disables MetaMask sidepanel
+- [#536](https://github.com/TenKeyLabs/dappwright/pull/536) [`9a5104d`](https://github.com/TenKeyLabs/dappwright/commit/9a5104d97e9fc08d1f1c665733f3c66af93888f0) Thanks [@osis](https://github.com/osis)! - fix: bootstrap steps disables MetaMask sidepanel
 
 - [#536](https://github.com/TenKeyLabs/dappwright/pull/536) [`9a5104d`](https://github.com/TenKeyLabs/dappwright/commit/9a5104d97e9fc08d1f1c665733f3c66af93888f0) Thanks [@osis](https://github.com/osis)! - chore: bumps metamask to 13.17.0
 
