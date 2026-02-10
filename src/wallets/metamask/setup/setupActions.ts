@@ -53,6 +53,7 @@ export async function adjustSettings(metamaskPage: Page): Promise<void> {
   await metamaskPage.locator('.tab-bar__tab', { hasText: 'Advanced' }).click();
 
   await clickOnSettingsSwitch(metamaskPage, 'Show test networks');
+  await clickOnSettingsSwitch(metamaskPage, 'Show extension in full-size view');
   await metamaskPage.getByRole('button', { name: 'Close' }).click();
 
   await waitForChromeState(metamaskPage);

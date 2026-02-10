@@ -56,23 +56,6 @@ export const performPopupAction = async (page: Page, action: (popup: Page) => Pr
   if (!popup.isClosed()) await popup.waitForEvent('close');
 };
 
-export const performSidepanelAction = async (page: Page, action: (sidepanel: Page) => Promise<void>): Promise<void> => {
-  const sidepanel = page
-    .context()
-    .pages()
-    .find((p) => p.url().includes('sidepanel.html'));
-
-  if (!sidepanel) {
-    const pageUrls = page
-      .context()
-      .pages()
-      .flatMap((p) => p.url());
-    throw new Error('Sidepanel page not found. Current pages:\n' + pageUrls.join('\n- '));
-  }
-
-  await action(sidepanel);
-};
-
 export const performSetup =
   (page: Page, defaultSteps: Step<WalletOptions>[]) =>
   async <Options = WalletOptions>(options?: Options, steps: Step<Options>[] = defaultSteps): Promise<void> => {
