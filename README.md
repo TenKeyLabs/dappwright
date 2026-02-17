@@ -72,33 +72,6 @@ $ yarn add @tenkeylabs/dappwright
 
 There are a number of different ways integrate dAppwright into your test suite. For some other examples, please check out dAppwright's [example application repo](https://github.com/TenKeyLabs/dappwright-examples).
 
-## Running in CI / Headless Environments
-
-⚠️ **Important**: Browser extensions do not work properly in Chromium's headless mode. You must use `headless: false` combined with a virtual framebuffer (`xvfb-run`) in CI environments.
-
-For GitHub Actions and other CI platforms, see the comprehensive guide: **[Running in CI / Headless Environments](./docs/CI.md)**
-
-Quick example for GitHub Actions:
-
-```yaml
-jobs:
-  e2e:
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.56.1-jammy
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: npm ci
-      - name: Run tests
-        run: xvfb-run --auto-servernum npx playwright test
-```
-
-**Key points:**
-- Set `headless: false` in your dAppwright configuration
-- Use `xvfb-run` to provide a virtual display on Linux CI
-- See [docs/CI.md](./docs/CI.md) for troubleshooting and detailed setup
-
 ## Special Thanks
 
 This project is a fork of the [Chainsafe](https://github.com/chainsafe/dappeteer) and [Decentraland](https://github.com/decentraland/dappeteer) version of dAppeteer.
