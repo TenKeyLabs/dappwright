@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.4
+
+### Patch Changes
+
+- [#541](https://github.com/TenKeyLabs/dappwright/pull/541) [`d89c3ec`](https://github.com/TenKeyLabs/dappwright/commit/d89c3ecdf948474b2265ab65b576c6e01ccf855e) Thanks [@osis](https://github.com/osis)! - fix: swaps out language chromium flag for preference setting injection
+
 ## 2.13.3
 
 ### Patch Changes
