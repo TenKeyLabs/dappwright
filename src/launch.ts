@@ -1,44 +1,22 @@
 import fs from 'fs';
 import os from 'os';
 import * as path from 'path';
-import playwright from 'playwright-core';
+import playwright, { BrowserContext } from 'playwright-core';
 
 import { DappwrightLaunchResponse, OfficialOptions } from './types';
-import { closeWalletSetupPopup, getWallet, getWalletType } from './wallets/wallets';
+import { closeWalletSetupPopup, getWallet, getWalletType, WalletTypes } from './wallets/wallets';
 
 /**
  * Launch Playwright chromium instance with wallet plugin installed
  * */
-const sessionPath = path.resolve(os.tmpdir(), 'dappwright', 'session');
 
 export async function launch(browserName: string, options: OfficialOptions): Promise<DappwrightLaunchResponse> {
   const { ...officialOptions } = options;
   const wallet = getWalletType(officialOptions.wallet);
   if (!wallet) throw new Error('Wallet not supported');
 
-  const extensionPath = await wallet.download(officialOptions);
-  const extensionList = [extensionPath].concat(officialOptions.additionalExtensions || []);
-
-  const browserArgs = [
-    `--disable-extensions-except=${extensionList.join(',')}`,
-    `--load-extension=${extensionList.join(',')}`,
-    '--lang=en-US',
-  ];
-
-  if (options.headless != false) browserArgs.push(`--headless=new`);
-
-  const workerIndex = process.env.TEST_WORKER_INDEX || '0';
-  const userDataDir = path.join(sessionPath, options.wallet, workerIndex);
-
-  fs.rmSync(userDataDir, { recursive: true, force: true });
-
-  // Access to the extension side panel
-  process.env.PW_CHROMIUM_ATTACH_TO_OTHER = '1';
-
-  const browserContext = await playwright.chromium.launchPersistentContext(userDataDir, {
-    headless: false,
-    args: browserArgs,
-  });
+  const userDataDir = await resetBrowserSession(options);
+  const browserContext = await launchBrowser(wallet, userDataDir, officialOptions);
 
   closeWalletSetupPopup(wallet.id, browserContext);
 
@@ -46,4 +24,40 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
     wallet: await getWallet(wallet.id, browserContext),
     browserContext,
   };
+}
+
+async function resetBrowserSession(options: OfficialOptions): Promise<string> {
+  const workerIndex = process.env.TEST_WORKER_INDEX || '0';
+  const sessionPath = path.resolve(os.tmpdir(), 'dappwright', 'session');
+  const userDataDir = path.join(sessionPath, options.wallet, workerIndex);
+
+  await fs.promises.rm(userDataDir, { recursive: true, force: true });
+
+  const prefsDir = path.join(userDataDir, 'Default');
+  await fs.promises.mkdir(prefsDir, { recursive: true });
+  await fs.promises.writeFile(
+    path.join(prefsDir, 'Preferences'),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    JSON.stringify({ intl: { accept_languages: 'en', selected_languages: 'en' } }),
+  );
+  return userDataDir;
+}
+
+async function launchBrowser(
+  wallet: WalletTypes,
+  userDataDir: string,
+  options: OfficialOptions,
+): Promise<BrowserContext> {
+  const extensionPath = await wallet.download(options);
+  const extensionList = [extensionPath].concat(options.additionalExtensions || []);
+  const browserArgs = [
+    `--disable-extensions-except=${extensionList.join(',')}`,
+    `--load-extension=${extensionList.join(',')}`,
+  ];
+
+  if (options.headless != false) browserArgs.push(`--headless=new`);
+  return await playwright.chromium.launchPersistentContext(userDataDir, {
+    headless: false,
+    args: browserArgs,
+  });
 }
