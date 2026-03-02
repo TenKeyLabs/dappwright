@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.5
+
+### Patch Changes
+
+- [#545](https://github.com/TenKeyLabs/dappwright/pull/545) [`88a7935`](https://github.com/TenKeyLabs/dappwright/commit/88a793524f404321f438a7e66247dbca8670c52e) Thanks [@dependabot](https://github.com/apps/dependabot)! - chore: bumps node support from v20 to v22
+
 ## 2.13.4
 
 ### Patch Changes
