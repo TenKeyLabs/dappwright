@@ -2,7 +2,7 @@
   "name": "dappwright-test-dapp",
   "version": "0.0.1",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "start": "node --require ts-node/register start.ts"
