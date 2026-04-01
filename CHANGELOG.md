@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.13.5
+
+### Patch Changes
+
+- [#557](https://github.com/TenKeyLabs/dappwright/pull/557) [`4ecf6c7`](https://github.com/TenKeyLabs/dappwright/commit/4ecf6c793cc8f8aa706e6bf9eed1d57ada50e565) Thanks [@osis](https://github.com/osis)! - fix(metamask): updates switchNetwork logic to handle new tabbed modal
+
+- [#545](https://github.com/TenKeyLabs/dappwright/pull/545) [`88a7935`](https://github.com/TenKeyLabs/dappwright/commit/88a793524f404321f438a7e66247dbca8670c52e) Thanks [@dependabot](https://github.com/apps/dependabot)! - chore: bumps node support from v20 to v22
+
 ## 2.13.4
 
 ### Patch Changes
