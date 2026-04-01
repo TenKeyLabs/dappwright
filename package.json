@@ -70,11 +70,11 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.0",
     "globals": "^17.3.0",
-    "knip": "^5.62.0",
+    "knip": "^6.1.1",
     "microbundle": "^0.15.1",
     "prettier": "^3.0.3",
     "rimraf": "^6.0.1",
-    "typescript": "^5.0",
+    "typescript": "^6.0",
     "vitest": "^4.0.15"
   },
   "peerDependencies": {
