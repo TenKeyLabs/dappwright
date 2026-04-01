@@ -59,7 +59,7 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.6.0",
     "@changesets/cli": "^2.26.0",
-    "@playwright/test": "^1.51.0",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^26.0.1",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
     "@typescript-eslint/parser": "^8.29.0",
