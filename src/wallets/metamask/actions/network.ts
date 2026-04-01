@@ -2,7 +2,13 @@ import { Page } from 'playwright-core';
 import { clickOnButton, clickOnElement, performPopupAction, waitForChromeState } from '../../../helpers';
 import { AddNetwork, UpdateNetworkRpc } from '../../../types';
 import { closePopup } from '../setup/setupActions';
-import { getErrorMessage, networkListItem, openNetworkDropdown, openNetworkSettings } from './helpers';
+import {
+  findNetworkListItem,
+  getErrorMessage,
+  networkListItem,
+  openNetworkDropdown,
+  openNetworkSettings,
+} from './helpers';
 
 export const switchNetwork =
   (page: Page) =>
@@ -10,7 +16,8 @@ export const switchNetwork =
     await page.bringToFront();
     await openNetworkDropdown(page);
 
-    await networkListItem(page, network).click();
+    const item = await findNetworkListItem(page, network);
+    await item.click();
 
     await waitForChromeState(page);
   };
@@ -69,10 +76,10 @@ export const hasNetwork =
     await page.bringToFront();
     await openNetworkSettings(page);
 
-    const hasNetwork = await networkListItem(page, name).isVisible();
+    const found = await networkListItem(page, name).isVisible();
     await page.getByRole('dialog').getByRole('button', { name: 'Close' }).first().click();
 
-    return hasNetwork;
+    return found;
   };
 
 export const confirmNetworkSwitch = (page: Page) => async (): Promise<void> => {

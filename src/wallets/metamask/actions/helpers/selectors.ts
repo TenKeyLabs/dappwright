@@ -20,11 +20,22 @@ export const accountListItem = (page: Page, name: string): Locator => {
   return accountList(page).filter({ has: page.getByText(name, { exact: true }) });
 };
 
-const networkMenuItemRegex = /network-list-item-eip\d+:\d+$/;
+const networkMenuItemRegex = /^network-list-item-(?!options)\w+:\S+$/;
 const networkList = (page: Page): Locator => {
   return page.getByTestId(networkMenuItemRegex);
 };
 
 export const networkListItem = (page: Page, name: string): Locator => {
   return networkList(page).filter({ has: page.getByText(name, { exact: true }) });
+};
+
+export const findNetworkListItem = async (page: Page, name: string): Promise<Locator> => {
+  const item = networkListItem(page, name);
+  if (await item.isVisible()) return item;
+
+  const popularTab = page.getByRole('tab', { name: 'Popular' });
+  const isPopularSelected = (await popularTab.getAttribute('aria-selected')) === 'true';
+  await page.getByRole('tab', { name: isPopularSelected ? 'Custom' : 'Popular' }).click();
+
+  return item;
 };
