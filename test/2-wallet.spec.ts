@@ -75,7 +75,18 @@ test.describe('when interacting with the wallet', () => {
     });
 
     test.describe('switchNetwork', () => {
-      test('should switch network, localhost', async ({ wallet }) => {
+      test('should switch from a custom to popular network', async ({ wallet }) => {
+        if (wallet instanceof MetaMaskWallet) {
+          await wallet.switchNetwork('Ethereum');
+
+          const selectedNetwork = wallet.page.getByTestId('sort-by-networks').getByText('Ethereum');
+          expect(selectedNetwork).toBeVisible();
+        } else {
+          console.warn('Coinbase skips network switching');
+        }
+      });
+
+      test('should switch from a popular to custom network', async ({ wallet }) => {
         if (wallet instanceof MetaMaskWallet) {
           await wallet.switchNetwork('Sepolia');
 
