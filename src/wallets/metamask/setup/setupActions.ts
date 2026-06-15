@@ -15,6 +15,11 @@ export async function importAccount(
   // Continue button. Without a trailing separator the last word can stay
   // uncommitted and `import-srp-confirm` remains disabled (seen on MetaMask
   // 13.17.0), making the click below time out.
+  //
+  // Use the global keyboard rather than `locator.press` on the SRP field:
+  // after `pressSequentially` the focus is already on that input, and the
+  // `srp-input-import__srp-note` testid is no longer re-locatable at this
+  // point, so a locator-based press times out waiting for the element.
   await metamaskPage.keyboard.press('Space');
   await metamaskPage.getByTestId('import-srp-confirm').click();
 }
