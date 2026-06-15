@@ -11,6 +11,11 @@ export async function importAccount(
   await metamaskPage.getByTestId('onboarding-import-wallet').click();
   await metamaskPage.getByTestId('onboarding-import-with-srp-button').click();
   await metamaskPage.getByTestId('srp-input-import__srp-note').pressSequentially(seed, { delay: 30 });
+  // Commit the final word so MetaMask validates the full SRP and enables the
+  // Continue button. Without a trailing separator the last word can stay
+  // uncommitted and `import-srp-confirm` remains disabled (seen on MetaMask
+  // 13.17.0), making the click below time out.
+  await metamaskPage.keyboard.press('Space');
   await metamaskPage.getByTestId('import-srp-confirm').click();
 }
 
