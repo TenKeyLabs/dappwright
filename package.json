@@ -61,7 +61,7 @@
     "@changesets/changelog-github": "^0.6.0",
     "@changesets/cli": "^2.26.0",
     "@playwright/test": "^1.51.0",
-    "@types/node": "^25.0.0",
+    "@types/node": "^26.0.1",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
     "@typescript-eslint/parser": "^8.29.0",
     "@vitest/coverage-v8": "^4.0.15",
@@ -70,11 +70,11 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.0",
     "globals": "^17.3.0",
-    "knip": "^5.62.0",
+    "knip": "^6.23.0",
     "microbundle": "^0.15.1",
     "prettier": "^3.0.3",
     "rimraf": "^6.0.1",
-    "typescript": "^5.0",
+    "typescript": "^6.0",
     "vitest": "^4.0.15"
   },
   "peerDependencies": {
