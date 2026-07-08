@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.6
+
+### Patch Changes
+
+- [#560](https://github.com/TenKeyLabs/dappwright/pull/560) [`d82385a`](https://github.com/TenKeyLabs/dappwright/commit/d82385a65840f31171459ff23ec0999f49a911e3) Thanks [@Rowen-S](https://github.com/Rowen-S)! - fix(metamask): commit the final SRP word during import so the Continue button enables on MetaMask 13.17. After `pressSequentially(seed)` the last word could stay uncommitted, leaving `import-srp-confirm` disabled and timing out the click. Press Space on the SRP input to validate the full phrase.
+
 ## 2.13.5
 
 ### Patch Changes
