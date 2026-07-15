@@ -30,12 +30,25 @@ export const networkListItem = (page: Page, name: string): Locator => {
 };
 
 export const findNetworkListItem = async (page: Page, name: string): Promise<Locator> => {
-  const item = networkListItem(page, name);
-  if (await item.isVisible()) return item;
+  // MetaMask renders custom networks in a separate tab and has changed the
+  // row test IDs between releases. Select by the visible, exact network name
+  // instead of relying on the internal test-id format used by popular chains.
+  const networkNames = page.getByText(name, { exact: true });
 
-  const popularTab = page.getByRole('tab', { name: 'Popular' });
-  const isPopularSelected = (await popularTab.getAttribute('aria-selected')) === 'true';
-  await page.getByRole('tab', { name: isPopularSelected ? 'Custom' : 'Popular' }).click();
+  for (const tabName of ['Popular', 'Custom']) {
+    const tab = page.getByRole('tab', { name: tabName, exact: true });
+    if ((await tab.getAttribute('aria-selected')) !== 'true') {
+      await tab.click();
+    }
 
-  return item;
+    const count = await networkNames.count();
+    for (let index = 0; index < count; index++) {
+      const networkName = networkNames.nth(index);
+      if (await networkName.isVisible().catch(() => false)) {
+        return networkName;
+      }
+    }
+  }
+
+  throw new Error(`MetaMask network "${name}" was not found in the Popular or Custom network tabs`);
 };
