@@ -54,7 +54,10 @@ export const findNetworkListItem = async (page: Page, name: string): Promise<Loc
     // The tab panel is rendered asynchronously. Wait for the dialog-scoped
     // name after switching tabs so we do not inspect the previous panel.
     if (switchedTabs) {
-      await networkNames.first().waitFor({ state: 'visible', timeout: 1500 }).catch(() => undefined);
+      await networkNames
+        .first()
+        .waitFor({ state: 'visible', timeout: 1500 })
+        .catch(() => undefined);
     }
 
     const count = await networkNames.count();
@@ -64,9 +67,7 @@ export const findNetworkListItem = async (page: Page, name: string): Promise<Loc
         // The label itself is not the interactive element in recent MetaMask
         // versions. Return the enclosing list row so the click selects the
         // network rather than merely focusing its text.
-        const row = networkName.locator(
-          'xpath=ancestor::*[starts-with(@data-testid, "network-list-item-")][1]',
-        );
+        const row = networkName.locator('xpath=ancestor::*[starts-with(@data-testid, "network-list-item-")][1]');
         if ((await row.count()) > 0) {
           return row;
         }
