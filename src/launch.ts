@@ -18,10 +18,11 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
   const userDataDir = await resetBrowserSession(options);
   const browserContext = await launchBrowser(wallet, userDataDir, officialOptions);
 
-  closeWalletSetupPopup(wallet.id, browserContext);
+  const walletInstance = await getWallet(wallet.id, browserContext);
+  closeWalletSetupPopup(wallet.id, browserContext, walletInstance.page);
 
   return {
-    wallet: await getWallet(wallet.id, browserContext),
+    wallet: walletInstance,
     browserContext,
   };
 }

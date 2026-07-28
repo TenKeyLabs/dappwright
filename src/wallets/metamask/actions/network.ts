@@ -19,6 +19,15 @@ export const switchNetwork =
     const item = await findNetworkListItem(page, network);
     await item.click();
 
+    // MetaMask 13 keeps the network picker open after selecting a custom
+    // network. Close it explicitly so the wallet returns to its home view
+    // before the caller continues with the connection/signing flow.
+    const closeButton = page.getByTestId('modal-header-close-button');
+    if (await closeButton.isVisible().catch(() => false)) {
+      await closeButton.click();
+      await closeButton.waitFor({ state: 'hidden' }).catch(() => undefined);
+    }
+
     await waitForChromeState(page);
   };
 
