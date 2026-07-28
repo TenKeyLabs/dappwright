@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.7
+
+### Patch Changes
+
+- [`de40fb1`](https://github.com/TenKeyLabs/dappwright/commit/de40fb1e8abbf7d10d8d5610d0e97e351b5c54bb) Thanks [@mnemonik-dev](https://github.com/mnemonik-dev)! - feat: re-adds custom network support for MetaMask 13
+
 ## 2.13.6
 
 ### Patch Changes
