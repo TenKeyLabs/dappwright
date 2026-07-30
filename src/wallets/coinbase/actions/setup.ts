@@ -15,7 +15,18 @@ export async function getStarted(
 
   // Import Wallet
   await page.getByTestId('btn-import-recovery-phrase').click();
-  await page.getByRole('button', { name: 'Acknowledge' }).click();
+
+  // The recovery phrase warning modal only renders if the import screen has
+  // settled before we click through - clicking it mid-transition lands on the
+  // import screen with no modal at all. Wait for the screen, then dismiss the
+  // modal only if it actually showed up, otherwise we block until the fixture
+  // times out waiting for a button that is never coming.
+  await page.getByTestId('secret-input').waitFor();
+  await page
+    .getByRole('button', { name: 'Acknowledge' })
+    .click({ timeout: 5000 })
+    .catch(() => undefined);
+
   await page.getByTestId('secret-input').fill(seed);
   await page.getByTestId('btn-import-wallet').click();
   await page.getByTestId('setPassword').fill(password);
