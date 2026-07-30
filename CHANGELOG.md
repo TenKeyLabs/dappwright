@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.13.8
+
+### Patch Changes
+
+- [#568](https://github.com/TenKeyLabs/dappwright/pull/568) [`e84f75e`](https://github.com/TenKeyLabs/dappwright/commit/e84f75e28ff4884d9392c4fc5c325a0fcb77f84a) Thanks [@osis](https://github.com/osis)! - fix(coinbase): wait for or bypass the recovery phrase warning dialog when bootstrapping
+
+- [#570](https://github.com/TenKeyLabs/dappwright/pull/570) [`e4f3a84`](https://github.com/TenKeyLabs/dappwright/commit/e4f3a84b2c171295e79848a6283aca2e338c59a8) Thanks [@osis](https://github.com/osis)! - fix: approval popups now open in headless mode
+
+  Wallets position their approval popup relative to the browser window, which placed it outside
+  headless Chromium's default 800x600 virtual screen. Chromium rejected the `chrome.windows.create`
+  call with "Bounds must be at least 50% within visible screen space", so the approval never opened
+  and every popup-driven action hung until the test timed out. dAppwright now passes `--screen-info`
+  in headless mode. Running under `xvfb-run` with `headless: false` is no longer necessary.
+
 ## 2.13.7
 
 ### Patch Changes
