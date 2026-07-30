@@ -56,7 +56,17 @@ async function launchBrowser(
     `--load-extension=${extensionList.join(',')}`,
   ];
 
-  if (options.headless != false) browserArgs.push(`--headless=new`);
+  if (options.headless != false) {
+    browserArgs.push(`--headless=new`);
+    // Headless Chromium's virtual screen defaults to 800x600, which is smaller than the
+    // browser window. Wallets right-align their approval popup to the browser window
+    // (MetaMask: left = window.left + window.width - 400), so chrome.windows.create lands
+    // off-screen and is rejected with "Bounds must be at least 50% within visible screen
+    // space." The rejection escapes the wallet's own error handling, so the approval never
+    // opens and every popup-driven action hangs. A larger virtual screen keeps the popup
+    // in bounds. This does not affect page viewports, which Playwright emulates separately.
+    browserArgs.push(`--screen-info={1920x1080}`);
+  }
   return await playwright.chromium.launchPersistentContext(userDataDir, {
     headless: false,
     args: browserArgs,

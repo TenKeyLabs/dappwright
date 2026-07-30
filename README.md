@@ -33,7 +33,6 @@ $ yarn add @tenkeylabs/dappwright
           wallet: "metamask",
           version: MetaMaskWallet.recommendedVersion,
           seed: "test test test test test test test test test test test junk", // Hardhat's default https://hardhat.org/hardhat-network/docs/reference#accounts
-          headless: false,
         });
 
         await use(context);
@@ -72,14 +71,6 @@ $ yarn add @tenkeylabs/dappwright
 
 There are a number of different ways integrate dAppwright into your test suite. For some other examples, please check out dAppwright's [example application repo](https://github.com/TenKeyLabs/dappwright-examples).
 
-## Running in CI / Headless Environments
-
-⚠️ **Important**: Browser extensions do not work properly in Chromium's headless mode. You must use `headless: false` combined with a virtual framebuffer (`xvfb-run`) in CI environments.
-
-### Why `headless: true` doesn't work
-
-Chromium's headless mode (even with `--headless=new`) does not reliably support browser extension popup windows. Wallet extensions like MetaMask and Coinbase Wallet rely on popups for connection and transaction approval flows, causing tests to hang when these popups fail to open.
-
 ### GitHub Actions Example
 
 ```yaml
@@ -87,20 +78,22 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.56.1-jammy
+      image: mcr.microsoft.com/playwright:v1.58.1-jammy
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
         run: npm ci
       - name: Run tests
-        run: xvfb-run --auto-servernum npx playwright test
+        run: npx playwright test
 ```
 
-**Key points:**
-- Set `headless: false` in your dAppwright configuration
-- Use `xvfb-run` to provide a virtual display on Linux CI
-- On macOS/Windows, simply use `headless: false` (xvfb not needed)
-- See dAppwright's own [CI workflow](.github/workflows/test.yaml) for a working example
+See dAppwright's own [CI workflow](.github/workflows/test.yaml) for a working example.
+
+### A note on headless and approval popups
+
+dAppwright launches a full Chromium binary and passes `--headless=new` itself, rather than using
+Playwright's `headless: true` — Playwright's own headless mode uses the `chromium-headless-shell`
+binary, which has no extension support at all.
 
 ## Special Thanks
 

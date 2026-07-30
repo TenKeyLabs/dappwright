@@ -66,7 +66,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          xvfb-run --auto-servernum yarn run test:ci
+          yarn run test
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v7
