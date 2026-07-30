@@ -2,7 +2,13 @@
   "compilerOptions": {
     "target": "es2015",
     "module": "commonjs",
-    "moduleResolution": "node",
+    "moduleResolution": "node10",
+    // microbundle's rollup-plugin-typescript2 hard-codes moduleResolution=node10,
+    // so this deprecation cannot be resolved by switching resolution modes here.
+    "ignoreDeprecations": "6.0",
+    // TypeScript 6 flipped `strict` to default-on; this project was written
+    // against the pre-6 default.
+    "strict": false,
     "lib": [
       "es2021",
       "dom"
