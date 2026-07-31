@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.13.9
+
+### Patch Changes
+
+- [#571](https://github.com/TenKeyLabs/dappwright/pull/571) [`465e71d`](https://github.com/TenKeyLabs/dappwright/commit/465e71d2c30b4f2f27330b311f68d7eb4fa3b0b8) Thanks [@osis](https://github.com/osis)! - fix: coordinates concurrent extension downloads to unlock the ability to run wallet projects in parallel
+
+- [#571](https://github.com/TenKeyLabs/dappwright/pull/571) [`465e71d`](https://github.com/TenKeyLabs/dappwright/commit/465e71d2c30b4f2f27330b311f68d7eb4fa3b0b8) Thanks [@osis](https://github.com/osis)! - fix: waits for the downloaded extension archive to be flushed to disk before extracting it. Also follows all redirect statuses rather than only 302, and fails loudly on a non-200 response instead of writing the error body out as the archive
+  fix: follows all redirect statuses rather than only 302, and fails loudly on a non-200 response instead of writing the error body out as the archive
+
 ## 2.13.8
 
 ### Patch Changes
