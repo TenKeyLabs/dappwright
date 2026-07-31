@@ -3,7 +3,7 @@ import path from 'path';
 
 import { OfficialOptions } from '../types';
 import { WalletIdOptions } from '../wallets/wallets';
-import { DOWNLOAD_CONFIG, DOWNLOAD_STATE_FILES } from './constants';
+import { DOWNLOAD_CLAIM_SUFFIX, DOWNLOAD_CONFIG, DOWNLOAD_STATE_FILES } from './constants';
 import { downloadDir, editExtensionPubKey, extractZip } from './file';
 import { downloadGithubRelease, getGithubRelease } from './github';
 import { printVersion } from './version';
@@ -20,6 +20,7 @@ type DownloadResult = {
  */
 interface DownloadStatePaths {
   readonly rootDir: string;
+  readonly claimDir: string;
   readonly downloadingFile: string;
   readonly successFile: string;
   readonly errorFile: string;
@@ -55,14 +56,26 @@ async function downloadWalletExtension(
     return { path: paths.rootDir, wasDownloaded: false };
   }
 
-  if (isPrimaryWorker() && !isDownloadComplete(paths)) {
-    printVersion(walletId, version, recommendedVersion);
-    await performDownload(walletId, version, releasesUrl, paths);
-    return { path: paths.rootDir, wasDownloaded: true };
-  } else {
-    await waitForDownloadCompletion(walletId, paths);
-    return { path: paths.rootDir, wasDownloaded: false };
+  // Workers race for the claim rather than electing a downloader by worker index. Index based
+  // election breaks as soon as more than one wallet is downloaded concurrently (eg. parallel
+  // Playwright projects), since only one worker holds index 0 and every worker for the other
+  // wallet would wait on a download that is never started.
+  while (!isDownloadComplete(paths)) {
+    if (claimDownload(paths)) {
+      try {
+        printVersion(walletId, version, recommendedVersion);
+        await performDownload(walletId, version, releasesUrl, paths);
+      } finally {
+        releaseClaim(paths);
+      }
+      return { path: paths.rootDir, wasDownloaded: true };
+    }
+
+    // Lost the race. Wait for the holder, then re-check: the loop re-claims if it gave up.
+    await waitForClaimHolder(walletId, paths);
   }
+
+  return { path: paths.rootDir, wasDownloaded: false };
 }
 
 /**
@@ -76,6 +89,8 @@ async function performDownload(
 ): Promise<void> {
   prepareRootDir(paths);
   markDownloadStarted(paths);
+
+  const heartbeat = startClaimHeartbeat(paths);
 
   try {
     // eslint-disable-next-line no-console
@@ -93,6 +108,7 @@ async function performDownload(
     handleDownloadError(paths, error);
     throw error;
   } finally {
+    clearInterval(heartbeat);
     cleanupDownloadingFlag(paths);
   }
 }
@@ -103,10 +119,77 @@ async function performDownload(
 function createDownloadStatePaths(downloadPath: string): DownloadStatePaths {
   return {
     rootDir: downloadPath,
+    // Sits beside the download rather than inside it, since preparing the root wipes it
+    claimDir: `${downloadPath}${DOWNLOAD_CLAIM_SUFFIX}`,
     downloadingFile: path.join(downloadPath, DOWNLOAD_STATE_FILES.downloading),
     successFile: path.join(downloadPath, DOWNLOAD_STATE_FILES.success),
     errorFile: path.join(downloadPath, DOWNLOAD_STATE_FILES.error),
   };
+}
+
+/**
+ * Attempt to take ownership of the download.
+ *
+ * `mkdir` fails when the directory already exists, which makes it an atomic compare-and-set
+ * across processes - exactly one caller can win, no matter how many race for it.
+ */
+function claimDownload(paths: DownloadStatePaths): boolean {
+  fs.mkdirSync(path.dirname(paths.claimDir), { recursive: true });
+
+  try {
+    fs.mkdirSync(paths.claimDir);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+    return false;
+  }
+
+  // Clear the previous attempt's failure before any waiter can observe it
+  deleteFileIfExists(paths.errorFile);
+  return true;
+}
+
+/**
+ * Release ownership of the download
+ */
+function releaseClaim(paths: DownloadStatePaths): void {
+  fs.rmSync(paths.claimDir, { recursive: true, force: true });
+}
+
+/**
+ * Check whether a claim is currently held
+ */
+function isClaimHeld(paths: DownloadStatePaths): boolean {
+  return fs.existsSync(paths.claimDir);
+}
+
+/**
+ * Check whether the claim holder has stopped reporting progress (eg. the process was killed)
+ */
+function isClaimStale(paths: DownloadStatePaths): boolean {
+  try {
+    return Date.now() - fs.statSync(paths.claimDir).mtimeMs > DOWNLOAD_CONFIG.staleClaimMs;
+  } catch {
+    // Released while we were looking at it
+    return false;
+  }
+}
+
+/**
+ * Touch the claim directory periodically so waiters can tell a slow download from a dead one
+ */
+function startClaimHeartbeat(paths: DownloadStatePaths): NodeJS.Timeout {
+  const heartbeat = setInterval(() => {
+    try {
+      const now = new Date();
+      fs.utimesSync(paths.claimDir, now, now);
+    } catch {
+      // Claim directory is gone - nothing to keep alive
+    }
+  }, DOWNLOAD_CONFIG.heartbeatIntervalMs);
+
+  // Don't hold the process open on the heartbeat alone
+  heartbeat.unref?.();
+  return heartbeat;
 }
 
 /**
@@ -205,25 +288,41 @@ function sleep(ms: number): Promise<void> {
 }
 
 /**
- * Check if this is the primary worker responsible for downloading
+ * Wait for the worker holding the claim to finish downloading.
+ *
+ * Returns once the download succeeded, or once the claim is free again so the caller can take
+ * it over - either because the holder released it without succeeding, or because it went stale.
  */
-function isPrimaryWorker(): boolean {
-  return process.env.TEST_PARALLEL_INDEX === '0';
-}
+async function waitForClaimHolder(walletId: WalletIdOptions, paths: DownloadStatePaths): Promise<void> {
+  const deadline = Date.now() + DOWNLOAD_CONFIG.maxWaitMs;
 
-/**
- * Wait for the primary worker to complete the download
- */
-async function waitForDownloadCompletion(walletId: WalletIdOptions, paths: DownloadStatePaths): Promise<void> {
-  while (!isDownloadComplete(paths)) {
+  while (true) {
+    // eslint-disable-next-line no-console
+    console.info(`Waiting for another worker to download ${walletId}...`);
+    await sleep(DOWNLOAD_CONFIG.pollIntervalMs);
+
+    if (isDownloadComplete(paths)) return;
+
     if (hasDownloadError(paths)) {
       const errorMessage = getErrorMessage(paths) || 'Unknown error';
-      throw new Error(`Primary worker failed to download ${walletId}: ${errorMessage}`);
+      throw new Error(`Failed to download ${walletId}: ${errorMessage}`);
     }
 
-    // eslint-disable-next-line no-console
-    console.info(`Waiting for primary worker to download ${walletId}...`);
-    await sleep(DOWNLOAD_CONFIG.pollIntervalMs);
+    // Claim released without a result - fall back to the caller so it can claim the download
+    if (!isClaimHeld(paths)) return;
+
+    if (isClaimStale(paths)) {
+      // eslint-disable-next-line no-console
+      console.info(`Abandoned ${walletId} download detected, taking over...`);
+      releaseClaim(paths);
+      return;
+    }
+
+    if (Date.now() > deadline) {
+      throw new Error(
+        `Timed out after ${DOWNLOAD_CONFIG.maxWaitMs}ms waiting for another worker to download ${walletId}`,
+      );
+    }
   }
 }
 
