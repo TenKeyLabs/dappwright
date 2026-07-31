@@ -20,10 +20,7 @@ export const DOWNLOAD_CLAIM_SUFFIX = '.claim';
 // Configuration constants
 export const DOWNLOAD_CONFIG = {
   pollIntervalMs: 2000,
-  // How often the claim holder touches the claim directory to signal it is still alive
-  heartbeatIntervalMs: 2000,
-  // A claim that hasn't been touched within this window is considered abandoned
-  staleClaimMs: 30000,
-  // Upper bound on how long a worker will wait for another worker's download
-  maxWaitMs: 600000,
+  heartbeatIntervalMs: 2000, // How often the claim holder touches the claim directory to signal it is still alive
+  staleClaimMs: 30000, // A claim that hasn't been touched within this window is considered abandoned
+  maxWaitMs: 600000, // Upper bound on how long a worker will wait for another worker's download
 } as const;

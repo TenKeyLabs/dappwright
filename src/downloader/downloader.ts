@@ -130,8 +130,7 @@ function createDownloadStatePaths(downloadPath: string): DownloadStatePaths {
 /**
  * Attempt to take ownership of the download.
  *
- * `mkdir` fails when the directory already exists, which makes it an atomic compare-and-set
- * across processes - exactly one caller can win, no matter how many race for it.
+ * `mkdir` fails when the directory already exists, which makes it an atomic compare-and-set across processes
  */
 function claimDownload(paths: DownloadStatePaths): boolean {
   fs.mkdirSync(path.dirname(paths.claimDir), { recursive: true });
