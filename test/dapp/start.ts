@@ -1,3 +1,3 @@
-import { start } from './server';
+import { start } from './server.js';
 
 start();

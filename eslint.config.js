@@ -18,7 +18,7 @@ module.exports = defineConfig([
       },
       parser: typescriptParser,
       parserOptions: {
-        project: ['./tsconfig.json'], // Add the path to your TypeScript config file
+        project: ['./tsconfig.json', './test/dapp/tsconfig.json'],
         ecmaVersion: 2022,
         sourceType: 'module',
       },

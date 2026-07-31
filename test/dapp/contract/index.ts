@@ -1,12 +1,13 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import solc from 'solc';
 
 type ContractSources = Record<string, { content: string }>;
 
 function buildSources(): ContractSources {
   const sources: ContractSources = {};
-  const contractsLocation = __dirname;
+  const contractsLocation = path.dirname(fileURLToPath(import.meta.url));
   const contractsFiles = fs.readdirSync(contractsLocation);
 
   contractsFiles.forEach((file) => {
