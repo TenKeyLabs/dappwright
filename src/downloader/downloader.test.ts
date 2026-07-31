@@ -6,7 +6,7 @@ import os from 'os';
 import path from 'path';
 import { afterEach, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
 import { OfficialOptions } from '../types';
-import { DOWNLOAD_CONFIG, DOWNLOAD_STATE_FILES } from './constants';
+import { DOWNLOAD_CLAIM_SUFFIX, DOWNLOAD_CONFIG, DOWNLOAD_STATE_FILES } from './constants';
 import createWalletDownloader from './downloader';
 import { downloadDir } from './file';
 
@@ -65,18 +65,27 @@ describe('createWalletDownloader', () => {
     fs.writeFileSync(path.join(dir, fileName), content);
   };
 
+  // Simulate another worker holding the download claim
+  const claimDir = (): string => `${testDir}${DOWNLOAD_CLAIM_SUFFIX}`;
+  const holdClaim = (ageMs = 0): void => {
+    fs.mkdirSync(claimDir(), { recursive: true });
+    const touched = new Date(Date.now() - ageMs);
+    fs.utimesSync(claimDir(), touched, touched);
+  };
+  const releaseClaim = (): void => {
+    fs.rmSync(claimDir(), { recursive: true, force: true });
+  };
+
   beforeEach(() => {
     testDir = createTestDir();
     mockDownloadDir.mockReturnValue(testDir);
 
     // Reset all mocks
     vi.clearAllMocks();
-
-    // Reset environment variables
-    delete process.env.TEST_PARALLEL_INDEX;
   });
 
   afterEach(() => {
+    releaseClaim();
     cleanupTestDir(testDir);
   });
 
@@ -128,12 +137,8 @@ describe('createWalletDownloader', () => {
     });
   });
 
-  describe('primary worker download scenario', () => {
-    beforeEach(() => {
-      process.env.TEST_PARALLEL_INDEX = '0';
-    });
-
-    it('should perform download when primary worker and download not complete', async () => {
+  describe('claiming worker download scenario', () => {
+    it('should perform download when the claim is free and download not complete', async () => {
       const downloader = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
       const options: OfficialOptions = {
         wallet: 'metamask',
@@ -160,6 +165,9 @@ describe('createWalletDownloader', () => {
       // Verify success file was created
       const successFile = path.join(testDir, DOWNLOAD_STATE_FILES.success);
       expect(fs.existsSync(successFile)).toBe(true);
+
+      // Verify the claim was released for other workers
+      expect(fs.existsSync(claimDir())).toBe(false);
     });
 
     it('should skip download if already complete', async () => {
@@ -199,6 +207,9 @@ describe('createWalletDownloader', () => {
       // Verify downloading flag was cleaned up
       const downloadingFile = path.join(testDir, DOWNLOAD_STATE_FILES.downloading);
       expect(fs.existsSync(downloadingFile)).toBe(false);
+
+      // Verify the claim was released so another worker can retry
+      expect(fs.existsSync(claimDir())).toBe(false);
     });
 
     it('should handle extraction errors', async () => {
@@ -224,9 +235,10 @@ describe('createWalletDownloader', () => {
     });
   });
 
-  describe('secondary worker scenario', () => {
+  describe('waiting worker scenario', () => {
+    // Another worker already owns the download
     beforeEach(() => {
-      process.env.TEST_PARALLEL_INDEX = '1';
+      holdClaim();
     });
 
     it('should wait for download completion', async () => {
@@ -236,9 +248,10 @@ describe('createWalletDownloader', () => {
         version: mockVersion,
       };
 
-      // Simulate download completion after some time
+      // Simulate the claim holder completing the download
       setTimeout(() => {
         createStateFile(testDir, DOWNLOAD_STATE_FILES.success);
+        releaseClaim();
       }, 100);
 
       const result = await downloader(options);
@@ -247,7 +260,7 @@ describe('createWalletDownloader', () => {
       expect(mockGetGithubRelease).not.toHaveBeenCalled();
     });
 
-    it('should throw error when primary worker fails', async () => {
+    it('should throw error when the claim holder fails', async () => {
       const downloader = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
       const options: OfficialOptions = {
         wallet: 'metamask',
@@ -258,7 +271,7 @@ describe('createWalletDownloader', () => {
       createStateFile(testDir, DOWNLOAD_STATE_FILES.error, 'Download failed: Network timeout');
 
       await expect(downloader(options)).rejects.toThrow(
-        'Primary worker failed to download metamask: Download failed: Network timeout',
+        'Failed to download metamask: Download failed: Network timeout',
       );
     });
 
@@ -278,7 +291,7 @@ describe('createWalletDownloader', () => {
         fs.chmodSync(errorFile, 0o000);
 
         await expect(downloader(options)).rejects.toThrow(
-          'Primary worker failed to download metamask: Unknown error occurred during download',
+          'Failed to download metamask: Unknown error occurred during download',
         );
 
         // Restore permissions for cleanup
@@ -288,13 +301,84 @@ describe('createWalletDownloader', () => {
         return;
       }
     });
+
+    it('should take over the download when the claim holder gives up', async () => {
+      const downloader = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
+      const options: OfficialOptions = {
+        wallet: 'metamask',
+        version: mockVersion,
+      };
+
+      mockGetGithubRelease.mockResolvedValue({
+        filename: 'test.zip',
+        downloadUrl: 'https://example.com/test.zip',
+        tag: 'v12.16.0',
+      });
+      mockDownloadGithubRelease.mockResolvedValue('/tmp/test.zip');
+      mockExtractZip.mockResolvedValue();
+
+      // Claim released without a success or error marker
+      setTimeout(releaseClaim, 100);
+
+      const result = await downloader(options);
+
+      expect(result).toBe(testDir);
+      expect(mockGetGithubRelease).toHaveBeenCalledTimes(1);
+      expect(fs.existsSync(path.join(testDir, DOWNLOAD_STATE_FILES.success))).toBe(true);
+    });
+  });
+
+  describe('abandoned claim scenario', () => {
+    it('should take over a claim that has stopped reporting progress', async () => {
+      // Claim last touched well beyond the stale threshold, eg. a worker that was killed
+      holdClaim(DOWNLOAD_CONFIG.staleClaimMs * 2);
+
+      const downloader = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
+      const options: OfficialOptions = {
+        wallet: 'metamask',
+        version: mockVersion,
+      };
+
+      mockGetGithubRelease.mockResolvedValue({
+        filename: 'test.zip',
+        downloadUrl: 'https://example.com/test.zip',
+        tag: 'v12.16.0',
+      });
+      mockDownloadGithubRelease.mockResolvedValue('/tmp/test.zip');
+      mockExtractZip.mockResolvedValue();
+
+      const result = await downloader(options);
+
+      expect(result).toBe(testDir);
+      expect(mockGetGithubRelease).toHaveBeenCalledTimes(1);
+      expect(fs.existsSync(claimDir())).toBe(false);
+    });
+
+    it('should keep waiting on a claim that is still reporting progress', async () => {
+      holdClaim();
+
+      const downloader = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
+      const options: OfficialOptions = {
+        wallet: 'metamask',
+        version: mockVersion,
+      };
+
+      // Holder keeps the claim alive, then succeeds
+      const heartbeat = setInterval(() => holdClaim(), 50);
+      setTimeout(() => {
+        clearInterval(heartbeat);
+        createStateFile(testDir, DOWNLOAD_STATE_FILES.success);
+        releaseClaim();
+      }, DOWNLOAD_CONFIG.pollIntervalMs + 500);
+
+      const result = await downloader(options);
+
+      expect(result).toBe(testDir);
+      expect(mockGetGithubRelease).not.toHaveBeenCalled();
+    }, 11000);
   });
 
   describe('file system operations', () => {
-    beforeEach(() => {
-      process.env.TEST_PARALLEL_INDEX = '0';
-    });
-
     it('should prepare root directory correctly', async () => {
       // Create some existing content
       const existingFile = path.join(testDir, 'existing.txt');
@@ -394,8 +478,6 @@ describe('createWalletDownloader', () => {
     });
 
     it('should handle non-string error objects', async () => {
-      process.env.TEST_PARALLEL_INDEX = '0';
-
       const downloader = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
       const options: OfficialOptions = {
         wallet: 'metamask',
@@ -412,39 +494,15 @@ describe('createWalletDownloader', () => {
       expect(fs.existsSync(errorFile)).toBe(true);
       expect(fs.readFileSync(errorFile, 'utf-8')).toBe('[object Object]');
     });
-
-    it('should handle very long polling scenario', async () => {
-      process.env.TEST_PARALLEL_INDEX = '1';
-
-      const downloader = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
-      const options: OfficialOptions = {
-        wallet: 'metamask',
-        version: mockVersion,
-      };
-
-      // Mock a longer delay before marking as complete
-      setTimeout(() => {
-        createStateFile(testDir, DOWNLOAD_STATE_FILES.success);
-      }, DOWNLOAD_CONFIG.pollIntervalMs + 500);
-
-      const result = await downloader(options);
-
-      expect(result).toBe(testDir);
-    }, 11000); // Increased timeout to 10 seconds
   });
 
   describe('concurrent execution', () => {
-    it('should handle multiple downloaders running simultaneously', async () => {
-      process.env.TEST_PARALLEL_INDEX = '0';
+    const options: OfficialOptions = {
+      wallet: 'metamask',
+      version: mockVersion,
+    };
 
-      const downloader1 = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
-      const downloader2 = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
-
-      const options: OfficialOptions = {
-        wallet: 'metamask',
-        version: mockVersion,
-      };
-
+    beforeEach(() => {
       mockGetGithubRelease.mockResolvedValue({
         filename: 'test.zip',
         downloadUrl: 'https://example.com/test.zip',
@@ -452,12 +510,29 @@ describe('createWalletDownloader', () => {
       });
       mockDownloadGithubRelease.mockResolvedValue('/tmp/test.zip');
       mockExtractZip.mockResolvedValue();
+    });
+
+    it('should handle multiple downloaders running simultaneously', async () => {
+      const downloader1 = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
+      const downloader2 = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
 
       // Run both downloaders simultaneously
       const [result1, result2] = await Promise.all([downloader1(options), downloader2(options)]);
 
       expect(result1).toBe(testDir);
       expect(result2).toBe(testDir);
-    });
+    }, 11000);
+
+    it('should download exactly once regardless of which worker gets there first', async () => {
+      const downloaders = Array.from({ length: 5 }, () =>
+        createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion),
+      );
+
+      const results = await Promise.all(downloaders.map((downloader) => downloader(options)));
+
+      expect(results).toEqual(Array(5).fill(testDir));
+      expect(mockGetGithubRelease).toHaveBeenCalledTimes(1);
+      expect(mockExtractZip).toHaveBeenCalledTimes(1);
+    }, 11000);
   });
 });

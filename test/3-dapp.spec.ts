@@ -1,6 +1,12 @@
 import { CoinbaseWallet, MetaMaskWallet } from '../src';
 import { forCoinbase, forMetaMask } from './helpers/itForWallet';
-import { testWithWallet as test } from './helpers/walletTest';
+import { testWithWallet as test, useProjectAccount } from './helpers/walletTest';
+
+// These are the only tests that transact, so make sure the wallet is back on the account this
+// project owns - earlier specs share the same worker and move the wallet around
+test.beforeAll(async ({ wallet }, info) => {
+  await useProjectAccount(wallet, info);
+});
 
 // Adding manually only needed for Metamask since Coinbase does this automatically
 test.beforeAll(async ({ wallet }) => {

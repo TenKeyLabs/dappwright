@@ -1,7 +1,11 @@
 import fs from 'fs';
 import { get } from 'https';
 import path from 'path';
+import { pipeline as pipelineCallback } from 'stream';
+import { promisify } from 'util';
 import { request } from './request';
+
+const pipeline = promisify(pipelineCallback);
 
 type GithubRelease = { downloadUrl: string; filename: string; tag: string };
 
@@ -66,16 +70,18 @@ export const getGithubRelease = (releasesUrl: string, version: string): Promise<
     });
   });
 
-export const downloadGithubRelease = (name: string, url: string, location: string): Promise<string> =>
-  new Promise(async (resolve) => {
-    if (!fs.existsSync(location)) {
-      fs.mkdirSync(location, { recursive: true });
-    }
-    const fileLocation = path.join(location, name);
-    const file = fs.createWriteStream(fileLocation);
-    const stream = await request(url);
-    stream.pipe(file);
-    stream.on('end', () => {
-      resolve(fileLocation);
-    });
-  });
+export const downloadGithubRelease = async (name: string, url: string, location: string): Promise<string> => {
+  if (!fs.existsSync(location)) {
+    fs.mkdirSync(location, { recursive: true });
+  }
+
+  const fileLocation = path.join(location, name);
+  const stream = await request(url);
+
+  // pipeline settles once the bytes have been flushed and the file is closed. Finishing any
+  // earlier - on the response's 'end', which only means the last chunk left the socket - hands
+  // back a file still short of its tail, and unzipping it fails with "Bad archive".
+  await pipeline(stream, fs.createWriteStream(fileLocation));
+
+  return fileLocation;
+};

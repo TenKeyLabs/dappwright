@@ -14,7 +14,16 @@ export const DOWNLOAD_STATE_FILES = {
   error: '.error',
 } as const;
 
+// Suffix for the directory used to claim ownership of a download
+export const DOWNLOAD_CLAIM_SUFFIX = '.claim';
+
 // Configuration constants
 export const DOWNLOAD_CONFIG = {
   pollIntervalMs: 2000,
+  // How often the claim holder touches the claim directory to signal it is still alive
+  heartbeatIntervalMs: 2000,
+  // A claim that hasn't been touched within this window is considered abandoned
+  staleClaimMs: 30000,
+  // Upper bound on how long a worker will wait for another worker's download
+  maxWaitMs: 600000,
 } as const;
