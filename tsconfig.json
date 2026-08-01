@@ -28,6 +28,9 @@
     "vitest.config.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    // The test dapp is an ESM package with its own tsconfig - Hardhat 3 only runs in ESM
+    // projects, and this project compiles as commonjs
+    "test/dapp"
   ]
 }

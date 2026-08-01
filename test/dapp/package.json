@@ -5,7 +5,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "start": "node --require ts-node/register start.ts"
+    "start": "tsx start.ts"
   },
   "license": "MIT",
   "dependencies": {
@@ -15,9 +15,10 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "ganache": "^7.4.3",
+    "hardhat": "^3.12.0",
     "serve-handler": "6.1.6",
-    "ts-node": "10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.0"
-  }
+  },
+  "type": "module"
 }

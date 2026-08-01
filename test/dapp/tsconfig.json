@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    // The dapp is an ESM package because Hardhat 3 only runs in one, so it needs its own
+    // config - the root project compiles as commonjs, where import.meta is not allowed
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "strict": false,
+    "lib": ["es2022", "dom"],
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "noEmit": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "public"]
+}
