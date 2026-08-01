@@ -28,15 +28,40 @@ export const getWalletType = (id: WalletIdOptions): WalletTypes => {
   return walletType;
 };
 
-export const closeWalletSetupPopup = (
+export const closeWalletSetupPopup = async (
   id: WalletIdOptions,
   browserContext: BrowserContext,
   activeWalletPage: Page,
-): void => {
-  browserContext.on('page', async (page) => {
-    if (page !== activeWalletPage && page.url() === walletHomeUrl(id)) {
-      await page.close();
+): Promise<void> => {
+  const homeUrl = new URL(walletHomeUrl(id));
+
+  // The stray page settles on the same route as the wallet's own page (eg. home.html#/), so the
+  // hash can't tell them apart - but an approval popup is always a request, and carries either
+  // its own path (MetaMask's notification.html) or the request in a query string (Coinbase
+  // serves its popups from index.html). Match the home page, minus anything asking for input.
+  const isStrayWalletPage = (page: Page): boolean => {
+    try {
+      const pageUrl = new URL(page.url());
+      return pageUrl.origin === homeUrl.origin && pageUrl.pathname === homeUrl.pathname && !pageUrl.search;
+    } catch {
+      return false;
     }
+  };
+
+  const closeStrayPage = async (page: Page): Promise<void> => {
+    if (page === activeWalletPage || page.isClosed() || !isStrayWalletPage(page)) return;
+    await page.close().catch(() => undefined);
+  };
+
+  await Promise.all(browserContext.pages().map(closeStrayPage));
+
+  browserContext.on('page', async (page) => {
+    if (page === activeWalletPage) return;
+
+    // A newly opened page reports about:blank until it navigates. Checking the url straight off
+    // the event is why the stray page used to survive setup.
+    await page.waitForLoadState('domcontentloaded').catch(() => undefined);
+    await closeStrayPage(page);
   });
 };
 
