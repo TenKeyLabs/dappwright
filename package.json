@@ -62,10 +62,10 @@
     "@types/node": "^26.0.1",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
     "@typescript-eslint/parser": "^8.29.0",
-    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/coverage-v8": "^4.1",
     "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.0",
-    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.2.0",
     "globals": "^17.3.0",
     "knip": "^6.23.0",
@@ -73,7 +73,7 @@
     "prettier": "^3.0.3",
     "rimraf": "^6.0.1",
     "typescript": "^6.0",
-    "vitest": "^4.0.15"
+    "vitest": "^4.1"
   },
   "peerDependencies": {
     "playwright-core": ">1.0"
