@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.10
+
+### Patch Changes
+
+- [#573](https://github.com/TenKeyLabs/dappwright/pull/573) [`dc5685c`](https://github.com/TenKeyLabs/dappwright/commit/dc5685c0b1ccd243edc6537d96e8bb6c615dcb19) Thanks [@osis](https://github.com/osis)! - fix(metamask): closes the duplicate wallet page left open after setup
+
 ## 2.13.9
 
 ### Patch Changes
