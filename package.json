@@ -73,7 +73,7 @@
     "microbundle": "^0.15.1",
     "prettier": "^3.0.3",
     "rimraf": "^6.0.1",
-    "typescript": "^6.0",
+    "typescript": "^7.0",
     "vitest": "^4.0.15"
   },
   "peerDependencies": {
