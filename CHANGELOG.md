@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.11
+
+### Patch Changes
+
+- [#579](https://github.com/TenKeyLabs/dappwright/pull/579) [`0db98a0`](https://github.com/TenKeyLabs/dappwright/commit/0db98a0663b22e3610ffc200ccdf2f29effc67f7) Thanks [@osis](https://github.com/osis)! - chore: stops building a browser (UMD) bundle
+
 ## 2.13.10
 
 ### Patch Changes
