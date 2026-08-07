@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.12
+
+### Patch Changes
+
+- [#582](https://github.com/TenKeyLabs/dappwright/pull/582) [`db2617a`](https://github.com/TenKeyLabs/dappwright/commit/db2617a728f040fba423d40b127bb4538a305b16) Thanks [@osis](https://github.com/osis)! - chore(coinbase): bump version to 3.143.0
+
 ## 2.13.11
 
 ### Patch Changes
