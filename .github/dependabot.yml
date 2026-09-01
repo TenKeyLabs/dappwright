@@ -13,13 +13,16 @@ updates:
       interval: monthly
     commit-message:
       prefix: 'chore:'
+    ignore:
+      - dependency-name: typescript
+        versions: ['7.0.x']
     groups:
       major:
-        patterns: ["*"]
+        patterns: ['*']
         update-types:
           - major
       minor-patch:
-        patterns: ["*"]
+        patterns: ['*']
         update-types:
           - minor
           - patch
