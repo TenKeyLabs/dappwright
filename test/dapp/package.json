@@ -14,11 +14,11 @@
     "solc": "0.8.36"
   },
   "devDependencies": {
-    "@types/node": "^22.10.2",
+    "@types/node": "^26.4.0",
     "hardhat": "^3.15.0",
     "serve-handler": "6.1.7",
     "tsx": "^4.23.13",
-    "typescript": "^6.0"
+    "typescript": "^7.0"
   },
   "type": "module"
 }
