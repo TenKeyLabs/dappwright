@@ -35,9 +35,6 @@ jobs:
         id: changesets
         uses: changesets/action@v2
         with:
-          title: "chore: version packages"
-          commit: "chore: version packages"
-          publish: yarn changeset:publish
-          oidcAuth: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          pr-title: "chore: version packages"
+          commit-message: "chore: version packages"
+          publish-script: yarn changeset:publish
