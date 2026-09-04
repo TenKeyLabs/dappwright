@@ -12,7 +12,7 @@ export default defineConfig({
   maxFailures: process.env.CI ? 0 : 1,
   reporter: [['list'], ['html', { open: 'on-failure' }]],
   webServer: {
-    command: 'cd test/dapp && yarn start',
+    command: 'cd test/dapp && pnpm run start',
     url: 'http://localhost:8080',
     timeout: 120 * 1000,
     reuseExistingServer: false,

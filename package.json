@@ -17,11 +17,12 @@
   "engines": {
     "node": ">=22"
   },
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
-    "lint": "yarn run lint:code && yarn run lint:unused",
-    "lint:fix": "yarn run lint:code --fix",
+    "lint": "pnpm run lint:code && pnpm run lint:unused",
+    "lint:fix": "pnpm run lint:code --fix",
     "lint:code": "eslint",
     "lint:unused": "knip",
     "test": "playwright test",
@@ -32,7 +33,7 @@
     "test:unit:watch": "vitest --watch",
     "test:unit:run": "vitest run",
     "test:unit:coverage": "vitest run --coverage",
-    "changeset:publish": "yarn build && changeset publish"
+    "changeset:publish": "pnpm run build && changeset publish"
   },
   "repository": {
     "type": "git",

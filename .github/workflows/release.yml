@@ -20,16 +20,17 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v7
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js 22
         uses: actions/setup-node@v7
         with:
+          cache: pnpm
           node-version: 22
 
-      - name: Update NPM to latest
-        run: npm install -g npm@latest
-
       - name: Install Dependencies
-        run: yarn
+        run: pnpm install --frozen-lockfile
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
@@ -37,4 +38,4 @@ jobs:
         with:
           pr-title: "chore: version packages"
           commit-message: "chore: version packages"
-          publish-script: yarn changeset:publish
+          publish-script: pnpm run changeset:publish

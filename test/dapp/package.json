@@ -4,6 +4,7 @@
   "engines": {
     "node": ">=22"
   },
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
     "start": "tsx start.ts"
   },
@@ -20,8 +21,5 @@
     "tsx": "^4.23.13",
     "typescript": "^7.0"
   },
-  "type": "module",
-  "resolutions": {
-    "tmp": "^0.2.6"
-  }
+  "type": "module"
 }
