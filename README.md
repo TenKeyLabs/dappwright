@@ -1,4 +1,4 @@
-# dAppwright
+# dAppwright [![npm version](https://img.shields.io/npm/v/@tenkeylabs/dappwright.svg?style=flat-square&color=cb3837&logo=npm)](https://www.npmjs.com/package/@tenkeylabs/dappwright) [![tests](https://img.shields.io/github/actions/workflow/status/TenKeyLabs/dappwright/test.yaml?branch=main&style=flat-square&label=tests&logo=github)](https://github.com/TenKeyLabs/dappwright/actions/workflows/test.yaml) [![node](https://img.shields.io/node/v/@tenkeylabs/dappwright.svg?style=flat-square&color=339933&logo=node.js&logoColor=white)](https://nodejs.org) [![license](https://img.shields.io/npm/l/@tenkeylabs/dappwright.svg?style=flat-square&color=blue)](./LICENSE)
 
 E2E testing for dApps using Playwright + MetaMask & Coinbase Wallet
 
