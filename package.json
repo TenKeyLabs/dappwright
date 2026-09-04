@@ -2,7 +2,6 @@
   "name": "@tenkeylabs/dappwright",
   "version": "2.13.12",
   "description": "End-to-End (E2E) testing for dApps using Playwright + MetaMask",
-  "source": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
@@ -19,9 +18,8 @@
     "node": ">=22"
   },
   "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "microbundle --target node --format esm,cjs --tsconfig tsconfig.build.json --external os,https,zlib,stream,util,events,path,fs,module,fsevents,crypto,assert,process,tty,constants,readline,v8,node:module,@playwright/test",
-    "dev": "microbundle --target node --format esm,cjs --tsconfig tsconfig.build.json --external os,https,zlib,stream,util,events,path,fs,module,fsevents,crypto,assert,process,tty,constants,readline,v8,node:module,@playwright/test watch",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
     "lint": "yarn run lint:code && yarn run lint:unused",
     "lint:fix": "yarn run lint:code --fix",
     "lint:code": "eslint",
@@ -69,9 +67,8 @@
     "eslint-plugin-prettier": "^5.2.0",
     "globals": "^17.3.0",
     "knip": "^6.23.0",
-    "microbundle": "^0.15.1",
     "prettier": "^3.0.3",
-    "rimraf": "^6.0.1",
+    "tsdown": "^0.23.0",
     "typescript": "^6.0",
     "vitest": "^4.1"
   },

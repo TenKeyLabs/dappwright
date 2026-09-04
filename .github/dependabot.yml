@@ -26,3 +26,20 @@ updates:
         update-types:
           - minor
           - patch
+  - package-ecosystem: npm
+    directory: /test/dapp
+    target-branch: main
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: 'chore:'
+    groups:
+      major:
+        patterns: ['*']
+        update-types:
+          - major
+      minor-patch:
+        patterns: ['*']
+        update-types:
+          - minor
+          - patch

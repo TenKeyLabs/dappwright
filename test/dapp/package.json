@@ -9,16 +9,19 @@
   },
   "license": "MIT",
   "dependencies": {
+    "solc": "0.8.30",
     "web3": "4.16.0",
-    "web3-eth-contract": "^4.7.2",
-    "solc": "0.8.30"
+    "web3-eth-contract": "^4.7.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "hardhat": "^3.12.0",
-    "serve-handler": "6.1.6",
+    "serve-handler": "6.1.7",
     "tsx": "^4.19.2",
     "typescript": "^5.0"
   },
-  "type": "module"
+  "type": "module",
+  "resolutions": {
+    "tmp": "^0.2.6"
+  }
 }
