@@ -35,11 +35,11 @@ updates:
       prefix: 'chore:'
     groups:
       major:
-        patterns: ["*"]
+        patterns: ['*']
         update-types:
           - major
       minor-patch:
-        patterns: ["*"]
+        patterns: ['*']
         update-types:
           - minor
           - patch

@@ -3,8 +3,9 @@
     "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node10",
-    // microbundle's rollup-plugin-typescript2 hard-codes moduleResolution=node10,
-    // so this deprecation cannot be resolved by switching resolution modes here.
+    // node10 resolution is deprecated in TypeScript 6 and removed in 7. Moving off
+    // it is a separate migration (it forces `module` off commonjs), so silence it
+    // for now.
     "ignoreDeprecations": "6.0",
     // TypeScript 6 flipped `strict` to default-on; this project was written
     // against the pre-6 default.

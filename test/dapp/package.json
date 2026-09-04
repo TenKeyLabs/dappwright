@@ -20,5 +20,8 @@
     "tsx": "^4.23.13",
     "typescript": "^7.0"
   },
-  "type": "module"
+  "type": "module",
+  "resolutions": {
+    "tmp": "^0.2.6"
+  }
 }
