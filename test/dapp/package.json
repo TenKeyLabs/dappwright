@@ -12,13 +12,13 @@
   "dependencies": {
     "web3": "4.16.0",
     "web3-eth-contract": "^4.7.2",
-    "solc": "0.8.36"
+    "solc": "0.8.37"
   },
   "devDependencies": {
-    "@types/node": "^26.4.0",
-    "hardhat": "^3.15.0",
+    "@types/node": "^26.6.2",
+    "hardhat": "^3.18.0",
     "serve-handler": "6.1.7",
-    "tsx": "^4.23.13",
+    "tsx": "^4.23.15",
     "typescript": "^7.0"
   },
   "type": "module"
