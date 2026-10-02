@@ -15,7 +15,7 @@
     "solc": "0.8.37"
   },
   "devDependencies": {
-    "@types/node": "^26.6.2",
+    "@types/node": "^26.6.3",
     "hardhat": "^3.18.0",
     "serve-handler": "6.1.7",
     "tsx": "^4.23.15",
