@@ -1,10 +1,11 @@
 import { Page } from 'playwright-core';
-import { clickOnButton, clickOnElement, performPopupAction, waitForChromeState } from '../../../helpers';
+import { clickOnButton, performPopupAction, waitForChromeState } from '../../../helpers';
 import { AddNetwork, UpdateNetworkRpc } from '../../../types';
 import { closePopup } from '../setup/setupActions';
 import {
   findNetworkListItem,
   getErrorMessage,
+  goHome,
   networkListItem,
   openNetworkDropdown,
   openNetworkSettings,
@@ -34,9 +35,8 @@ export const switchNetwork =
 export const addNetwork =
   (page: Page) =>
   async ({ networkName, rpc, chainId, symbol }: AddNetwork): Promise<void> => {
-    await openNetworkDropdown(page);
-    await clickOnElement(page, 'Custom');
-    await clickOnButton(page, 'Add custom network');
+    await openNetworkSettings(page);
+    await page.getByTestId('networks-page-add-custom-network-button').click();
 
     await page.getByTestId('network-form-network-name').fill(networkName);
     await page.getByTestId('test-add-rpc-drop-down').click();
@@ -48,12 +48,12 @@ export const addNetwork =
 
     const errorMessage = await getErrorMessage(page);
     if (errorMessage) {
-      await page.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
+      await goHome(page);
       throw new SyntaxError(errorMessage);
     }
 
     await clickOnButton(page, 'Save');
-    await page.getByTestId('modal-header-close-button').click();
+    await goHome(page);
 
     // This popup is fairly random in terms of timing
     // and can show before switch to network click is gone
@@ -77,6 +77,7 @@ export const deleteNetwork =
     await clickOnButton(page, 'Delete');
 
     await waitForChromeState(page);
+    await goHome(page);
   };
 
 export const hasNetwork =
@@ -86,7 +87,7 @@ export const hasNetwork =
     await openNetworkSettings(page);
 
     const found = await networkListItem(page, name).isVisible();
-    await page.getByRole('dialog').getByRole('button', { name: 'Close' }).first().click();
+    await goHome(page);
 
     return found;
   };
@@ -115,4 +116,5 @@ export const updateNetworkRpc =
     await clickOnButton(page, 'Add URL');
 
     await clickOnButton(page, 'Save');
+    await goHome(page);
   };

@@ -1,40 +1,45 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import type { Locator, Page } from 'playwright-core';
 import { findNetworkListItem } from './selectors';
 
 describe('findNetworkListItem', () => {
-  it('returns the clickable row inside the Select network dialog, not its text label', async () => {
-    const row = { count: vi.fn().mockResolvedValue(1) };
-    const label = {
-      isVisible: vi.fn().mockResolvedValue(true),
-      locator: vi.fn().mockReturnValue(row),
-    };
-    const labels = {
-      first: vi.fn().mockReturnValue({ waitFor: vi.fn().mockResolvedValue(undefined) }),
-      count: vi.fn().mockResolvedValue(1),
-      nth: vi.fn().mockReturnValue(label),
-    };
-    const popularTab = {
-      getAttribute: vi.fn().mockResolvedValue('true'),
-      click: vi.fn(),
-    };
-    const picker = {
-      waitFor: vi.fn().mockResolvedValue(undefined),
-      getByText: vi.fn().mockReturnValue(labels),
-      getByRole: vi.fn().mockReturnValue(popularTab),
-    };
-    const dialogs = {
-      filter: vi.fn().mockReturnThis(),
-      last: vi.fn().mockReturnValue(picker),
-    };
-    const page = {
-      getByRole: vi.fn().mockReturnValue(dialogs),
-    } as unknown as Page;
+  let item: { waitFor: Mock };
+  let rows: { filter: Mock };
+  let picker: { waitFor: Mock; getByTestId: Mock };
+  let page: Page;
 
+  beforeEach(() => {
+    item = { waitFor: vi.fn().mockResolvedValue(undefined) };
+    rows = { filter: vi.fn().mockReturnValue({ first: vi.fn().mockReturnValue(item) }) };
+    picker = {
+      waitFor: vi.fn().mockResolvedValue(undefined),
+      getByTestId: vi.fn().mockReturnValue(rows),
+    };
+    const dialogs = { filter: vi.fn().mockReturnValue(picker) };
+    page = {
+      getByRole: vi.fn().mockImplementation((role: string) => (role === 'dialog' ? dialogs : 'heading')),
+      getByText: vi.fn().mockReturnValue('label'),
+    } as unknown as Page;
+  });
+
+  it('returns the network picker row with the exact network name', async () => {
     const result = await findNetworkListItem(page, 'Anvil Local');
 
-    expect(result).toBe(row as unknown as Locator);
-    expect(label.locator).toHaveBeenCalledWith('xpath=ancestor::*[starts-with(@data-testid, "network-list-item-")][1]');
-    expect(popularTab.click).not.toHaveBeenCalled();
+    expect(result).toBe(item as unknown as Locator);
+    expect(page.getByRole).toHaveBeenCalledWith('heading', { name: 'Select network', exact: true });
+    const rowTestId = picker.getByTestId.mock.calls[0][0] as RegExp;
+    expect(rowTestId.test('home-network-filter-custom-0x7a69')).toBe(true);
+    expect(rowTestId.test('home-network-filter-test-0xaa36a7')).toBe(true);
+    expect(rowTestId.test('home-network-filter-modal')).toBe(false);
+    expect(page.getByText).toHaveBeenCalledWith('Anvil Local', { exact: true });
+    expect(rows.filter).toHaveBeenCalledWith({ has: 'label' });
+  });
+
+  it('throws when the network is not listed', async () => {
+    item.waitFor.mockRejectedValue(new Error('timeout'));
+
+    await expect(findNetworkListItem(page, 'Missing')).rejects.toThrow(
+      'MetaMask network "Missing" was not found in the network picker',
+    );
   });
 });

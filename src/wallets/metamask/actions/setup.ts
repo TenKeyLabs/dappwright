@@ -26,12 +26,15 @@ export const signin = (page: Page) => async (): Promise<void> => {
   await performPopupAction(page, async (popup) => {
     await popup.waitForURL(/(connect)|(signature-request)/);
 
-    const signinTextVisible = await popup.getByText(/Connect this website/).isVisible();
-    if (signinTextVisible) {
+    // A site that is not connected yet asks to connect before the signature request, and the
+    // popup can match the URL before it renders, so wait for whichever step shows up first
+    const connectButton = popup.getByTestId('confirm-btn');
+    const signInButton = popup.getByTestId('confirm-footer-button');
+    await connectButton.or(signInButton).waitFor();
+    if (await connectButton.isVisible()) {
       await clickConfirm(popup);
     }
 
-    const signInButton = popup.getByTestId('confirm-footer-button');
     await signInButton.scrollIntoViewIfNeeded();
     await signInButton.click();
 

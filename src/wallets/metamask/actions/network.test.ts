@@ -10,7 +10,6 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock('../../../helpers', () => ({
   clickOnButton: vi.fn(),
-  clickOnElement: vi.fn(),
   performPopupAction: vi.fn(),
   waitForChromeState: mocks.waitForChromeState,
 }));
