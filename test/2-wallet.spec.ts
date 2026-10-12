@@ -20,7 +20,13 @@ const countAccounts = async (wallet: Dappwright): Promise<number> => {
   } else {
     await wallet.page.getByTestId('portfolio-header--switcher-cell-pressable').click();
     count = (await wallet.page.$$('//button[@data-testid="wallet-switcher--wallet-item-cell-pressable"]')).length;
-    await wallet.page.getByTestId('portfolio-header--switcher-cell-pressable').click();
+
+    // The open switcher's backdrop covers the header toggle, so close it by clicking the backdrop
+    const dropdown = wallet.page.getByTestId('wallet-switcher--dropdown');
+    const backdrop = dropdown.locator('..');
+    const box = await backdrop.boundingBox();
+    await backdrop.click({ position: { x: box!.width - 10, y: 10 } });
+    await dropdown.waitFor({ state: 'hidden' });
   }
 
   return count;
