@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.14
+
+### Patch Changes
+
+- [#600](https://github.com/TenKeyLabs/dappwright/pull/600) [`5a8cee3`](https://github.com/TenKeyLabs/dappwright/commit/5a8cee3254db8fd1aed9b5053730aae4632505b6) Thanks [@osis](https://github.com/osis)! - chore(coinbase): bump version to 3.149.0
+
 ## 2.13.13
 
 ### Patch Changes
