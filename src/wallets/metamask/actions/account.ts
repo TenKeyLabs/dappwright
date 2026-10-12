@@ -1,7 +1,10 @@
 import { expect } from '@playwright/test';
 import { Page } from 'playwright-core';
-import { clickOnButton, typeOnInputField, waitForChromeState } from '../../../helpers';
-import { accountList, accountListItem, clickBackButton, getErrorMessage, openAccountMenu } from './helpers';
+import { waitForChromeState } from '../../../helpers';
+import { accountList, accountListItem, getErrorMessage, goHome, openAccountMenu } from './helpers';
+
+// A row's centre can land on its address menu, so select an account by clicking its name
+const accountNameRegex = /^multichain-account-cell-name-/;
 
 export const createAccount =
   (page: Page) =>
@@ -13,14 +16,18 @@ export const createAccount =
     await page.getByTestId('add-multichain-account-button').click();
     await expect(accountList(page)).toHaveCount(accountCount + 1);
 
+    // Accounts are grouped by wallet with imported accounts listed after the recovery phrase
+    // wallet, so the new account is the last one derived from the phrase rather than the last row
+    const newAccount = page.getByTestId(/^multichain-account-cell-entropy:/).last();
+
     if (name) {
-      await page.getByTestId('multichain-account-cell-end-accessory').last().click();
+      await newAccount.getByTestId('multichain-account-cell-end-accessory').click();
       await page.getByLabel('Rename').click();
       await page.getByTestId('account-name-input').getByRole('textbox').fill(name);
-      await page.getByLabel('Confirm').click();
+      await page.getByTestId('account-name-confirm-button').click();
     }
 
-    await accountList(page).last().click();
+    await newAccount.getByTestId(accountNameRegex).click();
 
     await waitForChromeState(page);
   };
@@ -45,7 +52,7 @@ export const switchAccount =
     await page.bringToFront();
     await openAccountMenu(page);
 
-    await accountListItem(page, name).click();
+    await accountListItem(page, name).getByTestId(accountNameRegex).click();
   };
 
 export const countAccounts = (_: Page) => async (): Promise<number> => {
@@ -62,17 +69,15 @@ export const importPk =
 
     // MetaMask account syncing can take a very long time.
     await page.getByTestId('account-list-add-wallet-button').click();
-    await page.getByTestId('add-wallet-modal-import-account').click();
+    await page.getByTestId('choose-wallet-type-import-account').click();
 
-    await typeOnInputField(page, 'Enter your private key string here:', privateKey);
+    await page.getByLabel('Enter your private key string here:').fill(privateKey);
     await page.getByTestId('import-account-confirm-button').click();
 
+    // A successful import returns to home on its own, while a rejected key stays on the form
     const errorMessage = await getErrorMessage(page);
     if (errorMessage) {
-      await clickOnButton(page, 'Cancel');
-      await clickBackButton(page);
+      await goHome(page);
       throw new SyntaxError(errorMessage);
     }
-
-    await clickBackButton(page);
   };

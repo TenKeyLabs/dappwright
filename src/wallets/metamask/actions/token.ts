@@ -1,23 +1,36 @@
 import { Page } from 'playwright-core';
 import { AddToken } from '../../../types';
+import { goHome } from './helpers';
 
 export const addToken =
   (page: Page) =>
-  async ({ tokenAddress, symbol }: AddToken): Promise<void> => {
+  async ({ tokenAddress, symbol, decimals }: AddToken): Promise<void> => {
     await page.bringToFront();
 
     await page.getByTestId('asset-list-control-bar-action-button').click();
-    await page.getByTestId('importTokens__button').click();
-    await page.getByTestId('import-tokens-modal-custom-address').fill(tokenAddress);
+    await page.getByTestId('manageTokens__button').click();
+    await page.getByTestId('token-management-add-custom-token-button').click();
+    await page.getByRole('textbox', { name: 'Token contract address' }).fill(tokenAddress);
 
+    // The symbol and decimal fields appear once the address is entered, prefilled when MetaMask
+    // can read them from the contract
+    const symbolInput = page.getByRole('textbox', { name: 'Token symbol' });
+    const decimalsInput = page.getByRole('spinbutton', { name: 'Token decimal' });
+    await symbolInput.waitFor();
     await page.waitForTimeout(500);
 
     if (symbol) {
-      await page.getByTestId('import-tokens-modal-custom-symbol').fill(symbol);
+      await symbolInput.fill(symbol);
+    }
+    if (decimals !== undefined) {
+      await decimalsInput.fill(String(decimals));
+    } else if (!(await decimalsInput.inputValue())) {
+      await decimalsInput.fill('18');
     }
 
-    await page.getByTestId('import-tokens-button-next').click();
-    await page.getByTestId('import-tokens-modal-import-button').click();
+    await page.getByTestId('custom-token-import-submit-button').click();
+    await page.getByTestId('token-management-custom-token-success-toast').waitFor();
+    await goHome(page);
   };
 
 export const getTokenBalance =

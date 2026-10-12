@@ -23,6 +23,12 @@ type GithubReleaseResponse = {
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
+// Releases can ship a Flask (developer) build and signature files alongside the stable
+// Chrome zip, and their names also contain "chrome" (e.g. metamask-chrome-13.50.0-flask.0.zip),
+// so only a plain Chrome zip is accepted.
+export const isChromeReleaseAsset = (name: string): boolean =>
+  name.includes('chrome') && name.endsWith('.zip') && !name.includes('flask');
+
 export const getGithubRelease = (releasesUrl: string, version: string): Promise<GithubRelease> =>
   new Promise((resolve, reject) => {
     const tagRegex = RegExp(`v?${version}$`, 'img');
@@ -51,7 +57,7 @@ export const getGithubRelease = (releasesUrl: string, version: string): Promise<
           if (result.draft) continue;
           if (version === 'latest' || tagRegex.test(result.tag_name)) {
             for (const asset of result.assets) {
-              if (asset.name.includes('chrome'))
+              if (isChromeReleaseAsset(asset.name))
                 resolve({
                   downloadUrl: asset.browser_download_url,
                   filename: asset.name,
