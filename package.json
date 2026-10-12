@@ -1,6 +1,6 @@
 {
   "name": "@tenkeylabs/dappwright",
-  "version": "2.13.12",
+  "version": "2.13.13",
   "description": "End-to-End (E2E) testing for dApps using Playwright + MetaMask",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.13.13
+
+### Patch Changes
+
+- [#598](https://github.com/TenKeyLabs/dappwright/pull/598) [`3814499`](https://github.com/TenKeyLabs/dappwright/commit/3814499e51bd9644a3003ac8f1db58cb07cc21c6) Thanks [@osis](https://github.com/osis)! - fix: release downloads skip Flask builds and signature files now that their names also contain "chrome"
+
+- [#598](https://github.com/TenKeyLabs/dappwright/pull/598) [`3814499`](https://github.com/TenKeyLabs/dappwright/commit/3814499e51bd9644a3003ac8f1db58cb07cc21c6) Thanks [@osis](https://github.com/osis)! - chore: bumps metamask to 13.50.0
+
 ## 2.13.12
 
 ### Patch Changes
