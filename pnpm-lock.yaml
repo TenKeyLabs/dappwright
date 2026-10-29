@@ -123,7 +123,7 @@ importers:
         specifier: ^3.0.1
         version: 3.0.3
       '@playwright/test':
-        specifier: ^1.62.1
+        specifier: ^1.64.1
         version: 1.64.1
       '@types/node':
         specifier: ^26.0.1
