@@ -1,5 +1,5 @@
 import { Page } from 'playwright-core';
-import { performPopupAction, waitForChromeState } from '../../../helpers';
+import { performPopupAction } from '../../../helpers';
 import { closePopup } from '../setup/setupActions';
 import { openAccountOptionsMenu } from './helpers';
 import { clickConfirm } from './transaction';
@@ -37,7 +37,5 @@ export const signin = (page: Page) => async (): Promise<void> => {
 
     await signInButton.scrollIntoViewIfNeeded();
     await signInButton.click();
-
-    await waitForChromeState(page);
   });
 };

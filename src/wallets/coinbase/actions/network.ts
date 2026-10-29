@@ -1,5 +1,4 @@
 import { Page } from 'playwright-core';
-import { waitForChromeState } from '../../../helpers';
 import { AddNetwork, UpdateNetworkRpc } from '../../../types';
 import { goHome } from './helpers';
 
@@ -30,7 +29,8 @@ export const addNetwork =
       throw new SyntaxError(errorMessage);
     }
 
-    await waitForChromeState(page);
+    // Saving returns to the network list once the network is stored
+    await page.getByTestId('network-list-search').waitFor();
     await goHome(page);
   };
 

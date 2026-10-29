@@ -1,5 +1,4 @@
 import { Page } from 'playwright-core';
-import { waitForChromeState } from '../../../helpers';
 import { WalletOptions } from '../../wallets';
 import { goHome } from './helpers';
 
@@ -34,8 +33,9 @@ export async function getStarted(
   await page.getByTestId('terms-and-privacy-policy').check();
   await page.getByTestId('btn-password-continue').click();
 
-  // Allow extension state/settings to settle
-  await waitForChromeState(page);
+  // The portfolio shows a placeholder header until the new wallet has loaded, so wait for the real
+  // one before anything reloads the page
+  await page.getByTestId('portfolio-header--switcher-cell-pressable').waitFor();
 }
 
 export const signin = async (): Promise<void> => {

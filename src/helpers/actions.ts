@@ -1,10 +1,6 @@
 import { Page } from 'playwright-core';
 import { Step, WalletOptions } from '../wallets/wallets';
 
-export const waitForChromeState = async (page: Page): Promise<void> => {
-  await page.waitForTimeout(3000);
-};
-
 export const clickOnButton = async (page: Page, text: string): Promise<void> => {
   await page.getByRole('button', { name: text, exact: true }).click();
 };

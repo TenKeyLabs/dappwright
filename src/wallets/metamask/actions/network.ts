@@ -1,5 +1,5 @@
 import { Page } from 'playwright-core';
-import { clickOnButton, performPopupAction, waitForChromeState } from '../../../helpers';
+import { clickOnButton, performPopupAction } from '../../../helpers';
 import { AddNetwork, UpdateNetworkRpc } from '../../../types';
 import { closePopup } from '../setup/setupActions';
 import {
@@ -9,6 +9,7 @@ import {
   networkListItem,
   openNetworkDropdown,
   openNetworkSettings,
+  waitForSelectedNetwork,
 } from './helpers';
 
 export const switchNetwork =
@@ -29,7 +30,7 @@ export const switchNetwork =
       await closeButton.waitFor({ state: 'hidden' }).catch(() => undefined);
     }
 
-    await waitForChromeState(page);
+    await waitForSelectedNetwork(page, network);
   };
 
 export const addNetwork =
@@ -53,13 +54,14 @@ export const addNetwork =
     }
 
     await clickOnButton(page, 'Save');
+    // Saving returns to the networks list once the background has stored the network
+    await networkListItem(page, networkName).waitFor();
     await goHome(page);
 
     // This popup is fairly random in terms of timing
     // and can show before switch to network click is gone
     await closePopup(page);
 
-    await waitForChromeState(page);
     await switchNetwork(page)(networkName);
   };
 
@@ -76,7 +78,8 @@ export const deleteNetwork =
     await page.getByTestId('network-list-item-options-delete').click();
     await clickOnButton(page, 'Delete');
 
-    await waitForChromeState(page);
+    // The confirmation closes before the background has removed the network, so wait for its row to go
+    await networkListItem(page, name).waitFor({ state: 'hidden' });
     await goHome(page);
   };
 
@@ -95,7 +98,6 @@ export const hasNetwork =
 export const confirmNetworkSwitch = (page: Page) => async (): Promise<void> => {
   await performPopupAction(page, async (popup) => {
     await popup.getByTestId('page-container-footer-next').click();
-    await waitForChromeState(page);
   });
 };
 
@@ -116,5 +118,7 @@ export const updateNetworkRpc =
     await clickOnButton(page, 'Add URL');
 
     await clickOnButton(page, 'Save');
+    // Saving returns to the networks list once the background has stored the change
+    await page.getByTestId('networks-page-list').waitFor();
     await goHome(page);
   };

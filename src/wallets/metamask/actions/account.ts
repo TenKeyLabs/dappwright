@@ -1,7 +1,14 @@
 import { expect } from '@playwright/test';
 import { Page } from 'playwright-core';
-import { waitForChromeState } from '../../../helpers';
-import { accountList, accountListItem, getErrorMessage, goHome, openAccountMenu } from './helpers';
+import {
+  accountList,
+  accountListItem,
+  clickBackButton,
+  getErrorMessage,
+  goHome,
+  openAccountMenu,
+  waitForSelectedAccount,
+} from './helpers';
 
 // A row's centre can land on its address menu, so select an account by clicking its name
 const accountNameRegex = /^multichain-account-cell-name-/;
@@ -27,9 +34,11 @@ export const createAccount =
       await page.getByTestId('account-name-confirm-button').click();
     }
 
-    await newAccount.getByTestId(accountNameRegex).click();
+    const newAccountName = newAccount.getByTestId(accountNameRegex);
+    const selectedName = name ?? (await newAccountName.innerText());
+    await newAccountName.click();
 
-    await waitForChromeState(page);
+    await waitForSelectedAccount(page, selectedName);
   };
 
 export const deleteAccount =
@@ -43,7 +52,10 @@ export const deleteAccount =
     await page.getByTestId('account-details-row-remove-account').click();
     await page.getByRole('button', { name: 'Remove', exact: true }).click();
 
-    await waitForChromeState(page);
+    // Removing routes home before the background has finished, so confirm the account has left the list
+    await openAccountMenu(page);
+    await accountListItem(page, name).waitFor({ state: 'hidden' });
+    await clickBackButton(page);
   };
 
 export const switchAccount =
