@@ -17,7 +17,7 @@ vi.mock('../setup/setupActions', () => ({ closePopup: mocks.closePopup }));
 
 vi.mock('./helpers', () => ({
   findNetworkListItem: mocks.findNetworkListItem,
-  getErrorMessage: vi.fn(),
+  errorMessage: vi.fn(),
   networkListItem: vi.fn(),
   openNetworkDropdown: mocks.openNetworkDropdown,
   openNetworkSettings: vi.fn(),

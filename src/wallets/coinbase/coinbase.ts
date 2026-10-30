@@ -32,6 +32,7 @@ export class CoinbaseWallet extends Wallet {
   static recommendedVersion = '3.149.0';
   static releasesUrl = 'https://api.github.com/repos/TenKeyLabs/coinbase-wallet-archive/releases';
   static homePath = '/index.html';
+  static opensHomeOnInstall = false;
 
   options: WalletOptions;
 

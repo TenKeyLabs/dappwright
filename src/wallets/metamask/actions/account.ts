@@ -4,7 +4,7 @@ import {
   accountList,
   accountListItem,
   clickBackButton,
-  getErrorMessage,
+  errorMessage,
   goHome,
   openAccountMenu,
   waitForSelectedAccount,
@@ -87,9 +87,11 @@ export const importPk =
     await page.getByTestId('import-account-confirm-button').click();
 
     // A successful import returns to home on its own, while a rejected key stays on the form
-    const errorMessage = await getErrorMessage(page);
-    if (errorMessage) {
+    const error = errorMessage(page);
+    await error.or(page.getByTestId('account-options-menu-button')).first().waitFor();
+    if (await error.isVisible()) {
+      const message = await error.innerText();
       await goHome(page);
-      throw new SyntaxError(errorMessage);
+      throw new SyntaxError(message);
     }
   };

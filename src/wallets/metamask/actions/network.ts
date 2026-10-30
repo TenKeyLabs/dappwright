@@ -1,10 +1,10 @@
-import { Page } from 'playwright-core';
+import { Page, Request } from 'playwright-core';
 import { clickOnButton, performPopupAction } from '../../../helpers';
 import { AddNetwork, UpdateNetworkRpc } from '../../../types';
 import { closePopup } from '../setup/setupActions';
 import {
+  errorMessage,
   findNetworkListItem,
-  getErrorMessage,
   goHome,
   networkListItem,
   openNetworkDropdown,
@@ -42,15 +42,24 @@ export const addNetwork =
     await page.getByTestId('network-form-network-name').fill(networkName);
     await page.getByTestId('test-add-rpc-drop-down').click();
     await clickOnButton(page, 'Add RPC URL');
+    const rpcChecked = waitForRpcCheck(page, rpc);
     await page.getByTestId('rpc-url-input-test').fill(rpc);
     await clickOnButton(page, 'Add URL');
     await page.getByTestId('network-form-chain-id').fill(String(chainId));
     await page.getByTestId('network-form-ticker-input').fill(symbol);
 
-    const errorMessage = await getErrorMessage(page);
-    if (errorMessage) {
+    // A clashing chain id is reported straight away, but a mismatch with the RPC only once it has
+    // answered, so give the form a moment to render that answer before looking for an error
+    await rpcChecked;
+    const error = errorMessage(page);
+    const hasError = await error
+      .waitFor({ timeout: 500 })
+      .then(() => true)
+      .catch(() => false);
+    if (hasError) {
+      const message = await error.innerText();
       await goHome(page);
-      throw new SyntaxError(errorMessage);
+      throw new SyntaxError(message);
     }
 
     await clickOnButton(page, 'Save');
@@ -64,6 +73,33 @@ export const addNetwork =
 
     await switchNetwork(page)(networkName);
   };
+
+// The RPC page asks a new RPC for its chain id before letting it be added, and the network form asks
+// again once it is, so the form's answer is the second request to the RPC
+const waitForRpcCheck = (page: Page, rpc: string): Promise<void> => {
+  const isRpcCheck = (request: Request): boolean => request.url().startsWith(rpc);
+  const checks: Request[] = [];
+  const onRequest = (request: Request): void => {
+    if (isRpcCheck(request)) checks.push(request);
+  };
+  page.on('request', onRequest);
+
+  const formCheck = (async (): Promise<Request | undefined> => {
+    while (checks.length < 2) {
+      const request = await page.waitForEvent('request', { predicate: isRpcCheck, timeout: 10_000 }).catch(() => null);
+      if (!request) break;
+    }
+    page.off('request', onRequest);
+    return checks[1];
+  })();
+
+  return formCheck
+    .then(async (request) => {
+      const response = await request?.response();
+      await response?.finished();
+    })
+    .catch(() => undefined);
+};
 
 export const deleteNetwork =
   (page: Page) =>

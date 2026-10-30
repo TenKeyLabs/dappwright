@@ -31,6 +31,7 @@ export class MetaMaskWallet extends Wallet {
   static recommendedVersion = '13.50.0';
   static releasesUrl = 'https://api.github.com/repos/metamask/metamask-extension/releases';
   static homePath = '/home.html';
+  static opensHomeOnInstall = true;
 
   options: WalletOptions;
 
