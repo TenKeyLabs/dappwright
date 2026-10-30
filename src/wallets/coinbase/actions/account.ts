@@ -1,5 +1,4 @@
 import { Page } from 'playwright-core';
-import { waitForChromeState } from '../../../helpers';
 
 export const countAccounts = (page: Page) => async (): Promise<number> => {
   await page.getByTestId('wallet-switcher--dropdown').click();
@@ -27,7 +26,8 @@ export const createAccount =
       // Ignore missing help prompt
     }
 
-    await waitForChromeState(page);
+    // The wallet returns to the portfolio once the account exists, and shows its real header after loading it
+    await page.getByTestId('portfolio-header--switcher-cell-pressable').waitFor();
   };
 
 export const switchAccount =

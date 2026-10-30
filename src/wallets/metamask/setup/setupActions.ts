@@ -1,8 +1,7 @@
 import { Page } from 'playwright-core';
 
-import { waitForChromeState } from '../../../helpers';
 import { WalletOptions } from '../../wallets';
-import { clickOnSettingsSwitch, goHome, goToSettings, openNetworkSettings } from '../actions/helpers';
+import { goHome, goToSettings, openNetworkSettings, setSettingsSwitch } from '../actions/helpers';
 
 export async function importAccount(
   metamaskPage: Page,
@@ -21,18 +20,37 @@ export async function createPassword(metamaskPage: Page, { password = 'password1
   await metamaskPage.getByTestId('create-password-submit').click();
 }
 
-export async function doOnboarding(metamaskPage: Page): Promise<void> {
+export async function doOnboarding(metamaskPage: Page, { password = 'password1234' }: WalletOptions): Promise<void> {
   await metamaskPage.getByTestId('passkey-maybe-later-button').click();
   await metamaskPage.getByTestId('metametrics-checkbox').click();
   await metamaskPage.getByTestId('metametrics-i-agree').click();
   await metamaskPage.getByTestId('manage-default-settings').click();
   await metamaskPage.getByTestId('category-item-General').click();
-  await metamaskPage.getByTestId('backup-and-sync-toggle-container').click();
+  await setSettingsSwitch(metamaskPage, 'backup-and-sync-toggle-button', false);
   await metamaskPage.getByTestId('category-back-button').click();
   await metamaskPage.getByTestId('privacy-settings-back-button').click();
   await metamaskPage.getByTestId('onboarding-complete-done').click();
-  await waitForChromeState(metamaskPage);
+  await waitForOnboardingComplete(metamaskPage, password);
+}
+
+/* Done saves each onboarding choice in the background one after another, and reloading part way
+ * through drops the rest. Without the side panel it then routes home. With it, Done disables itself
+ * once the panel opens, after the choices are saved but before onboarding is marked complete, so a
+ * reload can still land on the unlock screen. Unlocking there lets MetaMask finish onboarding itself. */
+async function waitForOnboardingComplete(metamaskPage: Page, password: string): Promise<void> {
+  const home = metamaskPage.getByTestId('account-options-menu-button');
+  const doneButton = metamaskPage.getByTestId('onboarding-complete-done');
+  await home.or(doneButton.and(metamaskPage.locator(':disabled'))).waitFor();
+
   await metamaskPage.goto(metamaskPage.url().split('#')[0]);
+
+  const unlockInput = metamaskPage.getByTestId('unlock-password');
+  await home.or(unlockInput).waitFor();
+  if (await unlockInput.isVisible()) {
+    await unlockInput.fill(password);
+    await metamaskPage.getByTestId('unlock-submit').click();
+    await home.waitFor();
+  }
 }
 
 export const closePopup = async (page: Page): Promise<void> => {
@@ -50,12 +68,11 @@ export const closePopup = async (page: Page): Promise<void> => {
 
 export async function adjustSettings(metamaskPage: Page): Promise<void> {
   await goToSettings(metamaskPage);
-  await clickOnSettingsSwitch(metamaskPage, 'show-extension-in-full-size-view');
+  await setSettingsSwitch(metamaskPage, 'show-extension-in-full-size-view', true);
   await metamaskPage.getByTestId('page-header-back-button').click();
 
   await openNetworkSettings(metamaskPage);
-  await clickOnSettingsSwitch(metamaskPage, 'networks-page-show-test-networks');
+  await setSettingsSwitch(metamaskPage, 'networks-page-show-test-networks', true);
 
-  await waitForChromeState(metamaskPage);
   await goHome(metamaskPage);
 }

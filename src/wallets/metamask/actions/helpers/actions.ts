@@ -6,9 +6,25 @@ export async function goToSettings(metamaskPage: Page): Promise<void> {
   await metamaskPage.getByTestId('global-menu-settings').click();
 }
 
-export const clickOnSettingsSwitch = async (page: Page, testId: string): Promise<void> => {
-  // The test id sits on a visually hidden checkbox
-  await page.getByTestId(testId).locator('xpath=..').click();
+export const setSettingsSwitch = async (page: Page, testId: string, enabled: boolean): Promise<void> => {
+  // The test id sits on a visually hidden checkbox that never sets `checked`, but its value
+  // attribute mirrors the background state, so it only flips once MetaMask has applied the change
+  const checkbox = page.getByTestId(testId);
+  if ((await checkbox.getAttribute('value')) !== String(enabled)) {
+    await checkbox.locator('xpath=..').click();
+  }
+
+  await checkbox.and(page.locator(`[value="${enabled}"]`)).waitFor({ state: 'attached' });
+};
+
+// The network filter is disabled while a switch is pending and then shows the selected network
+export const waitForSelectedNetwork = async (page: Page, name: string): Promise<void> => {
+  await page.getByTestId('sort-by-networks').and(page.locator(':enabled')).filter({ hasText: name }).waitFor();
+};
+
+// The account picker in the header shows the selected account once the background has switched
+export const waitForSelectedAccount = async (page: Page, name: string): Promise<void> => {
+  await page.getByTestId('account-menu-icon').filter({ hasText: name }).waitFor();
 };
 
 export const openNetworkDropdown = async (page: Page): Promise<void> => {

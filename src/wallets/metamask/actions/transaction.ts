@@ -1,11 +1,10 @@
 import { Page } from 'playwright-core';
-import { performPopupAction, waitForChromeState } from '../../../helpers';
+import { performPopupAction } from '../../../helpers';
 import { TransactionOptions } from '../../../types';
 
 export const approve = (page: Page) => async (): Promise<void> => {
   await performPopupAction(page, async (popup) => {
     await clickConfirm(popup);
-    await waitForChromeState(page);
   });
 };
 

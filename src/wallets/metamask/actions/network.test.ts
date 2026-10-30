@@ -5,13 +5,12 @@ const mocks = vi.hoisted(() => ({
   closePopup: vi.fn(),
   findNetworkListItem: vi.fn(),
   openNetworkDropdown: vi.fn(),
-  waitForChromeState: vi.fn(),
+  waitForSelectedNetwork: vi.fn(),
 }));
 
 vi.mock('../../../helpers', () => ({
   clickOnButton: vi.fn(),
   performPopupAction: vi.fn(),
-  waitForChromeState: mocks.waitForChromeState,
 }));
 
 vi.mock('../setup/setupActions', () => ({ closePopup: mocks.closePopup }));
@@ -22,6 +21,7 @@ vi.mock('./helpers', () => ({
   networkListItem: vi.fn(),
   openNetworkDropdown: mocks.openNetworkDropdown,
   openNetworkSettings: vi.fn(),
+  waitForSelectedNetwork: mocks.waitForSelectedNetwork,
 }));
 
 import { switchNetwork } from './network';
@@ -47,6 +47,6 @@ describe('switchNetwork', () => {
     expect(item.click).toHaveBeenCalledOnce();
     expect(closeButton.click).toHaveBeenCalledOnce();
     expect(closeButton.waitFor).toHaveBeenCalledWith({ state: 'hidden' });
-    expect(mocks.waitForChromeState).toHaveBeenCalledWith(page);
+    expect(mocks.waitForSelectedNetwork).toHaveBeenCalledWith(page, 'Anvil Local');
   });
 });
