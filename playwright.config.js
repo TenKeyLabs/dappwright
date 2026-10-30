@@ -7,7 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   timeout: process.env.CI ? 120000 : 60000,
   use: {
-    trace: process.env.CI ? 'retain-on-first-failure' : 'on'
+    trace: 'retain-on-first-failure',
   },
   maxFailures: process.env.CI ? 0 : 1,
   reporter: [['list'], ['html', { open: 'on-failure' }]],

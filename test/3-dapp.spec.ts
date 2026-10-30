@@ -28,7 +28,6 @@ test.describe('when interacting with dapps', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:8080');
     await page.waitForSelector('#ready');
-    await page.waitForTimeout(1000); // Coinbase wallet needs a bit more time to load
   });
 
   test('should be able to reject to connect', async ({ wallet, page }) => {
