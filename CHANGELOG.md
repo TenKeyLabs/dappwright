@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.13.15
+
+### Patch Changes
+
+- [#608](https://github.com/TenKeyLabs/dappwright/pull/608) [`660d80d`](https://github.com/TenKeyLabs/dappwright/commit/660d80df99864c21549fed824c9bacc91de9cacb) Thanks [@osis](https://github.com/osis)! - chore: waits for the wallet tab, `importPK` and `addNetwork` results instead of sleeping
+  chore: stops Coinbase setup reloading while it adds discovered accounts
+
+- [#604](https://github.com/TenKeyLabs/dappwright/pull/604) [`832e062`](https://github.com/TenKeyLabs/dappwright/commit/832e0626c25978bbcd0b22a2b2669c2e559b8190) Thanks [@osis](https://github.com/osis)! - chore: swaps out the fixed `waitForChromeState` sleep in favour of waiting for MetaMask and Coinbase to apply each change
+
 ## 2.13.14
 
 ### Patch Changes
