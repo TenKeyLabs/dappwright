@@ -1,12 +1,8 @@
 import { Locator, Page } from 'playwright-core';
 
-export const getErrorMessage = async (page: Page): Promise<string | undefined> => {
-  try {
-    const errorElement = await page.waitForSelector(`.mm-help-text.mm-box--color-error-default`, { timeout: 5000 });
-    return await errorElement.innerText();
-  } catch (_) {
-    return undefined;
-  }
+// A form can report more than one problem at once, so this is the first of them
+export const errorMessage = (page: Page): Locator => {
+  return page.locator('.mm-help-text.mm-box--color-error-default').first();
 };
 
 export const accountList = (page: Page): Locator => {

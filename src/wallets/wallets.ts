@@ -1,4 +1,4 @@
-import { BrowserContext, Page } from 'playwright-core';
+import { BrowserContext, Page, Worker } from 'playwright-core';
 import { EXTENSION_ID } from '../downloader/constants';
 import { CoinbaseWallet } from './coinbase/coinbase';
 import { MetaMaskWallet } from './metamask/metamask';
@@ -42,7 +42,8 @@ export const closeWalletSetupPopup = async (
   const isStrayWalletPage = (page: Page): boolean => {
     try {
       const pageUrl = new URL(page.url());
-      return pageUrl.origin === homeUrl.origin && pageUrl.pathname === homeUrl.pathname && !pageUrl.search;
+      // URL.origin is "null" for chrome-extension URLs, so compare the extension id instead
+      return pageUrl.host === homeUrl.host && pageUrl.pathname === homeUrl.pathname && !pageUrl.search;
     } catch {
       return false;
     }
@@ -68,7 +69,8 @@ export const closeWalletSetupPopup = async (
 export const getWallet = async (id: WalletIdOptions, browserContext: BrowserContext): Promise<MetaMaskWallet> => {
   const wallet = getWalletType(id);
   const homeUrl = walletHomeUrl(id);
-  const extensionOrigin = new URL(homeUrl).origin;
+  // Not URL.origin, which is "null" for chrome-extension URLs and so never matches a page or worker
+  const extensionOrigin = `chrome-extension://${EXTENSION_ID}/`;
   const findExtensionPage = (): Page | undefined =>
     browserContext.pages().find((page) => page.url().startsWith(extensionOrigin));
   const waitForExtensionPage = async (timeoutMs: number): Promise<Page | undefined> => {
@@ -83,14 +85,21 @@ export const getWallet = async (id: WalletIdOptions, browserContext: BrowserCont
 
   // MetaMask 13 opens its extension page asynchronously. Depending on the
   // Chromium build, it can be a new tab or an existing blank tab navigating
-  // in place, so an event-only wait loses the latter case.
-  const autoOpenedPage = await waitForExtensionPage(5_000);
+  // in place, so an event-only wait loses the latter case. Wallets that never
+  // open one would only sit out the wait.
+  const autoOpenedPage = wallet.opensHomeOnInstall ? await waitForExtensionPage(5_000) : findExtensionPage();
   if (autoOpenedPage) return new wallet(autoOpenedPage);
 
   // Recent Chromium rejects a normal page.goto(chrome-extension://...) with
   // ERR_BLOCKED_BY_CLIENT. Ask the extension service worker to create its own
   // tab instead; this is the same browser-owned navigation as a toolbar click.
-  const worker = browserContext.serviceWorkers().find((item) => item.url().startsWith(extensionOrigin));
+  // The worker registers shortly after launch, so wait for it rather than falling back straight away
+  const isExtensionWorker = (item: Worker): boolean => item.url().startsWith(extensionOrigin);
+  const worker =
+    browserContext.serviceWorkers().find(isExtensionWorker) ??
+    (await browserContext
+      .waitForEvent('serviceworker', { predicate: isExtensionWorker, timeout: 10_000 })
+      .catch(() => undefined));
   if (worker) {
     await worker.evaluate((homePath) => {
       const extensionApi = (globalThis as typeof globalThis & { chrome?: ExtensionApi }).chrome;

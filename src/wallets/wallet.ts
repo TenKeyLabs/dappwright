@@ -15,6 +15,8 @@ export default abstract class Wallet implements Dappwright {
   static recommendedVersion: string;
   static releasesUrl: string;
   static homePath: string;
+  // Whether the extension opens its own home page once installed, rather than waiting to be asked
+  static opensHomeOnInstall: boolean;
 
   // Extension downloader
   static download: (options: OfficialOptions) => Promise<string>;
