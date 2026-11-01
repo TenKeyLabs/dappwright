@@ -1,16 +1,20 @@
 import type { Page } from 'playwright-core';
 import { describe, expect, it, vi } from 'vitest';
-import { performPopupAction } from './actions';
+import { EXTENSION_ID } from '../downloader/constants';
+import { CoinbaseWallet } from '../wallets/coinbase/coinbase';
+import { MetaMaskWallet } from '../wallets/metamask/metamask';
+import { performPopupAction, WALLET_HOME_PATHS } from './actions';
 
-const EXTENSION = 'chrome-extension://walletid';
+const EXTENSION = `chrome-extension://${EXTENSION_ID}`;
+const DAPP = 'http://localhost:8080/';
 
 type FakePage = Page & { open: (popup: Page) => void; closeNow: () => void };
 
-const walletPage = (): FakePage => {
+const walletPage = (url = `${EXTENSION}/home.html#/`): FakePage => {
   const pages: Page[] = [];
   let closed = false;
   const page = {
-    url: () => `${EXTENSION}/home.html#/`,
+    url: () => url,
     isClosed: () => closed,
     context: () => ({ pages: () => [page, ...pages] }),
     open: (popup: Page) => pages.push(popup),
@@ -87,6 +91,59 @@ describe('performPopupAction', () => {
     await performPopupAction(wallet, action);
 
     expect(action).toHaveBeenCalledWith(popup);
+  });
+
+  describe('when the wallet page has been navigated to a dapp', () => {
+    it('still finds the popup', async () => {
+      const wallet = walletPage(DAPP);
+      const popup = openPageAt(`${EXTENSION}/notification.html#/connect/1`);
+      wallet.open(popup);
+      const action = vi.fn().mockResolvedValue(undefined);
+
+      await performPopupAction(wallet, action);
+
+      expect(action).toHaveBeenCalledWith(popup);
+    });
+
+    it('still finds a popup served from the home path with a query string', async () => {
+      const wallet = walletPage(DAPP);
+      const popup = openPageAt(`${EXTENSION}/index.html?action=request`);
+      wallet.open(popup);
+      const action = vi.fn().mockResolvedValue(undefined);
+
+      await performPopupAction(wallet, action);
+
+      expect(action).toHaveBeenCalledWith(popup);
+    });
+
+    it('does not mistake a wallet home tab for the popup', async () => {
+      const wallet = walletPage(DAPP);
+      const popup = openPageAt(`${EXTENSION}/notification.html`);
+      wallet.open(popup);
+      wallet.open(openPageAt(`${EXTENSION}/home.html#/`));
+      wallet.open(openPageAt(`${EXTENSION}/index.html`));
+      const action = vi.fn().mockResolvedValue(undefined);
+
+      await performPopupAction(wallet, action);
+
+      expect(action).toHaveBeenCalledWith(popup);
+    });
+  });
+
+  it("ignores another extension's pages", async () => {
+    const wallet = walletPage();
+    const popup = openPageAt(`${EXTENSION}/notification.html`);
+    wallet.open(popup);
+    wallet.open(openPageAt('chrome-extension://anotherextension/notification.html'));
+    const action = vi.fn().mockResolvedValue(undefined);
+
+    await performPopupAction(wallet, action);
+
+    expect(action).toHaveBeenCalledWith(popup);
+  });
+
+  it('knows the home path of every wallet', () => {
+    expect(WALLET_HOME_PATHS).toEqual(expect.arrayContaining([MetaMaskWallet.homePath, CoinbaseWallet.homePath]));
   });
 
   it('stops waiting if the wallet page closes', async () => {
