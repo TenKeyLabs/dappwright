@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.13.16
+
+### Patch Changes
+
+- [#609](https://github.com/TenKeyLabs/dappwright/pull/609) [`970f268`](https://github.com/TenKeyLabs/dappwright/commit/970f2688690332dcc61adec83c1b3765193ba965) Thanks [@osis](https://github.com/osis)! - fix: MetaMask's `addNetwork` no longer risks saving a network whose RPC is on another chain, and fails with a `SyntaxError` rather than hanging when the RPC can't be reached
+
+- [#612](https://github.com/TenKeyLabs/dappwright/pull/612) [`fb98341`](https://github.com/TenKeyLabs/dappwright/commit/fb9834189bb33ade10884a87bac2700ade73dd2b) Thanks [@osis](https://github.com/osis)! - fix: wallet actions that use a popup take the newest popup if another extension page is open, and fail straight away if the wallet page closes while they wait for one
+
+- [#611](https://github.com/TenKeyLabs/dappwright/pull/611) [`e3a51df`](https://github.com/TenKeyLabs/dappwright/commit/e3a51df2068c757b7c9236ad6bcb5cf138a67730) Thanks [@osis](https://github.com/osis)! - chore: raises the `playwright-core` peer dependency to `>=1.44.0`, the first version with the locator handler APIs that wallet setup now relies on
+
+- [#609](https://github.com/TenKeyLabs/dappwright/pull/609) [`970f268`](https://github.com/TenKeyLabs/dappwright/commit/970f2688690332dcc61adec83c1b3765193ba965) Thanks [@osis](https://github.com/osis)! - fix: wallet actions that use a popup, such as `approve`, `reject`, `sign` and `confirmTransaction`, no longer hang when the popup opened before the action was called, and now fail with an error if no popup opens within 120s
+
+- [#609](https://github.com/TenKeyLabs/dappwright/pull/609) [`970f268`](https://github.com/TenKeyLabs/dappwright/commit/970f2688690332dcc61adec83c1b3765193ba965) Thanks [@osis](https://github.com/osis)! - chore: reduces motion on wallet pages and removes MetaMask's fixed waits, dismissing its popups whenever they block an action instead of pausing to look for them
+
+- [#609](https://github.com/TenKeyLabs/dappwright/pull/609) [`970f268`](https://github.com/TenKeyLabs/dappwright/commit/970f2688690332dcc61adec83c1b3765193ba965) Thanks [@osis](https://github.com/osis)! - fix: holds up on slow machines by waiting for what the wallets do rather than fixed windows, including MetaMask's home tab, form errors in `addNetwork` and Coinbase's optional prompts, and setup now recovers from MetaMask's "trouble starting" page. `getTokenBalance` now takes up to 5s to report a missing token, and `addToken` up to 5s when a contract's decimals can't be read
+
 ## 2.13.15
 
 ### Patch Changes
