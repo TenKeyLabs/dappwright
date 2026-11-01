@@ -1,4 +1,5 @@
 import { Page } from 'playwright-core';
+import { EXTENSION_ID } from '../downloader/constants';
 import { Step, WalletOptions } from '../wallets/wallets';
 
 export const clickOnButton = async (page: Page, text: string): Promise<void> => {
@@ -7,14 +8,17 @@ export const clickOnButton = async (page: Page, text: string): Promise<void> => 
 
 const POPUP_TIMEOUT = 120_000;
 
+// Each wallet's homePath. They're spelled out here because the wallets import these helpers.
+export const WALLET_HOME_PATHS = ['/home.html', '/index.html'];
+
 // An approval popup is an extension page that carries either its own path (MetaMask's notification.html) or
-// the request in a query string (Coinbase serves its popups from index.html)
-const isPopupOf = (walletPage: Page, candidate: Page): boolean => {
+// the request in a query string (Coinbase serves its popups from index.html). This doesn't go by the wallet
+// page's url, because the page bootstrap returns is free to be navigated somewhere else, like a dapp.
+const isPopup = (walletPage: Page, candidate: Page): boolean => {
   if (candidate === walletPage || candidate.isClosed()) return false;
   try {
-    const wallet = new URL(walletPage.url());
     const url = new URL(candidate.url());
-    return url.host === wallet.host && (url.pathname !== wallet.pathname || !!url.search);
+    return url.host === EXTENSION_ID && (!WALLET_HOME_PATHS.includes(url.pathname) || !!url.search);
   } catch {
     return false;
   }
@@ -31,7 +35,7 @@ const waitForPopup = async (page: Page): Promise<Page> => {
     const popup = page
       .context()
       .pages()
-      .filter((candidate) => isPopupOf(page, candidate))
+      .filter((candidate) => isPopup(page, candidate))
       .pop();
     if (popup) return popup;
     await new Promise((resolve) => setTimeout(resolve, 100));

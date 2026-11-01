@@ -4,7 +4,7 @@ import os from 'os';
 import path from 'path';
 import { CoinbaseWallet, MetaMaskWallet, OfficialOptions } from '../src';
 import { launchBrowser } from '../src/launch';
-import { openWalletHome } from '../src/wallets/wallets';
+import { closeWalletSetupPopup, getWallet, openWalletHome, WalletOptions } from '../src/wallets/wallets';
 import { testWithWallet as test } from './helpers/walletTest';
 
 test.describe(`when the test environment is initialized`, () => {
@@ -48,6 +48,32 @@ test.describe(`when the test environment is initialized`, () => {
     expect(walletPage.url()).toContain(wallet.homePath);
     if (wallet === MetaMaskWallet)
       await walletPage.getByTestId('onboarding-import-wallet').waitFor({ timeout: 120_000 });
+
+    await browserContext.close();
+    await fs.promises.rm(userDataDir, { recursive: true, force: true });
+  });
+
+  test('should find popups after the page from bootstrap goes to a dapp', async ({}, info) => {
+    const { seed, password, ...options } = info.project.metadata as OfficialOptions & WalletOptions;
+    // Connecting right after setup doesn't open Coinbase's popup, whichever page the dapp is on
+    test.skip(options.wallet !== 'metamask');
+    test.setTimeout(300_000);
+
+    const userDataDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'dappwright-navigated-'));
+    const browserContext = await launchBrowser(MetaMaskWallet, userDataDir, {
+      ...options,
+      headless: info.project.use.headless,
+    });
+    const wallet = await getWallet(options.wallet, browserContext);
+    await closeWalletSetupPopup(options.wallet, browserContext, wallet.page);
+    await wallet.setup({ seed, password });
+
+    await wallet.page.goto('http://localhost:8080');
+    await wallet.page.waitForSelector('#ready');
+
+    await wallet.page.click('.signin-button');
+    await wallet.signin();
+    await wallet.page.waitForSelector('#signedIn');
 
     await browserContext.close();
     await fs.promises.rm(userDataDir, { recursive: true, force: true });
