@@ -1,6 +1,5 @@
 import { Page } from 'playwright-core';
 import { performPopupAction } from '../../../helpers';
-import { closePopup } from '../setup/setupActions';
 import { openAccountOptionsMenu } from './helpers';
 import { clickConfirm } from './transaction';
 
@@ -18,8 +17,6 @@ export const unlock =
 
     await page.getByTestId('unlock-password').fill(password);
     await page.getByTestId('unlock-submit').click();
-
-    await closePopup(page);
   };
 
 export const signin = (page: Page) => async (): Promise<void> => {

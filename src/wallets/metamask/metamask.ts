@@ -1,3 +1,4 @@
+import type { Page } from 'playwright-core';
 import downloader from '../../downloader/downloader';
 import { performSetup } from '../../helpers';
 import Wallet from '../wallet';
@@ -24,7 +25,7 @@ import {
   unlock,
   updateNetworkRpc,
 } from './actions';
-import { adjustSettings, closePopup, createPassword, doOnboarding, importAccount } from './setup/setupActions';
+import { adjustSettings, createPassword, dismissPopups, doOnboarding, importAccount } from './setup/setupActions';
 
 export class MetaMaskWallet extends Wallet {
   static id = 'metamask' as WalletIdOptions;
@@ -35,11 +36,16 @@ export class MetaMaskWallet extends Wallet {
 
   options: WalletOptions;
 
+  constructor(page: Page) {
+    super(page);
+    dismissPopups(page);
+  }
+
   // Extension Downloader
   static download = downloader(this.id, this.releasesUrl, this.recommendedVersion);
 
   // Setup
-  defaultSetupSteps: Step<WalletOptions>[] = [importAccount, createPassword, doOnboarding, closePopup, adjustSettings];
+  defaultSetupSteps: Step<WalletOptions>[] = [importAccount, createPassword, doOnboarding, adjustSettings];
   setup = performSetup(this.page, this.defaultSetupSteps);
 
   // Actions

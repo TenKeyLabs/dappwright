@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from 'vitest';
 import type { Page } from 'playwright-core';
 
 const mocks = vi.hoisted(() => ({
-  closePopup: vi.fn(),
   findNetworkListItem: vi.fn(),
   openNetworkDropdown: vi.fn(),
   waitForSelectedNetwork: vi.fn(),
@@ -13,11 +12,10 @@ vi.mock('../../../helpers', () => ({
   performPopupAction: vi.fn(),
 }));
 
-vi.mock('../setup/setupActions', () => ({ closePopup: mocks.closePopup }));
-
 vi.mock('./helpers', () => ({
   findNetworkListItem: mocks.findNetworkListItem,
   errorMessage: vi.fn(),
+  readError: vi.fn(),
   networkListItem: vi.fn(),
   openNetworkDropdown: mocks.openNetworkDropdown,
   openNetworkSettings: vi.fn(),

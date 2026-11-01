@@ -105,6 +105,16 @@ test.describe('when interacting with dapps', () => {
       await page.waitForSelector('#transfer-rejected');
     });
 
+    test('should handle a popup that opened before the wallet was asked to', async ({ wallet, page, context }) => {
+      const popupOpened = context.waitForEvent('page');
+      await page.click('.transfer-button');
+      await popupOpened;
+
+      await wallet.reject();
+
+      await page.waitForSelector('#transfer-rejected');
+    });
+
     test('should be able to confirm without altering gas settings', async ({ wallet, page }) => {
       if (wallet instanceof CoinbaseWallet && process.env.CI) test.skip(); // this page doesn't load in github actions
 

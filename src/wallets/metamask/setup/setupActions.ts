@@ -9,7 +9,7 @@ export async function importAccount(
 ): Promise<void> {
   await metamaskPage.getByTestId('onboarding-import-wallet').click();
   await metamaskPage.getByTestId('onboarding-import-with-srp-button').click();
-  await metamaskPage.getByTestId('srp-input-import__srp-note').pressSequentially(seed, { delay: 30 });
+  await metamaskPage.getByTestId('srp-input-import__srp-note').pressSequentially(seed);
   await metamaskPage.getByTestId('import-srp-confirm').click();
 }
 
@@ -53,17 +53,22 @@ async function waitForOnboardingComplete(metamaskPage: Page, password: string): 
   }
 }
 
-export const closePopup = async (page: Page): Promise<void> => {
-  /* For some reason popup deletes close button and then create new one (react stuff)
-   * hacky solution can be found here => https://github.com/puppeteer/puppeteer/issues/3496 */
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  if (await page.getByTestId('popover-close').isVisible()) {
-    await page.getByTestId('popover-close').click();
+const pagesDismissingPopups = new WeakSet<Page>();
+
+/* MetaMask opens its popups at no particular time, so instead of pausing to look for one, have
+ * Playwright dismiss it whenever it gets in the way of an action. A page gets a new wallet instance
+ * each time getWallet is called, but only needs the handlers once. */
+export const dismissPopups = (page: Page): void => {
+  if (pagesDismissingPopups.has(page)) return;
+  pagesDismissingPopups.add(page);
+
+  for (const popup of [page.getByTestId('popover-close'), page.getByRole('button', { name: 'Not now' })]) {
+    page.addLocatorHandler(popup, (dismiss) => dismiss.click()).catch(() => undefined);
   }
-  const notNowButton = page.getByRole('button', { name: 'Not now' });
-  if (await notNowButton.isVisible()) {
-    await notNowButton.click();
-  }
+
+  // MetaMask shows this in place of the wallet if its background is silent for 15 seconds, and stays on
+  // it even once the background has started, but loads normally from then on
+  page.addLocatorHandler(page.getByText('MetaMask had trouble starting.'), () => page.reload()).catch(() => undefined);
 };
 
 export async function adjustSettings(metamaskPage: Page): Promise<void> {

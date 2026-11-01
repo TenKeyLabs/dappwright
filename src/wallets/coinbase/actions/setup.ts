@@ -17,17 +17,16 @@ export async function getStarted(
 
   // The recovery phrase warning modal only renders if the import screen has
   // settled before we click through - clicking it mid-transition lands on the
-  // import screen with no modal at all. Wait for the screen, then dismiss the
-  // modal only if it actually showed up, otherwise we block until the fixture
-  // times out waiting for a button that is never coming.
+  // import screen with no modal at all. Dismiss it only if it gets in the way,
+  // otherwise we block until the fixture times out waiting for a button that
+  // is never coming.
+  const acknowledge = page.getByRole('button', { name: 'Acknowledge' });
+  await page.addLocatorHandler(acknowledge, (button) => button.click());
   await page.getByTestId('secret-input').waitFor();
-  await page
-    .getByRole('button', { name: 'Acknowledge' })
-    .click({ timeout: 5000 })
-    .catch(() => undefined);
 
   await page.getByTestId('secret-input').fill(seed);
   await page.getByTestId('btn-import-wallet').click();
+  await page.removeLocatorHandler(acknowledge);
   await page.getByTestId('setPassword').fill(password);
   await page.getByTestId('setPasswordVerify').fill(password);
   await page.getByTestId('terms-and-privacy-policy').check();
@@ -59,5 +58,5 @@ export const unlock =
     await goHome(page);
 
     // Wait for homescreen data to load
-    await page.waitForSelector("//div[@data-testid='asset-list']//*[not(text='')]", { timeout: 10000 });
+    await page.waitForSelector("//div[@data-testid='asset-list']//*[not(text='')]");
   };

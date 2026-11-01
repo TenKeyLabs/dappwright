@@ -1,9 +1,9 @@
 import { Page, Request } from 'playwright-core';
 import { clickOnButton, performPopupAction } from '../../../helpers';
 import { AddNetwork, UpdateNetworkRpc } from '../../../types';
-import { closePopup } from '../setup/setupActions';
 import {
   errorMessage,
+  readError,
   findNetworkListItem,
   goHome,
   networkListItem,
@@ -11,6 +11,12 @@ import {
   openNetworkSettings,
   waitForSelectedNetwork,
 } from './helpers';
+
+const RPC_ANSWER_TIMEOUT = 30_000;
+const isRequestTo =
+  (rpc: string) =>
+  (request: Request): boolean =>
+    request.url().startsWith(rpc);
 
 export const switchNetwork =
   (page: Page) =>
@@ -43,41 +49,64 @@ export const addNetwork =
     await page.getByTestId('test-add-rpc-drop-down').click();
     await clickOnButton(page, 'Add RPC URL');
     const rpcChecked = waitForRpcCheck(page, rpc);
+    const rpcFailed = page.waitForEvent('requestfailed', { predicate: isRequestTo(rpc), timeout: RPC_ANSWER_TIMEOUT });
     await page.getByTestId('rpc-url-input-test').fill(rpc);
-    await clickOnButton(page, 'Add URL');
+
+    // MetaMask gives no message for an RPC it can't reach, it just never enables the button
+    const addUrl = page.getByRole('button', { name: 'Add URL', exact: true, disabled: false });
+    const rpcAnswered = await Promise.race([
+      addUrl.waitFor({ timeout: RPC_ANSWER_TIMEOUT }).then(
+        () => true,
+        () => false,
+      ),
+      rpcFailed.then(
+        () => false,
+        () => false,
+      ),
+    ]);
+    if (!rpcAnswered) {
+      await goHome(page);
+      throw new SyntaxError(`MetaMask could not get an answer from the RPC URL ${rpc}`);
+    }
+
+    await addUrl.click();
     await page.getByTestId('network-form-chain-id').fill(String(chainId));
     await page.getByTestId('network-form-ticker-input').fill(symbol);
 
-    // A clashing chain id is reported straight away, but a mismatch with the RPC only once it has
-    // answered, so give the form a moment to render that answer before looking for an error
-    await rpcChecked;
+    // A clashing chain id is reported straight away, but a mismatch with the RPC only once it has answered
+    const answeredChainId = await rpcChecked;
     const error = errorMessage(page);
-    const hasError = await error
-      .waitFor({ timeout: 500 })
-      .then(() => true)
-      .catch(() => false);
-    if (hasError) {
-      const message = await error.innerText();
+    await error
+      .or(page.getByRole('button', { name: 'Save', exact: true, disabled: false }))
+      .first()
+      .waitFor();
+    const formError = await readError(error);
+    if (formError) {
       await goHome(page);
-      throw new SyntaxError(message);
+      throw new SyntaxError(formError);
+    }
+
+    // Save stays enabled while the form waits for the RPC, and saving then stores the network despite
+    // the mismatch. The form's error can lag behind the answer, so go by the answer itself.
+    if (answeredChainId !== undefined && answeredChainId !== Number(chainId)) {
+      await goHome(page);
+      throw new SyntaxError(`The RPC URL you have entered returned a different chain ID (${answeredChainId}).`);
     }
 
     await clickOnButton(page, 'Save');
-    // Saving returns to the networks list once the background has stored the network
+    // Saving returns to the networks list once the background has stored the network. The form can
+    // flash an error on its way out, so anything it reports from here on doesn't count.
     await networkListItem(page, networkName).waitFor();
     await goHome(page);
-
-    // This popup is fairly random in terms of timing
-    // and can show before switch to network click is gone
-    await closePopup(page);
 
     await switchNetwork(page)(networkName);
   };
 
 // The RPC page asks a new RPC for its chain id before letting it be added, and the network form asks
-// again once it is, so the form's answer is the second request to the RPC
-const waitForRpcCheck = (page: Page, rpc: string): Promise<void> => {
-  const isRpcCheck = (request: Request): boolean => request.url().startsWith(rpc);
+// again once it is, so the form's answer is the second request to the RPC. Resolves to the chain id it
+// answered with, or undefined if there was no readable answer.
+const waitForRpcCheck = (page: Page, rpc: string): Promise<number | undefined> => {
+  const isRpcCheck = isRequestTo(rpc);
   const checks: Request[] = [];
   const onRequest = (request: Request): void => {
     if (isRpcCheck(request)) checks.push(request);
@@ -86,17 +115,20 @@ const waitForRpcCheck = (page: Page, rpc: string): Promise<void> => {
 
   const formCheck = (async (): Promise<Request | undefined> => {
     while (checks.length < 2) {
-      const request = await page.waitForEvent('request', { predicate: isRpcCheck, timeout: 10_000 }).catch(() => null);
+      const request = await page
+        .waitForEvent('request', { predicate: isRpcCheck, timeout: RPC_ANSWER_TIMEOUT })
+        .catch(() => null);
       if (!request) break;
     }
     page.off('request', onRequest);
-    return checks[1];
+    return checks[1] ?? checks[0];
   })();
 
   return formCheck
     .then(async (request) => {
       const response = await request?.response();
-      await response?.finished();
+      const answer = (await response?.json()) as { result?: string } | undefined;
+      return answer?.result ? Number(answer.result) : undefined;
     })
     .catch(() => undefined);
 };

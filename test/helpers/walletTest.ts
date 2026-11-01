@@ -31,7 +31,9 @@ export const testWithWallet = base.extend<{ wallet: Dappwright }, { walletContex
       await use(browserContext);
       await browserContext.close();
     },
-    { scope: 'worker' },
+    // Installing and setting up a wallet is the slowest thing the suite does, so don't let a slow
+    // machine fail on it with a budget meant for a single test
+    { scope: 'worker', timeout: 600_000 },
   ],
   context: async ({ walletContext }, use) => {
     await use(walletContext);
