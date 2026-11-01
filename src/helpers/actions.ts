@@ -25,10 +25,14 @@ const isPopupOf = (walletPage: Page, candidate: Page): boolean => {
 const waitForPopup = async (page: Page): Promise<Page> => {
   const deadline = Date.now() + POPUP_TIMEOUT;
   while (Date.now() < deadline) {
+    if (page.isClosed()) throw new Error('The wallet page closed while waiting for a popup');
+
+    // Any other extension page opened before this one, so the newest is the one being asked for
     const popup = page
       .context()
       .pages()
-      .find((candidate) => isPopupOf(page, candidate));
+      .filter((candidate) => isPopupOf(page, candidate))
+      .pop();
     if (popup) return popup;
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
