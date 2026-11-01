@@ -24,7 +24,6 @@ export const reject = (page: Page) => async (): Promise<void> => {
 export const sign = (page: Page) => async (): Promise<void> => {
   await performPopupAction(page, async (popup) => {
     await popup.bringToFront();
-    await popup.reload();
 
     await popup.getByTestId('confirm-footer-button').click();
   });

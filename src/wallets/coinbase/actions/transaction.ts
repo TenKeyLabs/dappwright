@@ -24,12 +24,8 @@ export const sign = (page: Page) => async (): Promise<void> => {
 
 export const confirmTransaction = (page: Page) => async (): Promise<void> => {
   await performPopupAction(page, async (popup: Page): Promise<void> => {
-    try {
-      // Help prompt appears once
-      await (await popup.waitForSelector("text='Got it'", { timeout: 1000 })).click();
-    } catch {
-      // Ignore missing help prompt
-    }
+    // Help prompt appears once, whenever it gets in the way of confirming
+    await popup.addLocatorHandler(popup.getByText('Got it', { exact: true }), (gotIt) => gotIt.click());
 
     await popup.getByTestId('request-confirm-button').click();
   });

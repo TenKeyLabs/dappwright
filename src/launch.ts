@@ -4,7 +4,7 @@ import * as path from 'path';
 import playwright, { BrowserContext } from 'playwright-core';
 
 import { DappwrightLaunchResponse, OfficialOptions } from './types';
-import { closeWalletSetupPopup, getWallet, getWalletType, WalletTypes } from './wallets/wallets';
+import { closeWalletSetupPopup, getWallet, getWalletType, reduceWalletMotion, WalletTypes } from './wallets/wallets';
 
 /**
  * Launch Playwright chromium instance with wallet plugin installed
@@ -20,6 +20,7 @@ export async function launch(browserName: string, options: OfficialOptions): Pro
 
   const walletInstance = await getWallet(wallet.id, browserContext);
   await closeWalletSetupPopup(wallet.id, browserContext, walletInstance.page);
+  await reduceWalletMotion(browserContext, walletInstance.page);
 
   return {
     wallet: walletInstance,
@@ -44,7 +45,7 @@ async function resetBrowserSession(options: OfficialOptions): Promise<string> {
   return userDataDir;
 }
 
-async function launchBrowser(
+export async function launchBrowser(
   wallet: WalletTypes,
   userDataDir: string,
   options: OfficialOptions,

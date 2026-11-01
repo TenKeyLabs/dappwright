@@ -1,6 +1,13 @@
 import { Locator, Page } from 'playwright-core';
 import { AddToken } from '../../../types';
 
+// A missing token leaves nothing to wait for, so this only limits how long it takes to report one
+const isListed = (tokenItem: Locator): Promise<boolean> =>
+  tokenItem
+    .waitFor({ timeout: 5000 })
+    .then(() => true)
+    .catch(() => false);
+
 export const getTokenBalance =
   (page: Page) =>
   async (tokenSymbol: string): Promise<number> => {
@@ -13,8 +20,6 @@ export const getTokenBalance =
         hasText: tokenValueRegex,
       });
 
-      await page.waitForTimeout(500);
-
       return (await tokenItem.isVisible()) ? tokenItem : null;
     };
 
@@ -25,9 +30,7 @@ export const getTokenBalance =
         hasText: tokenValueRegex,
       });
 
-      await page.waitForTimeout(500);
-
-      return (await tokenItem.isVisible()) ? tokenItem : null;
+      return (await isListed(tokenItem)) ? tokenItem : null;
     };
 
     const readAttempts = [readFromCryptoTab, readFromTestnetTab];

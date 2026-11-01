@@ -5,6 +5,12 @@ export const errorMessage = (page: Page): Locator => {
   return page.locator('.mm-help-text.mm-box--color-error-default').first();
 };
 
+// An error can be gone by the time it's read, which would otherwise wait for it to come back forever
+export const readError = async (error: Locator): Promise<string | undefined> => {
+  if (!(await error.isVisible())) return undefined;
+  return error.innerText({ timeout: 5000 }).catch(() => undefined);
+};
+
 export const accountList = (page: Page): Locator => {
   return page.locator('.multichain-account-cell');
 };
@@ -36,7 +42,7 @@ export const findNetworkListItem = async (page: Page, name: string): Promise<Loc
     .filter({ has: page.getByText(name, { exact: true }) })
     .first();
   try {
-    await item.waitFor({ state: 'visible', timeout: 5000 });
+    await item.waitFor({ state: 'visible', timeout: 30_000 });
   } catch {
     throw new Error(`MetaMask network "${name}" was not found in the network picker`);
   }

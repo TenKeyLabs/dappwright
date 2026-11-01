@@ -2,7 +2,9 @@ import { Page } from 'playwright-core';
 
 export const countAccounts = (page: Page) => async (): Promise<number> => {
   await page.getByTestId('wallet-switcher--dropdown').click();
-  const count = await page.locator('//*[@data-testid="wallet-switcher--dropdown"]/*/*[2]/*').count();
+  const accounts = page.locator('//*[@data-testid="wallet-switcher--dropdown"]/*/*[2]/*');
+  await accounts.first().waitFor();
+  const count = await accounts.count();
   await page.getByTestId('wallet-switcher--dropdown').click();
   return count;
 };
@@ -19,15 +21,15 @@ export const createAccount =
     await page.getByTestId('wallet-switcher--manage').click();
     await page.getByTestId('manage-wallets-account-item--action-cell-pressable').click();
 
-    // Help prompt appears once
-    try {
-      await page.getByTestId('add-new-wallet--continue').click({ timeout: 2000 });
-    } catch {
-      // Ignore missing help prompt
+    // The wallet returns to the portfolio once the account exists, and shows its real header after
+    // loading it, unless the help prompt that appears once is in the way
+    const helpPrompt = page.getByTestId('add-new-wallet--continue');
+    const portfolioHeader = page.getByTestId('portfolio-header--switcher-cell-pressable');
+    await helpPrompt.or(portfolioHeader).first().waitFor();
+    if (await helpPrompt.isVisible()) {
+      await helpPrompt.click();
+      await portfolioHeader.waitFor();
     }
-
-    // The wallet returns to the portfolio once the account exists, and shows its real header after loading it
-    await page.getByTestId('portfolio-header--switcher-cell-pressable').waitFor();
   };
 
 export const switchAccount =

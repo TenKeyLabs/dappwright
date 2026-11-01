@@ -14,23 +14,19 @@ export const addNetwork =
     await page.getByTestId('custom-network-currency-symbol-input').fill(options.symbol);
     await page.getByTestId('custom-network-save').click();
 
-    // Check for error messages
-    let errorNode;
-    try {
-      errorNode = await page.waitForSelector('//span[@data-testid="text-input-error-label"]', {
-        timeout: 50,
-      });
-    } catch {
-      // No errors found
-    }
+    // Saving returns to the network list once the network is stored, and a rejected network stays on the form
+    const error = page.getByTestId('text-input-error-label');
+    const networkList = page.getByTestId('network-list-search');
+    await error.or(networkList).first().waitFor();
+    // An error can be gone by the time it's read, which would otherwise wait for it to come back forever
+    const message = (await error.first().isVisible())
+      ? await error
+          .first()
+          .textContent({ timeout: 5000 })
+          .catch(() => undefined)
+      : undefined;
+    if (message) throw new SyntaxError(message);
 
-    if (errorNode) {
-      const errorMessage = await errorNode.textContent();
-      throw new SyntaxError(errorMessage);
-    }
-
-    // Saving returns to the network list once the network is stored
-    await page.getByTestId('network-list-search').waitFor();
     await goHome(page);
   };
 

@@ -17,7 +17,12 @@ export const addToken =
     const symbolInput = page.getByRole('textbox', { name: 'Token symbol' });
     const decimalsInput = page.getByRole('spinbutton', { name: 'Token decimal' });
     await symbolInput.waitFor();
-    await page.waitForTimeout(500);
+
+    // A contract that can't be read never fills them in, so this only limits how long that takes to find out
+    const deadline = Date.now() + 5000;
+    while (!(await decimalsInput.inputValue()) && Date.now() < deadline) {
+      await page.waitForTimeout(100);
+    }
 
     if (symbol) {
       await symbolInput.fill(symbol);
@@ -37,12 +42,18 @@ export const getTokenBalance =
   (page: Page) =>
   async (tokenSymbol: string): Promise<number> => {
     await page.bringToFront();
-    await page.waitForTimeout(1000);
 
     const tokenValueRegex = new RegExp(String.raw`\d ${tokenSymbol}$`);
     const valueElement = page.getByTestId('multichain-token-list-item-value').filter({ hasText: tokenValueRegex });
 
-    if (!(await valueElement.isVisible())) {
+    // The list can still be loading, so wait for it and give the token a moment to show up before
+    // deciding it isn't there
+    await page.getByTestId('multichain-token-list-item-value').first().waitFor();
+    const isListed = await valueElement
+      .waitFor({ timeout: 5000 })
+      .then(() => true)
+      .catch(() => false);
+    if (!isListed) {
       throw new Error(`Token ${tokenSymbol} not found`);
     }
 

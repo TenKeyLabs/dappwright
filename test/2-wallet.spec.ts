@@ -7,6 +7,7 @@ import {
   openAccountMenu,
 } from '../src/wallets/metamask/actions/helpers';
 import { forCoinbase, forMetaMask } from './helpers/itForWallet';
+import { startRpc } from './helpers/rpcServer';
 import { testWithWallet as test } from './helpers/walletTest';
 
 // TODO: Add this to the wallet interface
@@ -123,18 +124,35 @@ test.describe('when interacting with the wallet', () => {
       });
     });
 
-    // TODO: Come back to this since metamask doesn't consider this to be an error anymore but blocks
-    // test('should fail to add network with wrong chain ID', async ({ wallet }) => {
-    //   await expect(
-    //     metamask.addNetwork({
-    //       networkName: 'Optimistic Ethereum Testnet Kovan',
-    //       rpc: 'https://kovan.optimism.io/',
-    //       chainId: 99999,
-    //       symbol: 'KUR',
-    //     }),
-    //   ).rejects.toThrowError(SyntaxError);
-    //   await metamask.page.pause();
-    // });
+    test.describe('addNetwork with a bad RPC', () => {
+      const badNetwork = { networkName: 'Bad RPC', symbol: 'BAD', chainId: 12345 };
+      const expectRejected = async (wallet: Dappwright, rpc: string): Promise<void> => {
+        await expect(wallet.addNetwork({ ...badNetwork, rpc })).rejects.toThrowError(SyntaxError);
+        expect(await wallet.hasNetwork(badNetwork.networkName)).toBeFalsy();
+      };
+
+      test('should fail if the RPC is on another chain', async ({ wallet }) => {
+        await forMetaMask(wallet, async () => {
+          await expectRejected(wallet, 'http://localhost:8545');
+        });
+      });
+
+      test('should fail if the RPC takes its time to say it is on another chain', async ({ wallet }) => {
+        await forMetaMask(wallet, async () => {
+          const rpc = await startRpc({ chainId: 1, delayMs: 1000 });
+          await expectRejected(wallet, rpc.url);
+          await rpc.close();
+        });
+      });
+
+      test('should fail if the RPC cannot be reached', async ({ wallet }) => {
+        await forMetaMask(wallet, async () => {
+          const rpc = await startRpc({ chainId: badNetwork.chainId });
+          await rpc.close();
+          await expectRejected(wallet, rpc.url);
+        });
+      });
+    });
   });
 
   // Metamask only
