@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.17
+
+### Patch Changes
+
+- [#613](https://github.com/TenKeyLabs/dappwright/pull/613) [`d5fcd4d`](https://github.com/TenKeyLabs/dappwright/commit/d5fcd4d991717730c62d076a1d3409fc1dfc5473) Thanks [@osis](https://github.com/osis)! - fix: wallet actions that use a popup find it again when the page returned by `bootstrap` has been navigated to a dapp, rather than failing after 120s
+
 ## 2.13.16
 
 ### Patch Changes
