@@ -129,8 +129,8 @@ importers:
         specifier: ^3.21.2
         version: 3.21.2
       serve-handler:
-        specifier: 6.1.7
-        version: 6.1.7
+        specifier: 6.1.8
+        version: 6.1.8
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
@@ -895,8 +895,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  serve-handler@6.1.7:
-    resolution: {integrity: sha512-CinAq1xWb0vR3twAv9evEU8cNWkXCb9kd5ePAHUKJBkOsUpR1wt/CvGdeca7vqumL1U5cSaeVQ6zZMxiJ3yWsg==}
+  serve-handler@6.1.8:
+    resolution: {integrity: sha512-CYwNp8vJjDHTSQq52gHRVNkNOl89b5Q4HOHuQzbvodSyN+Y7ZgXy1pJI1PUKbSKK7NYgoPvI33EjkIxNa7kDmA==}
 
   set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
@@ -1658,7 +1658,7 @@ snapshots:
 
   semver@7.8.5: {}
 
-  serve-handler@6.1.7:
+  serve-handler@6.1.8:
     dependencies:
       bytes: 3.0.0
       content-disposition: 0.5.2
