@@ -2,7 +2,7 @@ import { Page, Request } from 'playwright-core';
 import { clickOnButton, performPopupAction } from '../../../helpers';
 import { AddNetwork, UpdateNetworkRpc } from '../../../types';
 import {
-  errorMessage,
+  networkFormError,
   readError,
   findNetworkListItem,
   goHome,
@@ -17,6 +17,15 @@ const isRequestTo =
   (rpc: string) =>
   (request: Request): boolean =>
     request.url().startsWith(rpc);
+
+// The network form's name and chain id fields suggest Chainlist networks in a dropdown that covers the
+// rest of the form until it is dismissed
+const fillDismissingChainlist = async (page: Page, testId: string, value: string): Promise<void> => {
+  const input = page.getByTestId(testId);
+  await input.fill(value);
+  await input.press('Escape');
+  await page.getByTestId('networks-page-chainlist-dropdown').waitFor({ state: 'hidden' });
+};
 
 export const switchNetwork =
   (page: Page) =>
@@ -45,7 +54,7 @@ export const addNetwork =
     await openNetworkSettings(page);
     await page.getByTestId('networks-page-add-custom-network-button').click();
 
-    await page.getByTestId('network-form-network-name').fill(networkName);
+    await fillDismissingChainlist(page, 'network-form-network-name', networkName);
     await page.getByTestId('test-add-rpc-drop-down').click();
     await clickOnButton(page, 'Add RPC URL');
     const rpcChecked = waitForRpcCheck(page, rpc);
@@ -70,12 +79,12 @@ export const addNetwork =
     }
 
     await addUrl.click();
-    await page.getByTestId('network-form-chain-id').fill(String(chainId));
+    await fillDismissingChainlist(page, 'network-form-chain-id', String(chainId));
     await page.getByTestId('network-form-ticker-input').fill(symbol);
 
     // A clashing chain id is reported straight away, but a mismatch with the RPC only once it has answered
     const answeredChainId = await rpcChecked;
-    const error = errorMessage(page);
+    const error = networkFormError(page);
     await error
       .or(page.getByRole('button', { name: 'Save', exact: true, disabled: false }))
       .first()
@@ -177,7 +186,7 @@ export const updateNetworkRpc =
 
     await clickOnButton(page, 'Add a custom network');
 
-    await page.getByTestId('network-form-chain-id').fill(String(chainId));
+    await fillDismissingChainlist(page, 'network-form-chain-id', String(chainId));
     await clickOnButton(page, 'edit the original network');
 
     await page.getByTestId('test-add-rpc-drop-down').click();

@@ -25,7 +25,7 @@ export async function doOnboarding(metamaskPage: Page, { password = 'password123
   await metamaskPage.getByTestId('metametrics-checkbox').click();
   await metamaskPage.getByTestId('metametrics-i-agree').click();
   await metamaskPage.getByTestId('manage-default-settings').click();
-  await metamaskPage.getByTestId('category-item-General').click();
+  await metamaskPage.getByTestId('category-item-Backup and sync').click();
   await setSettingsSwitch(metamaskPage, 'backup-and-sync-toggle-button', false);
   await metamaskPage.getByTestId('category-back-button').click();
   await metamaskPage.getByTestId('privacy-settings-back-button').click();
