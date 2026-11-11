@@ -40,7 +40,19 @@ export const deleteNetwork =
     await page.getByTestId('network-list-search').fill(name);
     await (await page.waitForSelector('//div[@data-testid="list-"][1]//button')).click();
 
-    await page.getByTestId('custom-network-delete').click();
+    // The edit form is still sliding in when its remove button first reads as stable, and a press
+    // landing mid-slide is dropped without a word, so press until the form has closed
+    const remove = page.getByTestId('custom-network-delete');
+    for (let attempt = 1; ; attempt++) {
+      await remove.click();
+      const removed = await remove.waitFor({ state: 'hidden', timeout: 2000 }).then(
+        () => true,
+        () => false,
+      );
+      if (removed) break;
+      if (attempt === 3) throw new Error(`Coinbase did not remove the network "${name}"`);
+    }
+
     await goHome(page);
   };
 
