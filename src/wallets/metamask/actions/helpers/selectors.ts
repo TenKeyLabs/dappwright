@@ -5,6 +5,11 @@ export const errorMessage = (page: Page): Locator => {
   return page.locator('.mm-help-text.mm-box--color-error-default').first();
 };
 
+// The network form reports both a clashing chain id and an RPC that answers with another one here
+export const networkFormError = (page: Page): Locator => {
+  return page.getByTestId('network-form-chain-id-error').first();
+};
+
 // An error can be gone by the time it's read, which would otherwise wait for it to come back forever
 export const readError = async (error: Locator): Promise<string | undefined> => {
   if (!(await error.isVisible())) return undefined;
