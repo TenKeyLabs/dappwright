@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.13.18
+
+### Patch Changes
+
+- [#626](https://github.com/TenKeyLabs/dappwright/pull/626) [`e6f4418`](https://github.com/TenKeyLabs/dappwright/commit/e6f441831bb4738a789bfd88efc5f61881e6852f) Thanks [@osis](https://github.com/osis)! - chore(coinbase): bump version to 3.151.0
+
+- [#624](https://github.com/TenKeyLabs/dappwright/pull/624) [`f29cebc`](https://github.com/TenKeyLabs/dappwright/commit/f29cebc76d05790518dc84abd2e67ddeee253c05) Thanks [@osis](https://github.com/osis)! - fix: Coinbase `deleteNetwork` presses remove again when the first press lands while the edit form is still sliding in, rather than returning with the network still configured
+
 ## 2.13.17
 
 ### Patch Changes
