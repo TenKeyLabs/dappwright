@@ -275,7 +275,7 @@ describe('createWalletDownloader', () => {
       );
     });
 
-    it('should handle corrupted error file', async () => {
+    it('should handle corrupted error file', async (ctx) => {
       const downloader = createWalletDownloader(mockWalletId, mockReleasesUrl, mockRecommendedVersion);
       const options: OfficialOptions = {
         wallet: 'metamask',
@@ -286,19 +286,29 @@ describe('createWalletDownloader', () => {
       const errorFile = path.join(testDir, DOWNLOAD_STATE_FILES.error);
       fs.writeFileSync(errorFile, Buffer.from([0xff, 0xfe]));
 
-      // Make the file unreadable by changing permissions (if supported)
+      // Make the file unreadable by changing permissions
       try {
         fs.chmodSync(errorFile, 0o000);
+      } catch {
+        ctx.skip('chmod is not supported on this system');
+      }
+
+      try {
+        // chmod 0o000 doesn't block reads for root (e.g. the Playwright docker image) or on Windows
+        let readable = true;
+        try {
+          fs.readFileSync(errorFile);
+        } catch {
+          readable = false;
+        }
+        if (readable) ctx.skip('error file is still readable after chmod 0o000');
 
         await expect(downloader(options)).rejects.toThrow(
           'Failed to download metamask: Unknown error occurred during download',
         );
-
+      } finally {
         // Restore permissions for cleanup
-        fs.chmodSync(errorFile, 0o644);
-      } catch {
-        // Skip test on systems that don't support chmod
-        return;
+        if (fs.existsSync(errorFile)) fs.chmodSync(errorFile, 0o644);
       }
     });
 
