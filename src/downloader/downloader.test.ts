@@ -307,8 +307,12 @@ describe('createWalletDownloader', () => {
           'Failed to download metamask: Unknown error occurred during download',
         );
       } finally {
-        // Restore permissions for cleanup
-        if (fs.existsSync(errorFile)) fs.chmodSync(errorFile, 0o644);
+        // Restore permissions for cleanup, without masking the test's own failure
+        try {
+          fs.chmodSync(errorFile, 0o644);
+        } catch {
+          // File already gone; afterEach cleanup handles the rest
+        }
       }
     });
 
