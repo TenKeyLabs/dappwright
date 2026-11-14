@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.13.19
+
+### Patch Changes
+
+- [#627](https://github.com/TenKeyLabs/dappwright/pull/627) [`1e0c42d`](https://github.com/TenKeyLabs/dappwright/commit/1e0c42d8394b2dad78c05a1761650069fa60678d) Thanks [@osis](https://github.com/osis)! - chore: bumps metamask to 13.56.0
+
 ## 2.13.18
 
 ### Patch Changes
