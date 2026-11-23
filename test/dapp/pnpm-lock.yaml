@@ -113,8 +113,8 @@ importers:
   .:
     dependencies:
       solc:
-        specifier: 0.8.38
-        version: 0.8.38
+        specifier: 0.8.39
+        version: 0.8.39
       web3:
         specifier: 4.16.0
         version: 4.16.0(typescript@7.0.2)(zod@3.25.76)
@@ -905,8 +905,8 @@ packages:
   setimmediate@1.0.5:
     resolution: {integrity: sha512-MATJdZp8sLqDl/68LfQmbP8zKPLQNV6BIZoIgrscFDQ+RsvK/BxeDQOgyxKKoh0y/8h3BqVFnCqQ/gd+reiIXA==}
 
-  solc@0.8.38:
-    resolution: {integrity: sha512-DsDLa7uACQVVkE0DYNnUGC49b/yuCJ9ymWlcCEwmaJGcETPC6pTC+BXaRK9ADW8YVeMyxEKUtJsUwRAIG28jtQ==}
+  solc@0.8.39:
+    resolution: {integrity: sha512-DZgQzDMLd0U+DhaIi9o+W1Kb1GxySJgQRVRHMhbSzfQ5sp6a8sA8ePiAc9ZbgzUxGclUJtjFGcuiGF5X0pt4YA==}
     engines: {node: '>=16.0.0'}
     hasBin: true
 
@@ -1679,7 +1679,7 @@ snapshots:
 
   setimmediate@1.0.5: {}
 
-  solc@0.8.38:
+  solc@0.8.39:
     dependencies:
       command-exists: 1.2.9
       commander: 8.3.0
